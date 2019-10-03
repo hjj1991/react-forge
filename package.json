@@ -1,0 +1,42 @@
+{
+  "name": "my-app",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "axios": "^0.19.0",
+    "bootstrap": "^4.3.1",
+    "cross-env": "^6.0.0",
+    "httpntlm": "^1.7.6",
+    "query-string": "^6.8.3",
+    "react": "^16.10.1",
+    "react-app-polyfill": "^1.0.3",
+    "react-bootstrap": "^1.0.0-beta.12",
+    "react-dom": "^16.10.1",
+    "react-router-dom": "^5.1.2",
+    "react-scripts": "3.1.2"
+  },
+  "scripts": {
+    "start": "cross-env NODE_PATH=src react-scripts start",
+    "build": "cross-env NODE_PATH=src react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all",
+      "ie 11"
+    ],
+    "development": [
+      ">0.2%",
+      "ie >= 9",
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

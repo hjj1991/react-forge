@@ -1,0 +1,6 @@
+npm i react-app-polyfill
+npm install react-bootstrap bootstrap
+npm install react-router-dom -save
+npm install croess-env --dev
+npm install query-string
+npm install axios
