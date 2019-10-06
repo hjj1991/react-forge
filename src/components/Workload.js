@@ -1,12 +1,17 @@
 import React from 'react';
 import axios from 'axios';
-import PropTypes from "prop-types";
 
-function getWorkLoad(detailUrl) {
 
-    //console.log('http://10.131.109.122' + detailUrl.Uri);
-    const getWorkloadList = async () => {
-        const result = await axios.get('http://10.131.109.122' + detailUrl.Uri, {
+
+class Workload extends React.Component {
+
+    state = {
+        isLoading: true,
+        workloadDetail: []
+      };
+
+    getWorkloadDetail = async () => {
+        const workloadDetail = await axios.get('http://10.131.109.122' + this.props.Uri, {
         
     
         withCredentials: true,
@@ -17,46 +22,65 @@ function getWorkLoad(detailUrl) {
             // "Access-Control-Allow-Methods" : "GET,PUT,POST,DELETE,PATCH,OPTIONS",
             
       },
-    //   auth: {
-    //     username: 'administrator',
-    //     password: 'vortmasp12#$'
-    //         }
         });
-        //console.log(result);
-        return result;
+        console.log(workloadDetail);
+        this.setState({ workloadDetail, isLoading: false });
     }
-    return getWorkloadList();
 
+
+      componentDidMount() {
+        this.getWorkloadDetail();
+        // test();
+      }
+
+    render(){
+        const { isLoading, workloadDetail } = this.state;
+
+    if (isLoading) {
+        return <Loading1 />
+    } else {
+        return <Comple1 CurrentState={this.props.CurrentState} Name={this.props.Name} ScheduleActive={this.props.ScheduleActive} Uri={this.props.Uri} OperatingSystem={this.props.OperatingSystem} workloadDetail={workloadDetail} />
+    }
+
+
+    }
 }
 
-function Workload ({CurrentState, Name, OperatingSystem, ScheduleActive, Uri }){
-    const result = getWorkLoad({Uri});
-    console.log(result);
+function Loading1() {
     return (
-
-            <tr>
-                <td>0</td>
-                <td>{CurrentState}</td>
-                <td>{result.data.Online}</td>
-                <td>{Name}</td>
-                <td>{ScheduleActive}</td>
-                <td>{Uri}</td>
-                <td>{OperatingSystem}</td>
-                <td>@mdo</td>
-                <td>1</td>
-                <td>Mark</td>
-                <td>Otto</td>
-            </tr>
-
-    );
+        <tr>
+            <td>0</td>
+        </tr>
+    )
 }
 
-Workload.propTypes = {
-    CurrentState: PropTypes.string.isRequired,
-    Name: PropTypes.string.isRequired,
-    OperatingSystem: PropTypes.string.isRequired,
-    ScheduleActive: PropTypes.bool.isRequired,
-    Uri: PropTypes.string.isRequired,
-  };
+function Comple1({CurrentState, Name, ScheduleActive, Uri, OperatingSystem, workloadDetail}) {
+    workloadDetail = workloadDetail.data;
+    var onlineStatus;
+    
+    
+    if (workloadDetail.Online){
+        onlineStatus = "O";
+    }else{
+        onlineStatus = "X";
+    }
+    console.log(workloadDetail.Parameters[10]);
+    return (
+        
+        <tr>
+        <td>0</td>
+        <td>{CurrentState}</td>
+        <td>{onlineStatus}</td>
+        <td>{Name}</td>
+        <td>{ScheduleActive}</td>
+        <td>{workloadDetail.Tag}</td>
+        <td>{OperatingSystem}</td>
+        <td>@mdo</td>
+        <td>{workloadDetail.Parameters[10].Value}</td>
+        <td>{workloadDetail.Parameters[15].Value}</td>
+        <td>{workloadDetail.Parameters[12].Value}</td>
+    </tr>
+    )
+}
 
 export default Workload;
