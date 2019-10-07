@@ -1,47 +1,57 @@
 import React from 'react';
 import axios from 'axios';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import * as postActions from '../store/modules/post';
 
 
 
 class Workload extends React.Component {
 
-    state = {
-        isLoading: true,
-        workloadDetail: []
-      };
-
-    getWorkloadDetail = async () => {
-        const workloadDetail = await axios.get('http://10.131.109.122' + this.props.Uri, {
-        
-    
-        withCredentials: true,
-        headers: {
-            "Content-Type" : "application/vnd.netiq.platespin.protect.WorkloadsDetails+json",
-            "Accept" : "application/json",
-            // "Authorization" : "Basic",
-            // "Access-Control-Allow-Methods" : "GET,PUT,POST,DELETE,PATCH,OPTIONS",
-            
-      },
-        });
-        console.log(workloadDetail);
-        this.setState({ workloadDetail, isLoading: false });
-    }
-
-
-      componentDidMount() {
-        this.getWorkloadDetail();
+    componentDidMount() {
+        // this.getWorkloadList();
         // test();
+        const { PostActions } = this.props;
+        PostActions.getDetail(this.props.Uri);
+        
       }
 
+
+
+
     render(){
-        const { isLoading, workloadDetail } = this.state;
-
-    if (isLoading) {
-        return <Loading1 />
-    } else {
-        return <Comple1 CurrentState={this.props.CurrentState} Name={this.props.Name} ScheduleActive={this.props.ScheduleActive} Uri={this.props.Uri} OperatingSystem={this.props.OperatingSystem} workloadDetail={workloadDetail} />
-    }
-
+        const { post2, error2, loading2 } = this.props;
+        
+        if(loading2){
+            return <h2>로딩중...</h2> 
+        }
+        else if ( error2){
+            return <h1>에러발생!</h1>
+        } else {
+            if (post2.Parameters) {
+                console.log(post2);
+                console.log(post2);
+            
+                return (
+                    <tr>
+                    <td>0</td>
+                    <td>{this.props.CurrentState}</td>
+                    <td>{this.props.onlineStatus}</td>
+                    <td>{this.props.Name}</td>
+                    <td>{this.props.ScheduleActive}</td>
+                    <td>{post2.Tag}</td>
+                    <td>{this.props.OperatingSystem}</td>
+                    <td>Replicated</td>
+                    <td>{post2.Parameters[10].Value}</td>
+                    <td>{post2.Parameters[15].Value}</td>
+                    <td>{post2.Parameters[12].Value}</td>
+                </tr>
+                )
+            }
+            else{
+                return <h1>에러발생2!</h1>
+            }
+        }
 
     }
 }
@@ -83,4 +93,16 @@ function Comple1({CurrentState, Name, ScheduleActive, Uri, OperatingSystem, work
     )
 }
 
-export default Workload;
+
+export default connect(
+    (state) => ({
+        post2: state.post.data2,
+        loading2: state.post.pending2,
+        error2: state.post.error2,
+    }),
+    (dispatch) => ({
+        PostActions: bindActionCreators(postActions, dispatch)
+    })
+)(Workload);
+
+// export default Workload;

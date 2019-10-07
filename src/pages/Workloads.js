@@ -1,53 +1,31 @@
 import React from 'react';
-import axios from 'axios';
 import Table from 'react-bootstrap/Table'
 import Workload from '../components/Workload';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import * as postActions from '../store/modules/post';
 
 
 class Workloads extends React.Component {
-    state = {
-        isLoading: true,
-        workloads: []
-      };
-
-
-
-getWorkloadList = async () => {
-    const result = await axios.get('http://10.131.109.122/protectionservices/Workloads/', {
-    
-
-    withCredentials: true,
-    headers: {
-        "Content-Type" : "application/vnd.netiq.platespin.protect.WorkloadsDetails+json",
-        "Accept" : "application/json",
-        // "Authorization" : "Basic",
-        // "Access-Control-Allow-Methods" : "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+      componentDidMount() {
+        // this.getWorkloadList();
+        // test();
+        const { PostActions } = this.props;
+        PostActions.getPost('/protectionservices/Workloads/');
         
-  },
-//   auth: {
-//     username: 'administrator',
-//     password: 'vortmasp12#$'
-//         }
-    });
-    const workloads = result.data.Workloads;
-    //console.log(workloads);
-    this.setState({ workloads, isLoading: false });
-}
+      }
 
-componentDidMount() {
-    this.getWorkloadList();
-    // test();
-  }
-    render(){
-        const { isLoading, workloads } = this.state;
-        return (
-            <section className="container">
-                { isLoading ? (
-                    <div className="loader">
-                        <span className="loader__text">Loading...</span>
-                    </div>
-                ) : (
-                    <div className="workloads">
+      render(){
+        const { post, error, loading } = this.props;
+        // console.log(post);
+
+          return (
+              <div>
+                  { loading && <h2>로딩중...</h2> }
+                  { error
+                    ? <h1>에러발생!</h1>
+                    :  (
+                        <div className="workloads">
                         <Table striped bordered hover variant="dark">
                         <thead>
                             <tr>
@@ -64,8 +42,8 @@ componentDidMount() {
                                 <th>Last Test Cutover</th>
                             </tr>
                         </thead>
-                        <tbody>
-                        {workloads.map(workload => (
+                        <tbody> 
+                        {post.map(workload => (
                             <Workload 
                                 key={workload.index}
                                 CurrentState = {workload.CurrentState}
@@ -78,10 +56,22 @@ componentDidMount() {
                         </tbody>
                         </Table>
                     </div>
-                )}
-            </section>
-        )
-    }
+                    )}
+              </div>
+          );
+      }
+
 }
 
-export default Workloads;
+
+export default connect(
+    (state) => ({
+        post: state.post.data,
+        loading: state.post.pending,
+        error: state.post.error
+    }),
+    (dispatch) => ({
+        PostActions: bindActionCreators(postActions, dispatch)
+    })
+)(Workloads);
+// export default Workloads;

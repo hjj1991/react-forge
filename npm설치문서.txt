@@ -8,3 +8,5 @@ npm install axios
 npm i -D redux
 npm i -D react-redux
 npm add redux-actions
+npm add redux-logger
+npm add redux-thunk
