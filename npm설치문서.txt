@@ -10,3 +10,4 @@ npm i -D react-redux
 npm add redux-actions
 npm add redux-logger
 npm add redux-thunk
+npm add immutable
