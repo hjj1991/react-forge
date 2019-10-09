@@ -31,24 +31,11 @@ class Workloads extends React.Component {
         console.log("팬딩여부:" + loading);
         console.log("로딩여부:" + isLoading);
         console.log("에러여부:" + error);
+        // console.log(post[0].detail);
 
           if( isLoading ){
-            
             return (
-              <div className="workloads">
-              {post.map(workload =>  (
-                  <Workload 
-                      key={workload.index}
-                      CurrentState = {workload.CurrentState}
-                      Name = {workload.Name}
-                      OperatingSystem = {workload.OperatingSystem}
-                      ScheduleActive = {workload.ScheduleActive}
-                      Tag = {workload.detail.Tag}
-                      Online = {workload.detail.Online}
-                      // LastFullOn = {workload.detail.data.Parameters[10].Value}
-                  />
-              ))}
-          </div>
+              <Workload post = {post} />
           )
           }else{
             return <h2>로딩중</h2>

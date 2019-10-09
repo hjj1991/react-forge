@@ -1,13 +1,45 @@
 import React from 'react';
 import Table from 'react-bootstrap/Table'
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import * as postActions from '../store/modules/post';
 
 
+const WorkloadItem = ({ CurrentState, Name, OperatingSystem , ScheduleActive, Tag, Online, LastFullOn, NextFullOn, LastTestedFailoverOn }) => {
+    return (
+        <tr>
+            <td><input type="checkbox"/></td>
+            <td>{CurrentState}</td>
+            <td>Online</td>
+            <td>({OperatingSystem}){Name}</td>
+            <td></td>
+            <td>{Tag}</td>
+            <td>{ScheduleActive}</td>
+            <td>{CurrentState}</td>
+            <td>{LastFullOn}</td>
+            <td>{NextFullOn}</td>
+            <td>{LastTestedFailoverOn}</td>
+    </tr>
+    );
+  };
 
-const Workload = ({ CurrentState, Name, OperatingSystem, ScheduleActive, Tag, LastFullOn, Online}) => {
-    console.log(Tag);
+
+const Workload = ({ post }) => {
+    console.log("하히요");
+    console.log(post[0]);
+    console.log(post[1]);
+    const workloadItems = post.map(workload => (
+        <WorkloadItem
+            key={workload.indx}
+            CurrentState = {workload.CurrentState}
+            Name = {workload.Name}
+            OperatingSystem = {workload.OperatingSystem}
+            ScheduleActive = {workload.ScheduleActive}
+            Tag = {workload.detail.Tag}
+            Online = {workload.detail.Online}
+            NextFullOn = {workload.detail.Parameters[15].Value}
+            LastFullOn = {workload.detail.Parameters[10].Value}
+            LastTestedFailoverOn = {workload.detail.Parameters[12].Value}
+        />
+    ));
+
     return (
         <div className="workloads">
         <Table striped bordered hover variant="dark">
@@ -27,32 +59,21 @@ const Workload = ({ CurrentState, Name, OperatingSystem, ScheduleActive, Tag, La
                 </tr>
             </thead>
             <tbody> 
-                <tr>
-                    <td>{CurrentState}</td>
-                    <td>Online</td>
-                    <td>{Online}</td>
-                    <td>{Name}}</td>
-                    <td>Tag</td>
-                    <td>Schedule</td>
-                    <td>Migration Status</td>
-                    <td>{LastFullOn}</td>
-                    <td>Next Replication</td>
-                    <td>Last Test Cutover</td>
-                </tr>
+                { workloadItems }
             </tbody>
         </Table>
         </div>
     )
 }
-export default connect(
-    (state) => ({
-        post: state.post.data,
-        loading: state.post.pending,
-        error: state.post.error,
-    }),
-    (dispatch) => ({
-        PostActions: bindActionCreators(postActions, dispatch)
-    })
-)(Workload);
+// export default connect(
+//     (state) => ({
+//         post: state.post.data,
+//         loading: state.post.pending,
+//         error: state.post.error,
+//     }),
+//     (dispatch) => ({
+//         PostActions: bindActionCreators(postActions, dispatch)
+//     })
+// )(Workload);
 
-// export default Workload;
+export default Workload;

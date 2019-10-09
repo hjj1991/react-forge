@@ -41,18 +41,22 @@ export const getPost = (postId) => dispatch => {
             // 요청이 성공했을경우, 서버 응답내용을 payload 로 설정하여 GET_POST_SUCCESS 액션을 디스패치합니다.
             
             var resp = response.data;
-            console.log(resp);
+            var count = 0;
+            // console.log(resp);
             resp.Workloads.forEach(workload => {
                 getPostAPI(workload.Uri).then(
                     (response) => {
                         workload.detail = response.data;
                         // console.log("하하하하");
                         // console.log(workload);
-
-                        dispatch({
-                            type: GET_POST_SUCCESS,
-                            payload: resp
-                        })
+                        count = count + 1;
+                        // console.log(count);
+                        if (count === resp.Workloads.length){
+                            dispatch({
+                                type: GET_POST_SUCCESS,
+                                payload: resp
+                            })
+                        }
                     }
                 ).catch(error => {
                     // 에러가 발생했을 경우, 에로 내용을 payload 로 설정하여 GET_POST_FAILURE 액션을 디스패치합니다.
@@ -67,7 +71,8 @@ export const getPost = (postId) => dispatch => {
             //     payload: resp
             // })
             })
-
+            // console.log(count);
+            // console.log(resp.Workloads.length);
 
         }
     ).catch(error => {
