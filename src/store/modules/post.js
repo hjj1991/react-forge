@@ -90,6 +90,7 @@ const initialState = {
     error: false,
     isLoading: false,
     data: [],
+    isChecked: false
 
 }
 

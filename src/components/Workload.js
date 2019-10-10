@@ -2,12 +2,13 @@ import React from 'react';
 import Table from 'react-bootstrap/Table'
 
 
-const WorkloadItem = ({ CurrentState, Name, OperatingSystem , ScheduleActive, Tag, Online, LastFullOn, NextFullOn, LastTestedFailoverOn }) => {
+const WorkloadItem = ({isChecked, itemNum, CurrentState, Name, OperatingSystem , ScheduleActive, Tag, Online, LastFullOn, NextFullOn, LastTestedFailoverOn }) => {
+    console.log(isChecked);
     return (
         <tr>
-            <td><input type="checkbox"/></td>
-            <td>{CurrentState}</td>
-            <td>Online</td>
+            <td><input type="checkbox" name={"box" + itemNum} checked={isChecked}  /></td>
+            <td></td>
+            <td>{Online}</td>
             <td>({OperatingSystem}){Name}</td>
             <td></td>
             <td>{Tag}</td>
@@ -21,13 +22,15 @@ const WorkloadItem = ({ CurrentState, Name, OperatingSystem , ScheduleActive, Ta
   };
 
 
-const Workload = ({ post }) => {
+const Workload = ({ post, isChecked, onChange }) => {
     console.log("하히요");
     console.log(post[0]);
     console.log(post[1]);
-    const workloadItems = post.map(workload => (
+    const workloadItems = post.map((workload, index) => (
         <WorkloadItem
-            key={workload.indx}
+            isChecked={isChecked}
+            key={index}
+            itemNum={index}
             CurrentState = {workload.CurrentState}
             Name = {workload.Name}
             OperatingSystem = {workload.OperatingSystem}
@@ -41,27 +44,29 @@ const Workload = ({ post }) => {
     ));
 
     return (
-        <div className="workloads">
-        <Table striped bordered hover variant="dark">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Tasks</th>
-                    <th>Online</th>
-                    <th>Workload</th>
-                    <th>Target</th>
-                    <th>Tag</th>
-                    <th>Schedule</th>
-                    <th>Migration Status</th>
-                    <th>Last Replication</th>
-                    <th>Next Replication</th>
-                    <th>Last Test Cutover</th>
-                </tr>
-            </thead>
-            <tbody> 
-                { workloadItems }
-            </tbody>
-        </Table>
+        <div className="workloads" style={{"margin-top": "10px"}}>
+            <div className="table-responsive">
+                <Table striped bordered hover variant="dark">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" name="allCheck" onChange={onChange}/></th>
+                            <th>Tasks</th>
+                            <th>Online</th>
+                            <th>Workload</th>
+                            <th>Target</th>
+                            <th>Tag</th>
+                            <th>Schedule</th>
+                            <th>Migration Status</th>
+                            <th>Last Replication</th>
+                            <th>Next Replication</th>
+                            <th>Last Test Cutover</th>
+                        </tr>
+                    </thead>
+                    <tbody> 
+                        { workloadItems }
+                    </tbody>
+                </Table>
+            </div>
         </div>
     )
 }
