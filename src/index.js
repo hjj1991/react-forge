@@ -22,6 +22,7 @@ const logger = createLogger();
 
 const store = createStore(rootReducer, applyMiddleware(logger, ReduxThunk));
 
+
 // **** (2) Provider 렌더링해서 기존의 App 감싸주기
 ReactDOM.render(
     <Provider store={store}>

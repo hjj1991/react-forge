@@ -12,7 +12,7 @@ function getPostAPI(postId) {
     if (typeof postId == "undefined"){
         postId = '';
     }
-    return axios.get(`http://10.131.109.122${postId}`, {
+    return axios.get(`http://migrate.eonit.co.kr${postId}`, {
 
     withCredentials: true,
     headers: {
@@ -46,6 +46,26 @@ export const getPost = (postId) => dispatch => {
             resp.Workloads.forEach(workload => {
                 getPostAPI(workload.Uri).then(
                     (response) => {
+                        if(response.data.CurrentState === "Idle"){
+                            response.data.ImportantStat = "5";
+                        }else if(response.data.CurrentState === "RunningIncremental"){
+                            response.data.ImportantStat = "3";
+                        }else if(response.data.CurrentState === "Replicating"){
+                            response.data.ImportantStat = "4";
+                        }else if(response.data.CurrentState === "RunningIncremental"){
+                            response.data.ImportantStat = "2";
+                        }else if(response.data.CurrentState === "RunningIncrementalAndTestFailover"){
+                            response.data.ImportantStat = "2";
+                        }else if(response.data.CurrentState === "RunningTestFailover"){
+                            response.data.ImportantStat = "2";
+                        }else if(response.data.CurrentState === "WaitingForCancelTestFailover"){
+                            response.data.ImportantStat = "1";
+                        }else if(response.data.CurrentState === "CancellingFailover"){
+                            response.data.ImportantStat = "1";
+                        }else{
+                            response.data.ImportantStat = "1";
+                        }
+
                         workload.detail = response.data;
                         // console.log("하하하하");
                         // console.log(workload);
@@ -90,7 +110,6 @@ const initialState = {
     error: false,
     isLoading: false,
     data: [],
-    isChecked: false
 
 }
 

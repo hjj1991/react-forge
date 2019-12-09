@@ -13,8 +13,10 @@ const Menu = () => {
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse id="responsive-navbar-nav">
                 <Nav className="mr-auto">
-                <NavLink className="nav-link" to="/Dashboard" >Dashboard</NavLink>
-                <NavLink className="nav-link" to="/Workloads" >Workloads</NavLink>
+                <Nav.Link href="/Dashboard">Dashboard</Nav.Link>
+                {/* <Link className="nav-link" to="/Dashboard" >Dashboard</Link> */}
+                <Nav.Link href="/Workloads">Workloads</Nav.Link>
+                {/* <Link className="nav-link" to="/Workloads" onClick={() => window.location.reload()} >Workloads</Link> */}
                 {/* <NavDropdown title="Dropdown" id="collasible-nav-dropdown">
                     <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
                     <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
@@ -24,10 +26,6 @@ const Menu = () => {
                 </NavDropdown> */}
                 </Nav>
                 <Nav>
-                <Nav.Link href="#deets">More deets</Nav.Link>
-                <Nav.Link eventKey={2} href="#memes">
-                    Dank memes
-                </Nav.Link>
                 </Nav>
             </Navbar.Collapse>
             </Navbar>

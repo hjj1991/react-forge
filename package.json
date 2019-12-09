@@ -6,6 +6,7 @@
     "axios": "^0.19.0",
     "bootstrap": "^4.3.1",
     "cross-env": "^6.0.0",
+    "http-proxy-middleware": "^0.20.0",
     "httpntlm": "^1.7.6",
     "immutable": "^4.0.0-rc.12",
     "query-string": "^6.8.3",

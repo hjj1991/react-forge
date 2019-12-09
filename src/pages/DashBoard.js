@@ -1,14 +1,13 @@
 import React from 'react';
+import DashBoardContainer from '../containters/DashBoardContainer';
 
 class DashBoard extends React.Component {
 
     render(){
-        return (
-        <div>
-            <h2>하이!</h2>
-        </div>
+        return(
+          <DashBoardContainer />
         )
     }
-}
+  }
 
 export default DashBoard;

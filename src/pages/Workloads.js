@@ -3,6 +3,7 @@ import WorkloadContainer from '../containters/WorkloadContainer';
 
 
 class Workloads extends React.Component {
+
       render(){
           return(
             <WorkloadContainer />

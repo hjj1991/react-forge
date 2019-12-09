@@ -1,0 +1,83 @@
+/* 매우 작은 기기들 (모바일폰, 768px 보다 작은) */
+/* 부트스트랩에서 이것은 기본이므로 미디어쿼리가 없습니다. */
+
+
+@media only screen and (min-width: 1200px) {
+
+}
+
+@media only screen and (max-width: 1199px) {
+    #workloadTable th,
+    #workloadTable td{
+        padding: 5px;
+    }
+}
+
+@media only screen and (max-width: 1108px) {
+    
+    .workloadSelection button{
+        margin: 0 auto 10px auto;
+        height: 80px;
+    }
+
+}
+
+
+@media only screen and (max-width: 991px) {
+
+    #workloadTable td:nth-child(n+2):nth-child(-n+3),
+    #workloadTable td:nth-child(n+5):nth-child(-n+7),
+    #workloadTable td:nth-child(n+9),
+    #workloadTable th:nth-child(n+2):nth-child(-n+3),
+    #workloadTable th:nth-child(n+5):nth-child(-n+7),
+    #workloadTable th:nth-child(n+9) {display: none;}
+
+    .workloadSelection button{
+        margin: 0 auto 10px auto;
+        height: 80px;
+    }
+
+    #workloadTable th:nth-child(4),
+    #workloadTable th:nth-child(8),
+    #workloadTable td:nth-child(8){
+        text-align: center;
+        width: 50%;
+        word-break: break-all;
+    }
+
+}
+
+@media only screen and (max-width: 768px) {
+
+    #workloadTable td:nth-child(n+2):nth-child(-n+3),
+    #workloadTable td:nth-child(n+5):nth-child(-n+7),
+    #workloadTable td:nth-child(n+9),
+    #workloadTable th:nth-child(n+2):nth-child(-n+3),
+    #workloadTable th:nth-child(n+5):nth-child(-n+7),
+    #workloadTable th:nth-child(n+9) {display: none;}
+
+    .workloadSelection button{
+        margin: 0 auto 10px auto;
+        height: 50px;
+    }
+
+    #workloadTable th:nth-child(4),
+    #workloadTable th:nth-child(8),
+    #workloadTable td:nth-child(8){
+        text-align: center;
+        width: 50%;
+        word-break: break-all;
+    }
+
+}
+
+
+
+@media only screen and (max-width: 576px) {
+
+        .workloadSelection button{
+        margin: 0 auto 10px auto;
+        height: 50px;
+    }
+
+}

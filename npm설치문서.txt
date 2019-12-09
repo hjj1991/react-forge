@@ -1,8 +1,8 @@
 npm install
 npm i react-app-polyfill
 npm install react-bootstrap bootstrap
-npm install react-router-dom -save
-npm install croess-env --dev
+npm install react-router-dom --save
+npm install cross-env --dev
 npm install query-string
 npm install axios
 npm i -D redux
@@ -11,3 +11,4 @@ npm add redux-actions
 npm add redux-logger
 npm add redux-thunk
 npm add immutable
+npm add http-proxy-middleware axios
