@@ -10,7 +10,7 @@ import LinuxImage from 'images/linuxWorkload.png';
 
 
 
-function getTimeStamp(tempDate) {
+function getTimeStamp(tempDate) {   //시간 변환함수
     var d = new Date(tempDate);
   
     var s =
@@ -40,7 +40,7 @@ function getTimeStamp(tempDate) {
   
 
 
-const WorkloadItem = ({ checkboxList, currentState, Name, OperatingSystem , ScheduleActive, Tag, Online, lastReplication, NextIncrementalOn, LastTestedFailoverOn, AvailableTransitions, onChange }) => {
+const WorkloadItem = ({ checkboxList, currentState, Name, OperatingSystem , ScheduleActive, Tag, Online, lastReplication, NextIncrementalOn, LastTestedFailoverOn, onChange }) => {
     var fontColor = "white"
 
     if(currentState === "Idle"){
@@ -62,7 +62,7 @@ const WorkloadItem = ({ checkboxList, currentState, Name, OperatingSystem , Sche
 
     return (
         <tr>
-            <td><input type="checkbox" name="workloadBox" value={AvailableTransitions} onChange={onChange} checked={checkboxList} /></td>
+            <td><input type="checkbox" name="workloadBox" /></td>
             <td></td>
             <td>{Online}</td>
             <td title={OperatingSystem}>{OperatingSystem.substring(0, 6) === 'Window' ? <img  alt={OperatingSystem} src={WindowImage} /> : <img  alt={OperatingSystem} width="16px" src={LinuxImage} />} {Name}</td>
@@ -78,7 +78,7 @@ const WorkloadItem = ({ checkboxList, currentState, Name, OperatingSystem , Sche
   };
 
 
-const Workload = ({ post, isChecked, onChange, onClickButton, checkboxList, isRunReplication, isRunTestFailover }) => {
+const Workload = ({ workloadList, isChecked, onChange, onClickButton, isRunReplication, isRunTestFailover }) => {
 
     function convertDate(oldDate){
         var convertedDate;
@@ -116,20 +116,20 @@ const Workload = ({ post, isChecked, onChange, onClickButton, checkboxList, isRu
         return convertedDate.substring(0, 16);
     }
 
-    const workloadItems = post.map((workload, index) => {
+    const workloadItems = workloadList.map((workload, index) => {
         var lastReplication;
-        var AvailableTransitions = JSON.stringify(workload.detail.AvailableTransitions);
+
         var currentState;
-        var lastTestedFailoverOn = convertDate(workload.detail.Parameters[12].Value); 
-        var nextIncrementalOn = convertDate(workload.detail.Parameters[16].Value);
+        var lastTestedFailoverOn = convertDate(workload.Parameters[12].Value); 
+        var nextIncrementalOn = convertDate(workload.Parameters[16].Value);
 
 
-        if (workload.detail.Parameters[10].Value >= workload.detail.Parameters[11].Value){
-            lastReplication = convertDate(workload.detail.Parameters[10].Value);
+        if (workload.Parameters[10].Value >= workload.Parameters[11].Value){
+            lastReplication = convertDate(workload.Parameters[10].Value);
         }else{
-            lastReplication = convertDate(workload.detail.Parameters[11].Value);
+            lastReplication = convertDate(workload.Parameters[11].Value);
         }
-        if (workload.detail.Parameters[25].Value === "Aborting"){
+        if (workload.Parameters[25].Value === "Aborting"){
             currentState = "Aborting";
         } else {
             currentState = workload.CurrentState;
@@ -147,14 +147,12 @@ const Workload = ({ post, isChecked, onChange, onClickButton, checkboxList, isRu
             Name = {workload.Name}
             OperatingSystem = {workload.OperatingSystem}
             ScheduleActive = {workload.ScheduleActive}
-            Tag = {workload.detail.Tag}
-            Online = {workload.detail.Online}
+            Tag = {workload.Tag}
+            Online = {workload.Online}
             NextIncrementalOn = {nextIncrementalOn}
             lastReplication = {lastReplication}
             LastTestedFailoverOn = {lastTestedFailoverOn}
-            AvailableTransitions = {AvailableTransitions}
             onChange = {onChange}
-            checkboxList = {checkboxList[index]}
         />
     )}
     );
@@ -217,15 +215,4 @@ const Workload = ({ post, isChecked, onChange, onClickButton, checkboxList, isRu
         </div>
     )
 }
-// export default connect(
-//     (state) => ({
-//         post: state.post.data,
-//         loading: state.post.pending,
-//         error: state.post.error,
-//     }),
-//     (dispatch) => ({
-//         PostActions: bindActionCreators(postActions, dispatch)
-//     })
-// )(Workload);
-
 export default Workload;

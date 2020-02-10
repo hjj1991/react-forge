@@ -27,9 +27,9 @@ class ReplicateContainer extends React.Component {
     }
 
     handleButtonClick = (e) => {  //버튼 선택에따른 이벤트
-        console.log("하위하위");
-        console.log(this.props.checkedListValue);
-        console.log(e.target.value);
+        // console.log("하위하위");
+        // console.log(this.props.checkedListValue);
+        // console.log(e.target.value);
         // window.location.assign('/workloadReplication');
         this.getPost(this.props.checkedListValue.checkedListValue, e.target.value); //workload 리스트 콜
 

@@ -29,7 +29,7 @@ const DashBoardItem = ({ CurrentState, Name, OperatingSystem, bgColor, itemIndex
 }
 
 
-const DashBoard = ({ post }) => {
+const DashBoard = ({ workloadList }) => {
     var idle = 0;
     var runningIncremental = 0;
     var replicating = 0;
@@ -59,7 +59,7 @@ const DashBoard = ({ post }) => {
     //     }
     // }
 
-    const DashBoardItems = post.map((workload, index) => {
+    const DashBoardItems = workloadList.map((workload, index) => {
         var bgColor;
         if(workload.CurrentState === "Idle"){
             idle = idle + 1;
