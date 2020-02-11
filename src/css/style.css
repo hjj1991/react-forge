@@ -1,0 +1,27 @@
+/* body {
+    background-color: rgb(121, 131, 138)!important;
+} */
+
+.row {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.container {
+    background-color: white;
+}
+
+.pagination {
+    display: table!important;
+    margin-left: auto;
+    margin-right: auto;
+    padding-bottom: 20px;
+}
+
+.boarder-bottom-toolbox-right {
+    text-align: right;
+}
+
+#user-bar {
+    color: blanchedalmond;
+}

@@ -1,5 +1,5 @@
 import React from 'react';
-import DashBoardContainer from '../containters/DashBoardContainer';
+import DashBoardContainer from '../containers/DashBoardContainer';
 
 class DashBoard extends React.Component {
 

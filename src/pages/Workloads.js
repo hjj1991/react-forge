@@ -1,5 +1,5 @@
 import React from 'react';
-import WorkloadContainer from '../containters/WorkloadContainer';
+import WorkloadContainer from '../containers/WorkloadContainer';
 
 
 class Workloads extends React.Component {

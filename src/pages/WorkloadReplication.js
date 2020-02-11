@@ -1,5 +1,5 @@
 import React from 'react';
-import ReplicateContainer from '../containters/ReplicateContainer';
+import ReplicateContainer from '../containers/ReplicateContainer';
 
 
 class WorkloadReplication extends React.Component {

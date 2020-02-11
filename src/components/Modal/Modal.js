@@ -1,8 +1,16 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './Modal.css';
 
-const Modal = ({ isOpen, isOk }) => {
+const Modal = ({ isOpen, contents, page }) => {
     //console.log(isOk);
+    var locationPage;
+    if(typeof page == "undefined"){
+        locationPage = "/";
+    }else{
+        locationPage = page;
+    }
+
     return (
         <React.Fragment>
         {
@@ -13,19 +21,18 @@ const Modal = ({ isOpen, isOk }) => {
             <p className="title"></p>
             <div className="content">
                 <p>
-                작업이 정상적으로 시작되었습니다.
+                {contents}
                 </p>
             </div>
             <div className="button-wrap">
-                <button onClick={isOk}>확인</button>
+                <Link to={locationPage}><button>확인</button></Link>
             </div>
             </div>
         </React.Fragment>
         :
         null
-    
-}
-</React.Fragment>
+        }
+        </React.Fragment>
 )
 }
 export default Modal;
