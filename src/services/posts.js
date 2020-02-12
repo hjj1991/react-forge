@@ -15,8 +15,16 @@ export function getUserDetail(token){
         }
     )
 }
-export function getWorkloadList(){
-    return axios.get(siteUrl + '/v1/workload');
+export function getWorkloadList(token){
+    return axios(
+        {
+            url:siteUrl + '/v1/workload',
+            method: 'get',
+            headers: {
+                "X_AUTH_TOKEN": token
+            }
+        }
+    )
 }
 
 export function postSignIn(data){

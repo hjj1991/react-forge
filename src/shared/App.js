@@ -6,9 +6,11 @@ import storage from 'lib/storage';
 import * as loginOkActions from '../store/modules/userLogin';
 import { DashBoard, Workloads, WorkloadReplication, SignIn, MyInfo } from 'pages';
 import PrivateRoute from "lib/PrivateRoute";
-import Menu from 'components/Menu';
+import axios from 'axios';
+import * as service from 'services/posts'
 import loding from 'images/ajax-loader.gif';
 import 'css/style.css'
+
 
 
 class App extends Component {
@@ -23,7 +25,7 @@ class App extends Component {
 
 
     initializeUserInfo = async () => {
-  
+        var today = new Date();
         console.log("ㅎㅇㅎㅇ");
         const loggedInfo = storage.get('userLogin'); // 로그인 정보를 로컬스토리지에서 가져옵니다.
         console.log(loggedInfo);
@@ -34,6 +36,22 @@ class App extends Component {
         }else{
             const { LoginOkActions } = this.props;
             LoginOkActions.setLoggedInfo(loggedInfo);
+
+            console.log(this.props.userInfo);
+            console.log(today.getTime());
+            // if(this.props.userInfo.exAuthToken < today.getTime()){ //액세스토큰 만료시간을 비교하여 만료되었으면 refresh토큰을 이용하여 갱신함
+            //     console.log("하이하이");
+            //     const result2 = await service.postTokenReissue(this.props.userInfo.X_REFRESH_TOKEN);
+            //     if(result2.data.code === "1"){
+            //         LoginOkActions.refreshAccessToken(result2.data.X_AUTH_TOKEN, result2.data.exAuthToken);
+            //     }else{  //리프레쉬토큰도 만료되면 새로 로그인해야함
+            //         storage.remove('userLogin');
+            //         // this.setState({
+            //         //     isModalOpen: true
+            //         // })
+            //     }
+            // }
+
             this.setState({
                 loading: true
             })

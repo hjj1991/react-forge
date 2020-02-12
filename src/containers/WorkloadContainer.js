@@ -1,6 +1,7 @@
 import React from 'react';
 import Workload from '../components/Workload';
 import * as service from 'services/posts'
+import { connect } from 'react-redux';
 import mypic from '../images/ajax-loader.gif';
 
 
@@ -18,8 +19,13 @@ class WorkloadContainer extends React.Component {
     }
 
     getPost = async () => {  
+        console.log(this.props.userInfo.X_AUTH_TOKEN);
         try {
-            const workloadList = await service.getWorkloadList();
+            this.setState({
+                pending: true,
+                isOk: false
+            })
+            const workloadList = await service.getWorkloadList(this.props.userInfo.X_AUTH_TOKEN);
             this.setState({
                 workloadList: workloadList.data.data.Workloads,
                 isOk: true
@@ -69,5 +75,12 @@ class WorkloadContainer extends React.Component {
 
 }
 
+let mapStateToProps = (state) => {
+    return {
+        userInfo: state.userLogin.data
+    };
+}
 
-export default WorkloadContainer;
+export default connect(
+    mapStateToProps,     
+)(WorkloadContainer);;

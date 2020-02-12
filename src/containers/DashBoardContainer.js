@@ -1,6 +1,7 @@
 import React from 'react';
 import DashBoard from '../components/DashBoard';
 import * as service from 'services/posts'
+import { connect } from 'react-redux';
 import mypic from '../images/ajax-loader.gif';
 
 
@@ -23,12 +24,13 @@ class DashBoardContainer extends React.Component {
     }
 
     getPost = async () => {  
+      console.log(this.props.userInfo);
         try {
             this.setState({
                 pending: true,
                 isOk: false
             })
-            const workloadList = await service.getWorkloadList();
+            const workloadList = await service.getWorkloadList(this.props.userInfo.X_AUTH_TOKEN);
             this.setState({
                 workloadList: workloadList.data.data.Workloads,
                 pending: false,
@@ -67,5 +69,12 @@ class DashBoardContainer extends React.Component {
 }
 
 
-export default DashBoardContainer;
-// export default Workloads;
+let mapStateToProps = (state) => {
+  return {
+      userInfo: state.userLogin.data
+  };
+}
+
+export default connect(
+  mapStateToProps,     
+)(DashBoardContainer);;
