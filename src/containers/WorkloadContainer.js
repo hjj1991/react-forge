@@ -13,20 +13,17 @@ class WorkloadContainer extends React.Component {
         };
     }
     componentDidMount() {
-        // this.getWorkloadList();
-        // test();
-        // const { PostActions } = this.props;
         this.getPost(); //workload 리스트 콜
         
     }
 
     getPost = async () => {  
         try {
-          const workloadList = await service.getWorkloadList();
-          this.setState({
-            workloadList: workloadList.data.data.Workloads,
-            isOk: true
-          })
+            const workloadList = await service.getWorkloadList();
+            this.setState({
+                workloadList: workloadList.data.data.Workloads,
+                isOk: true
+            })
             console.log('요청이 완료 된 다음에 실행됨')
         } catch(e) {
             console.log('에러가 발생!');
@@ -34,30 +31,13 @@ class WorkloadContainer extends React.Component {
     }
 
 
-      render(){
-        // console.log(post[0].detail);
-          if( this.state.isOk ){
-            return (
-              <Workload 
-                workloadList = {this.state.workloadList} 
-                onChange={this.handleCheckboxClick}
-                onClickButton={this.handleButtonClick} />
-          )
-          }else{
-            return (
-              <div style={{"textAlign": "center"}}>
-                <img  alt="로딩중" src={mypic}/>
-              </div>
-            );
-          }
-      }
+    
+    handleCheckBoxClick = (e, availableTransitions) => {  //체크박스 선택에따른 이벤트
+        console.log(availableTransitions);
+    };
 
-      handleCheckboxClick = (e) => {  //체크박스 선택에따른 이벤트
-        const { CheckboxActions } = this.props;
-        CheckboxActions.checkedItem(e);
-      };
-
-      handleButtonClick = (e) => {  //버튼 선택에따른 이벤트
+    handleButtonClick = (e) => {  //버튼 선택에따른 이벤트
+        console.log("훠이후이");
         // const { ButtonActions } = this.props;
         // ButtonActions.buttonItem(e);
         // console.log(this.props.checkedListValue);
@@ -65,10 +45,29 @@ class WorkloadContainer extends React.Component {
         // this.setState({referrer: '/workloadReplication', clickE: e.target.value});
 
 
-      };
+    };
+
+    render(){
+        // console.log(post[0].detail);
+        console.log(this.handleCheckboxClick);
+        if( this.state.isOk ){
+            return (
+                    <Workload 
+                        workloadList={this.state.workloadList} 
+                        onClickCheckBox={this.handleCheckBoxClick}
+                        onClickButton={this.handleButtonClick} />
+            )
+        }else{
+            return (
+                    <div style={{"textAlign": "center"}}>
+                        <img  alt="로딩중" src={mypic}/>
+                    </div>
+            );
+        }
+    }
+
 
 }
 
 
 export default WorkloadContainer;
-// export default Workloads;

@@ -29,7 +29,7 @@ const Menu = () => {
                 </NavDropdown> */}
                 </Nav>
                 <Nav>
-                    <Navbar.Text id="user-bar">환영합니다.{userInfo.nickName}님</Navbar.Text>
+                    <Navbar.Text id="user-bar">환영합니다.{userInfo.name}님</Navbar.Text>
                     <NavLink className="nav-link" to="/myinfo" >MyInfo</NavLink>
                 </Nav>
             </Navbar.Collapse>

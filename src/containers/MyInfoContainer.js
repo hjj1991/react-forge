@@ -14,18 +14,15 @@ class MyInfoContainer extends React.Component {
         super(props);
         this.state = {
             isLoading: false,
-            pending: false
+            pending: false,
+            isModalOpen: false
 
         };
     }
 
     componentDidMount() {
-        console.log("하이");
-        console.log(this.props.userInfo);
-        // if(typeof this.props.userInfo.X_REFRESH_TOKEN != "undefined"){
-            this.getData();
-        // }
-      }
+        this.getData();
+    }
 
     getData = async () => {
         try {
@@ -64,7 +61,11 @@ class MyInfoContainer extends React.Component {
             
             
         } catch(e) {
-            console.log('에러가 발생!');
+            this.setState({
+                isModalOpen: true,
+                contents: "로그인이 필요합니다.",
+                page: "/signin"
+            })
         }
     }
 
@@ -103,7 +104,10 @@ class MyInfoContainer extends React.Component {
 
 
     render(){
-        console.log(this.state.isLoading);
+        if(typeof this.props.userInfo == "undefined"){
+            return <Modal isOpen="true" contents="잘못된 접근입니다." page="/" />
+        }
+        console.log(this.props.userInfo.name);
         return(
             this.state.isModalOpen?(
                 <Modal isOpen="true" contents={this.state.contents} page={this.state.page}/>

@@ -7,7 +7,6 @@ import complete from 'images/complete2.png';
 import replicatingImg from 'images/replicating.png'
 import cancelImg from 'images/cancel.png'
 import Card from 'react-bootstrap/Card'
-import CardGroup from 'react-bootstrap/CardGroup'
 import WindowImage from 'images/windowsWorkload.png';
 import LinuxImage from 'images/linuxWorkload.png';
 

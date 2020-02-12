@@ -6,11 +6,12 @@ import { Map } from 'immutable';
 
 const SET_LOGGED_INFO = 'userLogin/SET_LOGGED_INFO';
 const REFRESH_ACCESS_TOKEN = 'userLogin/REFRESH_ACCESS_TOKEN';
+const DELTE_LOGGED_INFO = 'userLogin/DELTE_LOGGED_INFO';
 
 
 export const setLoggedInfo = createAction(SET_LOGGED_INFO);
 export const refreshAccessToken = createAction(REFRESH_ACCESS_TOKEN,  (authToken, exAuthToken) => ({authToken: authToken, exAuthToken: exAuthToken}));
-
+export const deleteLoggedInfo = createAction(DELTE_LOGGED_INFO);
 
 const initialState = {
     data: [],
@@ -32,6 +33,11 @@ export default handleActions({
         
         return{
             data: result
+        }
+    },
+    [DELTE_LOGGED_INFO]: (state, action) => {
+        return {
+            data: ""
         }
     }
 

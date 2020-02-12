@@ -14,20 +14,20 @@ function getTimeStamp(tempDate) {   //시간 변환함수
     var d = new Date(tempDate);
   
     var s =
-      leadingZeros(d.getFullYear(), 4) + '-' +
-      leadingZeros(d.getMonth() + 1, 2) + '-' +
-      leadingZeros(d.getDate(), 2) + ' ' +
-  
-      leadingZeros(d.getHours(), 2) + ':' +
-      leadingZeros(d.getMinutes(), 2) + ':' +
-      leadingZeros(d.getSeconds(), 2);
+        leadingZeros(d.getFullYear(), 4) + '-' +
+        leadingZeros(d.getMonth() + 1, 2) + '-' +
+        leadingZeros(d.getDate(), 2) + ' ' +
+    
+        leadingZeros(d.getHours(), 2) + ':' +
+        leadingZeros(d.getMinutes(), 2) + ':' +
+        leadingZeros(d.getSeconds(), 2);
   
     return s;
-  }
+}
   
   
   
-  function leadingZeros(n, digits) {
+function leadingZeros(n, digits) {
     var zero = '';
     n = n.toString();
   
@@ -36,11 +36,11 @@ function getTimeStamp(tempDate) {   //시간 변환함수
         zero += '0';
     }
     return zero + n;
-  }
+}
   
 
 
-const WorkloadItem = ({ checkboxList, currentState, Name, OperatingSystem , ScheduleActive, Tag, Online, lastReplication, NextIncrementalOn, LastTestedFailoverOn, onChange }) => {
+const WorkloadItem = ({ currentState, availableTransitions, name, operatingSystem , scheduleActive, tag, online, lastReplication, nextIncrementalOn, lastTestedFailoverOn, onClickCheckBox, onClickButton }) => {
     var fontColor = "white"
 
     if(currentState === "Idle"){
@@ -60,25 +60,27 @@ const WorkloadItem = ({ checkboxList, currentState, Name, OperatingSystem , Sche
         fontColor = "red";
     }
 
+    console.log(availableTransitions);
+
     return (
         <tr>
-            <td><input type="checkbox" name="workloadBox" /></td>
+            <td><input type="checkbox" name="workloadBox" onClick={(e) =>onClickCheckBox(e, availableTransitions)} /></td>
             <td></td>
-            <td>{Online}</td>
-            <td title={OperatingSystem}>{OperatingSystem.substring(0, 6) === 'Window' ? <img  alt={OperatingSystem} src={WindowImage} /> : <img  alt={OperatingSystem} width="16px" src={LinuxImage} />} {Name}</td>
+            <td>{online}</td>
+            <td title={operatingSystem}>{operatingSystem.substring(0, 6) === 'Window' ? <img  alt={operatingSystem} src={WindowImage} /> : <img  alt={operatingSystem} width="16px" src={LinuxImage} />} {name}</td>
             <td></td>
-            <td>{Tag}</td>
-            <td>{ScheduleActive}</td>
+            <td>{tag}</td>
+            <td>{scheduleActive}</td>
             <td style={{"color": fontColor}}>{currentState}</td>
             <td>{lastReplication}</td>
-            <td>{NextIncrementalOn}</td>
-            <td>{LastTestedFailoverOn}</td>
+            <td>{nextIncrementalOn}</td>
+            <td>{lastTestedFailoverOn}</td>
     </tr>
     );
   };
 
 
-const Workload = ({ workloadList, isChecked, onChange, onClickButton, isRunReplication, isRunTestFailover }) => {
+const Workload = ({ workloadList, onClickButton, onClickCheckBox, isRunReplication, isRunTestFailover }) => {
 
     function convertDate(oldDate){
         var convertedDate;
@@ -97,7 +99,7 @@ const Workload = ({ workloadList, isChecked, onChange, onClickButton, isRunRepli
                 convertedDate.setHours(convertedDate.getHours()+9);
                 convertedDate = getTimeStamp(convertedDate);
             }
-            console.log(oldDate.substring(14, 21))
+            // console.log(oldDate.substring(14, 21))
         }else {
             if(oldDate[15] === ":"){
                 // console.log(Number(oldDate.substring(14, 15)) + 12)
@@ -106,17 +108,18 @@ const Workload = ({ workloadList, isChecked, onChange, onClickButton, isRunRepli
                 convertedDate.setHours(convertedDate.getHours()+9);
                 convertedDate = getTimeStamp(convertedDate);
             }else{
-                console.log(oldDate.substring(14, 16))
+                // console.log(oldDate.substring(14, 16))
                 convertedDate = new Date(oldDate.substring(0, 11) + oldDate.substring(14, 16) + oldDate.substring(15))
                 convertedDate.setHours(convertedDate.getHours()+9);
                 convertedDate = getTimeStamp(convertedDate);
             }
-            console.log(oldDate.substring(14, 21))   
+            // console.log(oldDate.substring(14, 21))   
         }
         return convertedDate.substring(0, 16);
     }
 
     const workloadItems = workloadList.map((workload, index) => {
+        console.log(workload.AvailableTransitions);
         var lastReplication;
 
         var currentState;
@@ -140,19 +143,20 @@ const Workload = ({ workloadList, isChecked, onChange, onClickButton, isRunRepli
         return (
         
         <WorkloadItem
-            isChecked={isChecked}
             key={index}
             itemNum={index}
+            availableTransitions = {workload.AvailableTransitions}
             currentState = {currentState}
-            Name = {workload.Name}
-            OperatingSystem = {workload.OperatingSystem}
-            ScheduleActive = {workload.ScheduleActive}
+            name = {workload.Name}
+            operatingSystem = {workload.OperatingSystem}
+            scheduleActive = {workload.ScheduleActive}
             Tag = {workload.Tag}
-            Online = {workload.Online}
-            NextIncrementalOn = {nextIncrementalOn}
+            online = {workload.Online}
+            nextIncrementalOn = {nextIncrementalOn}
             lastReplication = {lastReplication}
-            LastTestedFailoverOn = {lastTestedFailoverOn}
-            onChange = {onChange}
+            lastTestedFailoverOn = {lastTestedFailoverOn}
+            onClickCheckBox={onClickCheckBox}
+            onClickButton={onClickButton}
         />
     )}
     );

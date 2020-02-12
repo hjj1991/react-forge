@@ -47,7 +47,7 @@ class DashBoardContainer extends React.Component {
         // }
         
     
-          if( this.state.isOk && (this.state.pending == false)){
+          if( this.state.isOk && (this.state.pending === false)){
             console.log(this.state.workloadList);
             // post.sort(compare);
             return (
