@@ -37,7 +37,7 @@ class App extends Component {
             const { LoginOkActions } = this.props;
             LoginOkActions.setLoggedInfo(loggedInfo);
 
-            console.log(this.props.userInfo);
+            console.log(this.props);
             console.log(today.getTime());
             // if(this.props.userInfo.exAuthToken < today.getTime()){ //액세스토큰 만료시간을 비교하여 만료되었으면 refresh토큰을 이용하여 갱신함
             //     console.log("하이하이");
