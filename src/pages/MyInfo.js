@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import MyInfoContainer from 'containers/MyInfoContainer';
+import Menu from 'components/Menu';
 
 const MyInfo = () => {
     return (
-        <MyInfoContainer />
+        <Fragment>
+            <Menu/>
+            <MyInfoContainer />
+        </Fragment>
     );
 };
 

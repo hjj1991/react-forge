@@ -40,7 +40,7 @@ function leadingZeros(n, digits) {
   
 
 
-const WorkloadItem = ({ currentState, availableTransitions, name, operatingSystem , scheduleActive, tag, online, lastReplication, nextIncrementalOn, lastTestedFailoverOn, onClickCheckBox, onClickButton }) => {
+const WorkloadItem = ({ itemNum, currentState, availableTransitions, name, operatingSystem , scheduleActive, tag, online, lastReplication, nextIncrementalOn, lastTestedFailoverOn, onChangeCheckBox, onClickButton }) => {
     var fontColor = "white"
 
     if(currentState === "Idle"){
@@ -60,11 +60,11 @@ const WorkloadItem = ({ currentState, availableTransitions, name, operatingSyste
         fontColor = "red";
     }
 
-    console.log(availableTransitions);
-
+    // console.log(availableTransitions);
+    // console.log(itemNum);
     return (
         <tr>
-            <td><input type="checkbox" name="workloadBox" onClick={(e) =>onClickCheckBox(e, availableTransitions)} /></td>
+            <td><input type="checkbox" name="workloadBox" onChange={(e) => onChangeCheckBox(e, availableTransitions)} value={availableTransitions} /></td>
             <td></td>
             <td>{online}</td>
             <td title={operatingSystem}>{operatingSystem.substring(0, 6) === 'Window' ? <img  alt={operatingSystem} src={WindowImage} /> : <img  alt={operatingSystem} width="16px" src={LinuxImage} />} {name}</td>
@@ -80,7 +80,7 @@ const WorkloadItem = ({ currentState, availableTransitions, name, operatingSyste
   };
 
 
-const Workload = ({ workloadList, onClickButton, onClickCheckBox, isRunReplication, isRunTestFailover }) => {
+const Workload = ({ workloadList, onClickButton, onChangeCheckBox, isRunReplication, isRunIncremental, isRunIncrementalAndTestFailover, isTestFailover }) => {
 
     function convertDate(oldDate){
         var convertedDate;
@@ -119,7 +119,7 @@ const Workload = ({ workloadList, onClickButton, onClickCheckBox, isRunReplicati
     }
 
     const workloadItems = workloadList.map((workload, index) => {
-        console.log(workload.AvailableTransitions);
+        // console.log(workload.AvailableTransitions);
         var lastReplication;
 
         var currentState;
@@ -155,7 +155,7 @@ const Workload = ({ workloadList, onClickButton, onClickCheckBox, isRunReplicati
             nextIncrementalOn = {nextIncrementalOn}
             lastReplication = {lastReplication}
             lastTestedFailoverOn = {lastTestedFailoverOn}
-            onClickCheckBox={onClickCheckBox}
+            onChangeCheckBox={onChangeCheckBox}
             onClickButton={onClickButton}
         />
     )}
@@ -189,16 +189,16 @@ const Workload = ({ workloadList, onClickButton, onClickCheckBox, isRunReplicati
             <div className="workloadSelection">
                 <Row style={{"marginBottom": "20px"}}>
                     <Col xs={12} md={3} style={{"textAlign": "center"}}>
-                        <Button name="configuration" variant="secondary" size="lg"   block disabled>Configuration</Button>
+                        <Button name="configuration" variant="secondary" size="lg"  block disabled={!isRunReplication} onClick={onClickButton} value="runReplication">Run Replication</Button>
                     </Col>
                     <Col xs={12} md={3} style={{"textAlign": "center"}}>
-                        <Button name="runReplication" variant="secondary" size="lg"   block disabled={isRunReplication} onClick={onClickButton} value="Replication">Run Replication</Button>
+                        <Button name="runReplication" variant="secondary" size="lg"   block disabled={!isRunIncremental} onClick={onClickButton} value="runIncremental">RunIncremental</Button>
                     </Col>
                     <Col xs={12} md={3} style={{"textAlign": "center"}}>
-                        <Button name="testFailover" variant="secondary" size="lg"   block disabled={isRunTestFailover} onClick={onClickButton} value="TestFailover">Test Failover</Button>
+                        <Button name="testFailover" variant="secondary" size="lg"   block disabled={!isRunIncrementalAndTestFailover} onClick={onClickButton} value="runIncrementalAndTestFailover">RunIncrementalAndTestFailover</Button>
                     </Col>
                     <Col xs={12} md={3} style={{"textAlign": "center"}}>
-                        <Button name="pauseSchedule" variant="secondary" size="lg"   block disabled>Pause Schedule</Button>
+                        <Button name="pauseSchedule" variant="secondary" size="lg"   block disabled={!isTestFailover} onClick={onClickButton} value="testFailover">TestFailover</Button>
                     </Col>  
                 </Row>
                 <Row>

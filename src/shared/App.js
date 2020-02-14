@@ -18,6 +18,7 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            loadUserInfo: false,
             loading: false
         };
     }
@@ -26,45 +27,22 @@ class App extends Component {
 
     initializeUserInfo = async () => {
         var today = new Date();
-        console.log("ㅎㅇㅎㅇ");
         const loggedInfo = storage.get('userLogin'); // 로그인 정보를 로컬스토리지에서 가져옵니다.
-        console.log(loggedInfo);
         if(!loggedInfo){ 
             this.setState({
                 loading: true
             })
-        }else{
+        }else{ //로그인 정보가 로컬 스토리지에 존재할때
             const { LoginOkActions } = this.props;
-            LoginOkActions.setLoggedInfo(loggedInfo);
-
-            console.log(this.props);
-            console.log(today.getTime());
-            // if(this.props.userInfo.exAuthToken < today.getTime()){ //액세스토큰 만료시간을 비교하여 만료되었으면 refresh토큰을 이용하여 갱신함
-            //     console.log("하이하이");
-            //     const result2 = await service.postTokenReissue(this.props.userInfo.X_REFRESH_TOKEN);
-            //     if(result2.data.code === "1"){
-            //         LoginOkActions.refreshAccessToken(result2.data.X_AUTH_TOKEN, result2.data.exAuthToken);
-            //     }else{  //리프레쉬토큰도 만료되면 새로 로그인해야함
-            //         storage.remove('userLogin');
-            //         // this.setState({
-            //         //     isModalOpen: true
-            //         // })
-            //     }
-            // }
-
+            await LoginOkActions.setLoggedInfo(loggedInfo);
+            if(this.props.userInfo.exAuthToken < today.getTime()){//액세스토큰 만료시간을 비교하여 만료되었으면 refresh토큰을 이용하여 갱신함
+                await LoginOkActions.setRefreshAccessToken(this.props.userInfo);
+                storage.set('userLogin', this.props.userInfo);
+            }
             this.setState({
                 loading: true
             })
         }
-
-
-        // try {
-        //     await UserActions.checkStatus();
-        // } catch (e) {
-        //     storage.remove('loggedInfo');
-        //     window.location.href = '/auth/login?expired';
-        // }
-
     }
     
     componentDidMount() {

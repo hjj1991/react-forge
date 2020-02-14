@@ -11,6 +11,11 @@ class WorkloadContainer extends React.Component {
         this.state = {
             pending: false,
             isOk: false,
+            checkboxes: [],
+            isRunReplication: false,
+            isRunIncremental: false,
+            isRunIncrementalAndTestFailover: false,
+            isTestFailover: false
         };
     }
     componentDidMount() {
@@ -19,7 +24,7 @@ class WorkloadContainer extends React.Component {
     }
 
     getPost = async () => {  
-        console.log(this.props.userInfo.X_AUTH_TOKEN);
+        // console.log(this.props.userInfo.X_AUTH_TOKEN);
         try {
             this.setState({
                 pending: true,
@@ -39,10 +44,88 @@ class WorkloadContainer extends React.Component {
 
     
     handleCheckBoxClick = (e, availableTransitions) => {  //체크박스 선택에따른 이벤트
-        console.log(availableTransitions);
+        const checkboxes = this.state.checkboxes;
+        let index;
+        let runReplicationCount = 0;
+        let runIncrementalCount = 0;
+        let runIncrementalAndTestFailoverCount = 0;
+        let testFailoverCount = 0;
+        let isRunIncremental, isRunReplication, isRunIncrementalAndTestFailover, isTestFailover = false;
+
+
+        if(e.target.checked){      //체크 된 값
+            checkboxes.push(availableTransitions);
+        }else{  //체크 해제된 값
+            // index = checkboxes.indexOf(e.target.value); //타겟값으로 배열의 index값을 구한다.
+            index = checkboxes.indexOf(availableTransitions); //타겟값으로 배열의 index값을 구한다.
+            checkboxes.splice(index, 1);                //해당 index값으로 체크박스 배열의 해당 값을 삭제
+        }
+
+        checkboxes.forEach(checkbox => { 
+            checkbox.forEach(jsonValue => {
+                if(jsonValue.Name ==  "RunReplication"){
+                    runReplicationCount++;
+                }
+                if(jsonValue.Name == "RunIncremental"){
+                    runIncrementalCount++;
+                }
+                if(jsonValue.Name == "RunIncrementalAndTestFailover"){
+                    runIncrementalAndTestFailoverCount++;
+                }
+                if(jsonValue.Name == "TestFailover"){
+                    testFailoverCount++;
+                }
+            });
+
+            if(runReplicationCount == checkboxes.length){
+                isRunReplication = true;
+            }
+            if(runIncrementalCount == checkboxes.length){
+                isRunIncremental = true;
+            }
+            if(runIncrementalAndTestFailoverCount == checkboxes.length){
+                isRunIncrementalAndTestFailover = true;
+            }
+            if(testFailoverCount == checkboxes.length){
+                isTestFailover = true;
+            }
+        });
+
+        this.setState({ 
+            checkboxes: checkboxes,
+            isRunReplication: isRunReplication,
+            isRunIncremental: isRunIncremental,
+            isRunIncrementalAndTestFailover: isRunIncrementalAndTestFailover,
+            isTestFailover: isTestFailover
+        })
+
+        console.log(checkboxes);
+        // console.log(e.target);
+        // console.log(e.workloadBox);
     };
 
     handleButtonClick = (e) => {  //버튼 선택에따른 이벤트
+
+        const checkedList = this.state.checkboxes;
+
+        if(e.target.value == "runReplication"){
+            checkedList.forEach(checkbox => {
+                checkbox.forEach(jsonValue => {
+                    if(jsonValue.Name == "runReplication"){
+                        // jsonValue.Uri
+                    }
+                })
+
+            })
+        }else if(e.target.value == "runIncremental"){
+
+        }else if(e.target.value == "runIncrementalAndTestFailover"){
+
+        }else if(e.target.value == "testFailover"){
+
+        }
+
+
         console.log("훠이후이");
         // const { ButtonActions } = this.props;
         // ButtonActions.buttonItem(e);
@@ -55,13 +138,18 @@ class WorkloadContainer extends React.Component {
 
     render(){
         // console.log(post[0].detail);
-        console.log(this.handleCheckboxClick);
+        // console.log(this.handleCheckboxClick);
         if( this.state.isOk ){
             return (
                     <Workload 
                         workloadList={this.state.workloadList} 
-                        onClickCheckBox={this.handleCheckBoxClick}
-                        onClickButton={this.handleButtonClick} />
+                        checkboxes={this.state.checkboxes}
+                        onChangeCheckBox={this.handleCheckBoxClick}
+                        onClickButton={this.handleButtonClick}
+                        isRunReplication={this.state.isRunReplication}
+                        isRunIncremental={this.state.isRunIncremental}
+                        isRunIncrementalAndTestFailover={this.state.isRunIncrementalAndTestFailover}
+                        isTestFailover={this.state.isTestFailover} />
             )
         }else{
             return (

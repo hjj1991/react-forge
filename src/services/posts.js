@@ -48,6 +48,7 @@ export function postSignOut(token){
 }
 
 export function postTokenReissue(data){
+    console.log("엥");
     return axios.post(siteUrl + '/v1/tokenreissue',{
         refreshToken: data
     });

@@ -74,12 +74,13 @@ export default handleActions({
             onFailure: (state, action) => state
         */
         onSuccess: (state, action) => { // 성공했을때 해야 할 작업이 따로 없으면 이 함수 또한 생략해도 됩니다.
-            const { title, body } = action.payload.data;
+            var result = state.data;
+            // console.log(action.payload.data);
+            result.X_AUTH_TOKEN = action.payload.data.data.X_AUTH_TOKEN;
+            result.exAuthToken = action.payload.data.data.exAuthToken;
+            // console.log(result);
             return {
-                data: {
-                    title, 
-                    body
-                }
+                data: result
             }
         }
         // 함수가 생략됐을때 기본 값으론 (state, action) => state 가 설정됩니다 (state 를 그대로 반환한다는 것이죠)
@@ -87,8 +88,6 @@ export default handleActions({
 
 
     [SET_LOGGED_INFO]: (state, action) => {
-        console.log(setRefreshAccessToken(action.payload));
-
         return{
             data: action.payload
         }
