@@ -40,7 +40,7 @@ function leadingZeros(n, digits) {
   
 
 
-const WorkloadItem = ({ itemNum, currentState, availableTransitions, name, operatingSystem , scheduleActive, tag, online, lastReplication, nextIncrementalOn, lastTestedFailoverOn, onChangeCheckBox, onClickButton }) => {
+const WorkloadItem = ({ itemNum, currentState, workloadServerHost, companyName, availableTransitions, name, operatingSystem , scheduleActive, tag, online, lastReplication, nextIncrementalOn, lastTestedFailoverOn, onChangeCheckBox, onClickButton }) => {
     var fontColor = "white"
 
     if(currentState === "Idle"){
@@ -60,6 +60,7 @@ const WorkloadItem = ({ itemNum, currentState, availableTransitions, name, opera
         fontColor = "red";
     }
 
+    availableTransitions.serverHost = workloadServerHost;
     // console.log(availableTransitions);
     // console.log(itemNum);
     return (
@@ -145,16 +146,18 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, isRunReplicat
         <WorkloadItem
             key={index}
             itemNum={index}
-            availableTransitions = {workload.AvailableTransitions}
-            currentState = {currentState}
-            name = {workload.Name}
-            operatingSystem = {workload.OperatingSystem}
-            scheduleActive = {workload.ScheduleActive}
-            Tag = {workload.Tag}
-            online = {workload.Online}
-            nextIncrementalOn = {nextIncrementalOn}
-            lastReplication = {lastReplication}
-            lastTestedFailoverOn = {lastTestedFailoverOn}
+            availableTransitions={workload.AvailableTransitions}
+            workloadServerHost={workload.workloadServerHost}
+            companyName={workload.companyName}
+            currentState={currentState}
+            name={workload.Name}
+            operatingSystem={workload.OperatingSystem}
+            scheduleActive={workload.ScheduleActive}
+            Tag={workload.Tag}
+            online={workload.Online}
+            nextIncrementalOn={nextIncrementalOn}
+            lastReplication={lastReplication}
+            lastTestedFailoverOn={lastTestedFailoverOn}
             onChangeCheckBox={onChangeCheckBox}
             onClickButton={onClickButton}
         />

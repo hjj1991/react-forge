@@ -19,11 +19,11 @@ class WorkloadContainer extends React.Component {
         };
     }
     componentDidMount() {
-        this.getPost(); //workload 리스트 콜
+        this.getWorkloadList(); //workload 리스트 콜
         
     }
 
-    getPost = async () => {  
+    getWorkloadList = async () => {  
         // console.log(this.props.userInfo.X_AUTH_TOKEN);
         try {
             this.setState({
@@ -33,6 +33,23 @@ class WorkloadContainer extends React.Component {
             const workloadList = await service.getWorkloadList(this.props.userInfo.X_AUTH_TOKEN);
             this.setState({
                 workloadList: workloadList.data.data.Workloads,
+                isOk: true
+            })
+            console.log('요청이 완료 된 다음에 실행됨')
+        } catch(e) {
+            console.log('에러가 발생!');
+        }
+    }
+
+    postWorkloadAction  = async (serverHost, actionUrl) => {  
+        console.log(actionUrl);
+        try {
+            this.setState({
+                pending: true,
+                isOk: false
+            })
+            await service.postWorkloadAction(this.props.userInfo.X_AUTH_TOKEN, serverHost, actionUrl);
+            this.setState({
                 isOk: true
             })
             console.log('요청이 완료 된 다음에 실행됨')
@@ -107,12 +124,16 @@ class WorkloadContainer extends React.Component {
     handleButtonClick = (e) => {  //버튼 선택에따른 이벤트
 
         const checkedList = this.state.checkboxes;
-
+        console.log(e.target.value);
         if(e.target.value == "runReplication"){
             checkedList.forEach(checkbox => {
                 checkbox.forEach(jsonValue => {
-                    if(jsonValue.Name == "runReplication"){
+                    if(jsonValue.Name == "RunReplication"){
                         // jsonValue.Uri
+                        const actionUrl = jsonValue.Uri;        //액션 URL VALUE 값
+                        const serverHost = checkbox.serverHost; //워크로드가 해당되어있는 api 서버 URL            
+                        this.postWorkloadAction(serverHost, actionUrl);
+                        
                     }
                 })
 
@@ -122,7 +143,18 @@ class WorkloadContainer extends React.Component {
         }else if(e.target.value == "runIncrementalAndTestFailover"){
 
         }else if(e.target.value == "testFailover"){
+            checkedList.forEach(checkbox => {
+                checkbox.forEach(jsonValue => {
+                    if(jsonValue.Name == "TestFailover"){
+                        // jsonValue.Uri
+                        const actionUrl = jsonValue.Uri;        //액션 URL VALUE 값
+                        const serverHost = checkbox.serverHost; //워크로드가 해당되어있는 api 서버 URL            
+                        this.postWorkloadAction(serverHost, actionUrl);
+                        
+                    }
+                })
 
+            })
         }
 
 
