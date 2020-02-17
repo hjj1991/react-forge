@@ -15,13 +15,33 @@ class WorkloadContainer extends React.Component {
             isRunReplication: false,
             isRunIncremental: false,
             isRunIncrementalAndTestFailover: false,
-            isTestFailover: false
+            isTestFailover: false,
+            isAbort: false
         };
     }
     componentDidMount() {
+        const interval = setInterval(this.getWorkloadList, 1000 * 60 * 6); //1000 * 60 = 분입니다.
         this.getWorkloadList(); //workload 리스트 콜
         
     }
+
+    componentWillUnmount(){
+        clearInterval(this.interval);
+    }   
+
+    componentDidUpdate(prevProps, prevState) {                  //props 변화에 따라 기존 컴포넌트의 업데이트 진행 함수
+        // console.log(this.state.checkboxes !== prevState.checkboxes)
+        // console.log(prevState);
+        console.log(prevState);
+        console.log(this.state);
+        if(this.state.checkboxes !== prevState.checkboxes){
+            this.getWorkloadList();
+        }
+        // if (this.props.page !== prevProps.page || this.props.searchTarget !== prevProps.searchTarget || this.props.searchKeyword !== prevProps.searchKeyword){
+        //     this.getWorkloadList();
+        // }
+      }
+
 
     getWorkloadList = async () => {  
         // console.log(this.props.userInfo.X_AUTH_TOKEN);
@@ -67,7 +87,8 @@ class WorkloadContainer extends React.Component {
         let runIncrementalCount = 0;
         let runIncrementalAndTestFailoverCount = 0;
         let testFailoverCount = 0;
-        let isRunIncremental, isRunReplication, isRunIncrementalAndTestFailover, isTestFailover = false;
+        let abortCount = 0;
+        let isRunIncremental, isRunReplication, isRunIncrementalAndTestFailover, isTestFailover, isAbort = false;
 
 
         if(e.target.checked){      //체크 된 값
@@ -92,19 +113,35 @@ class WorkloadContainer extends React.Component {
                 if(jsonValue.Name == "TestFailover"){
                     testFailoverCount++;
                 }
+                if(jsonValue.Name == "Abort"){
+                    abortCount++;
+                }
             });
 
             if(runReplicationCount == checkboxes.length){
                 isRunReplication = true;
+            }else{
+                isRunReplication = false;
             }
             if(runIncrementalCount == checkboxes.length){
                 isRunIncremental = true;
+            }else{
+                isRunIncremental = false;
             }
             if(runIncrementalAndTestFailoverCount == checkboxes.length){
                 isRunIncrementalAndTestFailover = true;
+            }else{
+                isRunIncrementalAndTestFailover = false;
             }
             if(testFailoverCount == checkboxes.length){
                 isTestFailover = true;
+            }else{
+                isTestFailover = false;
+            }
+            if(abortCount == checkboxes.length){
+                isAbort = true;
+            }else{
+                isAbort = false;
             }
         });
 
@@ -113,7 +150,8 @@ class WorkloadContainer extends React.Component {
             isRunReplication: isRunReplication,
             isRunIncremental: isRunIncremental,
             isRunIncrementalAndTestFailover: isRunIncrementalAndTestFailover,
-            isTestFailover: isTestFailover
+            isTestFailover: isTestFailover,
+            isAbort: isAbort
         })
 
         console.log(checkboxes);
@@ -139,9 +177,31 @@ class WorkloadContainer extends React.Component {
 
             })
         }else if(e.target.value == "runIncremental"){
+            checkedList.forEach(checkbox => {
+                checkbox.forEach(jsonValue => {
+                    if(jsonValue.Name == "RunIncremental"){
+                        // jsonValue.Uri
+                        const actionUrl = jsonValue.Uri;        //액션 URL VALUE 값
+                        const serverHost = checkbox.serverHost; //워크로드가 해당되어있는 api 서버 URL            
+                        this.postWorkloadAction(serverHost, actionUrl);
+                        
+                    }
+                })
 
+            })
         }else if(e.target.value == "runIncrementalAndTestFailover"){
+            checkedList.forEach(checkbox => {
+                checkbox.forEach(jsonValue => {
+                    if(jsonValue.Name == "RunIncrementalAndTestFailover"){
+                        // jsonValue.Uri
+                        const actionUrl = jsonValue.Uri;        //액션 URL VALUE 값
+                        const serverHost = checkbox.serverHost; //워크로드가 해당되어있는 api 서버 URL            
+                        this.postWorkloadAction(serverHost, actionUrl);
+                        
+                    }
+                })
 
+            })
         }else if(e.target.value == "testFailover"){
             checkedList.forEach(checkbox => {
                 checkbox.forEach(jsonValue => {
@@ -155,8 +215,29 @@ class WorkloadContainer extends React.Component {
                 })
 
             })
+        }else if(e.target.value == "abort"){
+            checkedList.forEach(checkbox => {
+                checkbox.forEach(jsonValue => {
+                    if(jsonValue.Name == "Abort"){
+                        // jsonValue.Uri
+                        const actionUrl = jsonValue.Uri;        //액션 URL VALUE 값
+                        const serverHost = checkbox.serverHost; //워크로드가 해당되어있는 api 서버 URL            
+                        this.postWorkloadAction(serverHost, actionUrl);
+                        
+                    }
+                })
+
+            })
         }
 
+
+        this.setState({ 
+            checkboxes: [],
+            isRunReplication: false,
+            isRunIncremental: false,
+            isRunIncrementalAndTestFailover: false,
+            isTestFailover: false
+        })
 
         console.log("훠이후이");
         // const { ButtonActions } = this.props;
@@ -181,7 +262,8 @@ class WorkloadContainer extends React.Component {
                         isRunReplication={this.state.isRunReplication}
                         isRunIncremental={this.state.isRunIncremental}
                         isRunIncrementalAndTestFailover={this.state.isRunIncrementalAndTestFailover}
-                        isTestFailover={this.state.isTestFailover} />
+                        isTestFailover={this.state.isTestFailover}
+                        isAbort={this.state.isAbort} />
             )
         }else{
             return (

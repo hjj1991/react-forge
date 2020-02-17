@@ -5,8 +5,17 @@ import Nav from 'react-bootstrap/Nav'
 import { NavLink } from 'react-router-dom';
 import logo from '../logo.png' //실제 로고파일 경로
 
-const Menu = () => {
+const Menu = ({match}) => {
+    console.log(match);
+    let isDashboard, isWorkloads, isAdmin = false;
 
+    if(match.url === "/dashboard"){
+        isDashboard = true;
+    }else if(match.url === "/workloads"){
+        isWorkloads = true;
+    }else if(match.url ==="/admin"){
+        isAdmin = true;
+    }
     const userInfo = useSelector(state => state.userLogin.data); //리덕스 스토어의 로그인 유저 데이터 가져오기
 
     return (
@@ -16,9 +25,9 @@ const Menu = () => {
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse id="responsive-navbar-nav">
                 <Nav className="mr-auto">
-                <Nav.Link href="/dashboard">Dashboard</Nav.Link>
+                <Nav.Link active={isDashboard} href="/dashboard">Dashboard</Nav.Link>
                 {/* <Link className="nav-link" to="/Dashboard" >Dashboard</Link> */}
-                <Nav.Link href="/workloads">Workloads</Nav.Link>
+                <Nav.Link active={isWorkloads} href="/workloads">Workloads</Nav.Link>
                 {/* <Link className="nav-link" to="/Workloads" onClick={() => window.location.reload()} >Workloads</Link> */}
                 {/* <NavDropdown title="Dropdown" id="collasible-nav-dropdown">
                     <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
@@ -27,10 +36,11 @@ const Menu = () => {
                     <NavDropdown.Divider />
                     <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
                 </NavDropdown> */}
+                <Nav.Link active={isAdmin} href="/admin">Admin</Nav.Link>
                 </Nav>
                 <Nav>
                     <Navbar.Text id="user-bar">환영합니다.{userInfo.name}님</Navbar.Text>
-                    <NavLink className="nav-link" to="/myinfo" >MyInfo</NavLink>
+                    <NavLink  className="nav-link" to="/myinfo" >MyInfo</NavLink>
                 </Nav>
             </Navbar.Collapse>
             </Navbar>

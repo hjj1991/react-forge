@@ -6,3 +6,4 @@ export { default as Post } from './Post';
 export { default as WorkloadReplication } from './WorkloadReplication';
 export { default as SignIn } from './SignIn';
 export { default as MyInfo } from './MyInfo';
+export { default as Admin} from './Admin';

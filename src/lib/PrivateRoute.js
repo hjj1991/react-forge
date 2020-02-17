@@ -5,9 +5,9 @@ import * as loginOkActions from '../store/modules/userLogin';
 import PropTypes from "prop-types";
 import Menu from 'components/Menu';
  
-const PrivateRoute = ({ component: Component, userInfo, ...rest }) => (
+const PrivateRoute = ({ component: Component, userInfo, ...rest}) => (
 
-    
+        
     <Route
         {...rest}
         render={props => {
@@ -17,7 +17,7 @@ const PrivateRoute = ({ component: Component, userInfo, ...rest }) => (
             } else {
                 return (
                     <React.Fragment>
-                        <Menu />
+                        <Menu {...props} />
                         <Component {...props} />
                     </React.Fragment>
                 )

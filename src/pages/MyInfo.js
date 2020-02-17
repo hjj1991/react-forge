@@ -2,10 +2,11 @@ import React, { Fragment } from 'react';
 import MyInfoContainer from 'containers/MyInfoContainer';
 import Menu from 'components/Menu';
 
-const MyInfo = () => {
+const MyInfo = (match) => {
+    console.log(match);
     return (
         <Fragment>
-            <Menu/>
+            <Menu match={match} />
             <MyInfoContainer />
         </Fragment>
     );

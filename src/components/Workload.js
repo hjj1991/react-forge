@@ -81,7 +81,7 @@ const WorkloadItem = ({ itemNum, currentState, workloadServerHost, companyName, 
   };
 
 
-const Workload = ({ workloadList, onClickButton, onChangeCheckBox, isRunReplication, isRunIncremental, isRunIncrementalAndTestFailover, isTestFailover }) => {
+const Workload = ({ workloadList, onClickButton, onChangeCheckBox, isRunReplication, isRunIncremental, isRunIncrementalAndTestFailover, isTestFailover, isAbort }) => {
 
     function convertDate(oldDate){
         var convertedDate;
@@ -206,7 +206,7 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, isRunReplicat
                 </Row>
                 <Row>
                     <Col xs={12} md={3} style={{"textAlign": "center"}}>
-                        <Button name="prepareMigration" variant="secondary" size="lg"   block disabled>Prepare Migration</Button>
+                        <Button name="prepareMigration" variant="secondary" size="lg"   block disabled={!isAbort} onClick={onClickButton} value="abort">Abort</Button>
                     </Col>
                     <Col xs={12} md={3} style={{"textAlign": "center"}}>
                         <Button name="runFailover" variant="secondary" size="lg"   block disabled>Run Failover</Button>

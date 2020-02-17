@@ -4,7 +4,7 @@ import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
 import storage from 'lib/storage';
 import * as loginOkActions from '../store/modules/userLogin';
-import { DashBoard, Workloads, WorkloadReplication, SignIn, MyInfo } from 'pages';
+import { DashBoard, Workloads, WorkloadReplication, SignIn, MyInfo, Admin } from 'pages';
 import PrivateRoute from "lib/PrivateRoute";
 import axios from 'axios';
 import * as service from 'services/posts'
@@ -79,6 +79,7 @@ class App extends Component {
                         <PrivateRoute exact path="/dashboard" component={DashBoard} />
                         <PrivateRoute exact path="/workloads" component={Workloads}/>
                         <PrivateRoute exact path="/workloadreplication" component={WorkloadReplication}/>
+                        <PrivateRoute exact path="/admin" component={Admin} />
                         <Route exact path="/myinfo" component={MyInfo} />
                         {/* <Switch>
                             <Route path="/about/:name" component={About}/>

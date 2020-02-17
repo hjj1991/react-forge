@@ -25,7 +25,7 @@ class DashBoardContainer extends React.Component {
 
     getPost = async () => {  
       console.log(this.props.userInfo);
-        try {
+        // try {
             this.setState({
                 pending: true,
                 isOk: false
@@ -36,10 +36,10 @@ class DashBoardContainer extends React.Component {
                 pending: false,
                 isOk: true
             })
-            console.log('요청이 완료 된 다음에 실행됨')
-        } catch(e) {
-            console.log('에러가 발생!');
-        }
+        //     console.log('요청이 완료 된 다음에 실행됨')
+        // } catch(e) {
+        //     console.log('에러가 발생!');
+        // }
     }
 
 
