@@ -30,17 +30,7 @@ class WorkloadContainer extends React.Component {
     }   
 
     componentDidUpdate(prevProps, prevState) {                  //props 변화에 따라 기존 컴포넌트의 업데이트 진행 함수
-        // console.log(this.state.checkboxes !== prevState.checkboxes)
-        // console.log(prevState);
-        console.log(prevState);
-        console.log(this.state);
-        if(this.state.checkboxes !== prevState.checkboxes){
-            this.getWorkloadList();
-        }
-        // if (this.props.page !== prevProps.page || this.props.searchTarget !== prevProps.searchTarget || this.props.searchKeyword !== prevProps.searchKeyword){
-        //     this.getWorkloadList();
-        // }
-      }
+    }
 
 
     getWorkloadList = async () => {  

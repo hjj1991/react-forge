@@ -28,18 +28,18 @@ axios.interceptors.response.use( response => {
     // console.log(storage.get('userLogin'));
     return response;
 }, async error => {
-    console.log(error.response);
-    console.log(storage.get('userLogin'));
-    if(error.response.status === 401 && storage.get('userLogin') !== null){         //authToken 검증 실패시 refresh토큰을 이용하여 갱신
-        let userInfo = storage.get('userLogin');
-        const result = await postTokenReissue(userInfo.X_REFRESH_TOKEN);
-        if(result.data.success === true){
-            userInfo.X_AUTH_TOKEN = result.data.data.X_AUTH_TOKEN;
-            userInfo.exAuthToken = result.data.data.exAuthToken;
-            storage.set('userLogin', userInfo);
-            error.response.config.headers.X_AUTH_TOKEN = result.data.data.X_AUTH_TOKEN;
-            return await axios(error.response.config);
+    if(typeof error.response !== 'undefined'){
+        if(error.response.status === 401 && storage.get('userLogin') !== null){         //authToken 검증 실패시 refresh토큰을 이용하여 갱신
+            let userInfo = storage.get('userLogin');
+            const result = await postTokenReissue(userInfo.X_REFRESH_TOKEN);
+            if(result.data.success === true){
+                userInfo.X_AUTH_TOKEN = result.data.data.X_AUTH_TOKEN;
+                userInfo.exAuthToken = result.data.data.exAuthToken;
+                storage.set('userLogin', userInfo);
+                error.response.config.headers.X_AUTH_TOKEN = result.data.data.X_AUTH_TOKEN;
+                return await axios(error.response.config);
 
+            }
         }
     }
         return Promise.reject(error);
@@ -135,4 +135,19 @@ export function postTokenReissue(data){
     return axios.post(siteUrl + '/v1/tokenreissue',{
         refreshToken: data
     });
+}
+
+/*
+    회사목록 호출 API
+*/
+export function getCompanyList(token){
+    return axios(
+        {
+            url:siteUrl + '/v1/company',
+            method: 'get',
+            headers:{
+                "X_AUTH_TOKEN": token
+            }
+        }
+    )
 }
