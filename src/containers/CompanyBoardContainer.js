@@ -8,11 +8,13 @@ import mypic from '../images/ajax-loader.gif';
 import { confirmAlert } from 'react-confirm-alert'; // Import
 
 
+
 class CompanyBoardContainer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             companyList: [],
+            addRows:[],
             pending: false,
             isOk: false,
             editMode: false
@@ -35,15 +37,44 @@ class CompanyBoardContainer extends React.Component {
         console.log(this.state);
     }
 
+    //수정버튼 클릭시 이벤트
     handleActionClick = (e, row) => {
         // console.log(row);
         this.updateCompany(row);
 
     }
-
-    handleDeleteClick = () => {
-        
+    //추가된 Row 삭제
+    handleRemoveRowButtonClick = (indx) => {
+        const addRows = [...this.state.addRows];
+        addRows.splice(indx, 1);
+        this.setState({addRows})
     }
+    //회사 추가버튼 클릭시 Row추가
+    handleAddRowClick = () => {
+        const item = {
+            companyId: "",
+            companyName: ""
+        };
+        this.setState({
+            addRows: [...this.state.addRows, item]
+        });
+    }
+
+    //추가된 Row의 값 추가
+    handleChageValue = (e, indx) => {
+        console.log(e.target);
+        const {name, value} = e.target
+        const addRows = [...this.state.addRows];
+        addRows[indx] ={
+            ...this.state.addRows[indx],
+            [name]: value
+        };
+        
+        this.setState({
+            addRows: addRows
+        })
+    }
+    
 
     updateCompany = async (row) => { 
 
@@ -71,11 +102,12 @@ class CompanyBoardContainer extends React.Component {
                                 pending: false,
                                 isOk: true
                             })
+                            this.props.alert.show('정상 수정되었습니다.', {type: 'success'});
                             this.getCompanyList();
                         }
                         console.log('요청이 완료 된 다음에 실행됨')
                     } catch(e) {
-                        this.props.alert.show('Oh look, an alert!')
+                        this.props.alert.show('실패하였습니다.', {type: 'error'})
                         this.setState({
                             pending: false,
                             isOk: true
@@ -123,7 +155,11 @@ class CompanyBoardContainer extends React.Component {
             return(
                 <CompanyBoard 
                 companyList={this.state.companyList} 
-                onClickAciton={this.handleActionClick}  />
+                onClickAciton={this.handleActionClick}
+                onClickAddRow={this.handleAddRowClick}
+                addRows={this.state.addRows}
+                onChangeAddRow={this.handleChageValue}
+                onClickRemoveButton={this.handleRemoveRowButtonClick}  />
                 
             )
         }else{

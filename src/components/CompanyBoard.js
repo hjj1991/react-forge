@@ -8,6 +8,7 @@ import { Redirect } from 'react-router-dom';
 import loding from 'images/ajax-loader.gif';
 import complete from 'images/complete2.png';
 import cancelImg from 'images/cancel.png'
+import Table from 'react-bootstrap/Table'
 
 const GetActionFormat = (onClickAciton, cell, row) => {
         return (
@@ -20,8 +21,60 @@ const GetActionFormat = (onClickAciton, cell, row) => {
 }
 
 
-const CompanyBoard = ({companyList, onClickAciton}) => {
+const CompanyBoard = ({companyList, onClickAciton, onClickAddRow, addRows, onChangeAddRow, onClickRemoveButton}) => {
 
+    const selectRow = {
+        mode: 'checkbox',
+        clickToSelect: false,
+        clickToEdit: true
+      };
+    const cellEdit = cellEditFactory({
+            mode: 'click',
+            blurToSave: true,
+        }) 
+
+    let newRows;
+        console.log(addRows);
+    if(addRows.length > 0){
+        newRows =  (
+            <Table striped bordered hover>
+            <thead>
+                <tr>
+                    <th width="2%"></th>
+                    <th>회사ID</th>
+                    <th>회사명</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody> 
+                {addRows.map((item, idx) => (
+                <tr id="row0" key ={idx}>
+                    <td>{idx}</td>
+                    <td>
+                        <input className="form-control form-control-sm" type="text"
+                            value={addRows[idx].companyId == null? "" : addRows[idx].companyId}
+                            name="companyId"
+                            onChange={(e) => {(onChangeAddRow(e, idx))}}
+                        />
+                    </td>
+                    <td>
+                        <input className="form-control form-control-sm" type="text"
+                            value={addRows[idx].companyName == null? "" : addRows[idx].companyName}
+                            name="companyName"
+                            onChange={(e) => {(onChangeAddRow(e, idx))}}
+                        />
+                    </td>
+                    <td>
+                        <Button variant="outline-danger" onClick={() => {(onClickRemoveButton(idx))}}>삭제</Button>
+                    </td>
+                </tr>
+                ))}
+                </tbody>
+            </Table>
+        )
+    }
+    
+    
     console.log(companyList);
     const { SearchBar } = Search;
     const products = companyList;
@@ -39,10 +92,22 @@ const CompanyBoard = ({companyList, onClickAciton}) => {
             dataField: 'companyId',
             text: '회사ID',
             sort: true,
+            validator: (newValue, row, column) => {
+                
+                var checkVal = /^[a-zA-Z0-9_]{2,20}$/
+                console.log(!checkVal.test(newValue));
+                if (!checkVal.test(newValue)) {
+                  return {
+                    valid: false,
+                    message: '2 ~ 20자리 숫자, 영문, _ 문자만 사용가능합니다.'
+                  };
+                }
+                return true;
+              }
         }, 
         {
             dataField: 'companyName',
-            text: '회사이름',
+            text: '회사명',
             sort: true,
             editable: (cell, row, rowIndex, colIndex) => {
                 // return true or false;
@@ -68,6 +133,10 @@ const CompanyBoard = ({companyList, onClickAciton}) => {
             text: '삭제여부',
             sort: true,
             searchable: false,
+            editor: {
+                type: Type.CHECKBOX,
+                value: 'Y:N'
+            },
             onsort: (field, order) => {
             },
             formatter: (cell) => {
@@ -101,15 +170,17 @@ const CompanyBoard = ({companyList, onClickAciton}) => {
             {
                 props => (
                 <div>
+                    <div>
+                        {newRows}
+                    </div>
+                    <hr />
+                <Button variant="outline-info" onClick={onClickAddRow}>행 추가</Button>
                     <SearchBar { ...props.searchProps } />
                     <hr />
                     <BootstrapTable 
                         { ...props.baseProps } 
-                        cellEdit={ cellEditFactory({
-                            mode: 'click',
-                            blurToSave: true,
-                            
-                        }) } />
+                        cellEdit={cellEdit}
+                        selectRow={selectRow} />
                     </div>
                 )
             }
