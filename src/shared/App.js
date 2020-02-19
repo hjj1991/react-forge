@@ -10,6 +10,7 @@ import axios from 'axios';
 import * as service from 'services/posts'
 import loding from 'images/ajax-loader.gif';
 import 'css/style.css'
+import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
 
 
 

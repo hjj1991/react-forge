@@ -1,28 +1,102 @@
 import React from 'react';
+import { withAlert } from 'react-alert'
+import { useAlert } from 'react-alert'
 import CompanyBoard from '../components/CompanyBoard';
 import * as service from 'services/posts'
 import { connect } from 'react-redux';
 import mypic from '../images/ajax-loader.gif';
+import { confirmAlert } from 'react-confirm-alert'; // Import
 
 
 class CompanyBoardContainer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            companyList: [],
             pending: false,
-            isOk: false
+            isOk: false,
+            editMode: false
         };
     }
+
+    
     componentDidMount() {
-        this.getPost();
+        this.getCompanyList();
+        console.log(this.props);
+        // this.props.companyList = this.state.companyList;
         
     }
     componentWillUnmount(){
 
     }
+    
+    componentDidUpdate(prevProps, prevState) {                  //props 변화에 따라 기존 컴포넌트의 업데이트 진행 함수
+        console.log(prevProps);
+        console.log(this.state);
+    }
 
-    getPost = async () => {  
-      console.log(this.props.userInfo);
+    handleActionClick = (e, row) => {
+        // console.log(row);
+        this.updateCompany(row);
+
+    }
+
+    handleDeleteClick = () => {
+        
+    }
+
+    updateCompany = async (row) => { 
+
+        
+
+        console.log(this.props);
+
+        confirmAlert({
+            title: '수정하시겠습니까?',
+            message: '수정하시려면 예를 클릭하세요.',
+            buttons: [
+              {
+                label: '예',
+                onClick: async () => {
+                           
+                    try {
+                        this.setState({
+                            pending: true,
+                            isOk: false
+                        })
+                        const updateResult = await service.updateCompany(this.props.userInfo.X_AUTH_TOKEN, row);
+                        
+                        if(updateResult.data.success){
+                            this.setState({
+                                pending: false,
+                                isOk: true
+                            })
+                            this.getCompanyList();
+                        }
+                        console.log('요청이 완료 된 다음에 실행됨')
+                    } catch(e) {
+                        this.props.alert.show('Oh look, an alert!')
+                        this.setState({
+                            pending: false,
+                            isOk: true
+                        })
+                        this.getCompanyList();
+                    }
+                    
+                }
+              },
+              {
+                label: '아니오',
+                onClick: () => {}
+              }
+            ]
+        });
+        
+
+      }
+  
+
+    getCompanyList = async () => {  
         try {
             this.setState({
                 pending: true,
@@ -48,7 +122,8 @@ class CompanyBoardContainer extends React.Component {
         if( this.state.isOk ){
             return(
                 <CompanyBoard 
-                companyList = {this.state.companyList}   />
+                companyList={this.state.companyList} 
+                onClickAciton={this.handleActionClick}  />
                 
             )
         }else{
@@ -70,6 +145,5 @@ let mapStateToProps = (state) => {
   };
 }
 
-export default connect(
-  mapStateToProps,     
-)(CompanyBoardContainer);;
+
+export default connect(mapStateToProps)(withAlert()(CompanyBoardContainer));

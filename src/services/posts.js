@@ -24,7 +24,7 @@ import storage from 'lib/storage';
 // );
 
 axios.interceptors.response.use( response => {
-    console.log(response);
+    // console.log(response);
     // console.log(storage.get('userLogin'));
     return response;
 }, async error => {
@@ -145,6 +145,23 @@ export function getCompanyList(token){
         {
             url:siteUrl + '/v1/company',
             method: 'get',
+            headers:{
+                "X_AUTH_TOKEN": token
+            }
+        }
+    )
+}
+
+/*
+    회사수정 호출 API
+*/
+
+export function updateCompany(token, data){
+    return axios(
+        {
+            url:siteUrl + '/v1/company',
+            method: 'PUT',
+            data: data,
             headers:{
                 "X_AUTH_TOKEN": token
             }

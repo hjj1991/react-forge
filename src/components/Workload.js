@@ -165,8 +165,8 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, isRunReplicat
     );
 
     return (
-        <div className="workloads" style={{"margin": "10px auto 0px auto", "width": "80%"}}>
-            <p style={{"fontSize": "40px"}}><b>서버</b></p>
+        <div className="main-contents" >
+            <p className="main-contents-title"><b>서버</b></p>
             <div className="table-responsive">
                 <Table id="workloadTable" striped bordered hover variant="dark">
                     <thead>
