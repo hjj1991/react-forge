@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import BootstrapTable from 'react-bootstrap-table-next';
 import cellEditFactory, { Type } from 'react-bootstrap-table2-editor';
 import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
 import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
 import {Container, Row, Col, Form, Button, ListGroup} from 'react-bootstrap'
+import Alert from 'react-bootstrap/Alert'
 import { Redirect } from 'react-router-dom';
 import loding from 'images/ajax-loader.gif';
 import complete from 'images/complete2.png';
@@ -21,7 +22,7 @@ const GetActionFormat = (onClickAciton, cell, row) => {
 }
 
 
-const CompanyBoard = ({companyList, onClickAciton, onClickAddRow, addRows, onChangeAddRow, onClickRemoveButton}) => {
+const CompanyBoard = ({companyList, onClickAciton, onClickAddRow, addRows, onChangeAddRow, onClickRemove, onClickRowSubmit}) => {
 
     const selectRow = {
         mode: 'checkbox',
@@ -34,60 +35,67 @@ const CompanyBoard = ({companyList, onClickAciton, onClickAddRow, addRows, onCha
         }) 
 
     let newRows;
-        console.log(addRows);
     if(addRows.length > 0){
         newRows =  (
-            <Table striped bordered hover>
-            <thead>
-                <tr>
-                    <th width="2%"></th>
-                    <th>회사ID</th>
-                    <th>회사명</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody> 
-                {addRows.map((item, idx) => (
-                <tr id="row0" key ={idx}>
-                    <td>{idx}</td>
-                    <td>
-                        <input className="form-control form-control-sm" type="text"
-                            value={addRows[idx].companyId == null? "" : addRows[idx].companyId}
-                            name="companyId"
-                            onChange={(e) => {(onChangeAddRow(e, idx))}}
-                        />
-                    </td>
-                    <td>
-                        <input className="form-control form-control-sm" type="text"
-                            value={addRows[idx].companyName == null? "" : addRows[idx].companyName}
-                            name="companyName"
-                            onChange={(e) => {(onChangeAddRow(e, idx))}}
-                        />
-                    </td>
-                    <td>
-                        <Button variant="outline-danger" onClick={() => {(onClickRemoveButton(idx))}}>삭제</Button>
-                    </td>
-                </tr>
-                ))}
-                </tbody>
-            </Table>
+            <Fragment>
+                <Alert variant="danger" style={{marginTop:'10px'}}>
+                    ※ 회사명, 회사ID는 고유값입니다.
+                </Alert>
+                <Table  hover >
+                <thead>
+                    <tr>
+                        <th width="2%"></th>
+                        <th>회사ID</th>
+                        <th>회사명</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody> 
+                    {addRows.map((item, idx) => (
+                    <tr id="row0" key ={idx}>
+                        <td>{idx+1}</td>
+                        <td>
+                            <input className="form-control form-control-sm" type="text"
+                                value={addRows[idx].companyId == null? "" : addRows[idx].companyId}
+                                name="companyId"
+                                onChange={(e) => {(onChangeAddRow(e, idx))}}
+                            />
+                        </td>
+                        <td>
+                            <input className="form-control form-control-sm" type="text"
+                                value={addRows[idx].companyName == null? "" : addRows[idx].companyName}
+                                name="companyName"
+                                onChange={(e) => {(onChangeAddRow(e, idx))}}
+                            />
+                        </td>
+                        <td>
+                            <Button variant="outline-danger" onClick={() => {(onClickRemove(idx))}}>X</Button>
+                        </td>
+                    </tr>
+                    ))}
+                    </tbody>
+                </Table>
+                <div>
+                    <Button variant="outline-info" onClick={onClickRowSubmit}>일괄등록</Button>
+                </div>
+            </Fragment>
         )
     }
     
     
-    console.log(companyList);
     const { SearchBar } = Search;
     const products = companyList;
-    const columns = [{
-            dataField: 'companyIdx',
-            text: '번호',
-            sort: true,
-            searchable: false,
-            editable: (cell, row, rowIndex, colIndex) => {
-                // return true or false;
-                return false;
-            }
-        },
+    const columns = [
+        // {
+        //     dataField: 'companyIdx',
+        //     text: '번호',
+        //     sort: true,
+        //     searchable: false,
+        //     editable: (cell, row, rowIndex, colIndex) => {
+        //         // return true or false;
+        //         return false;
+        //     }
+        // },
         {
             dataField: 'companyId',
             text: '회사ID',
@@ -109,6 +117,9 @@ const CompanyBoard = ({companyList, onClickAciton, onClickAddRow, addRows, onCha
             dataField: 'companyName',
             text: '회사명',
             sort: true,
+            // editorStyle: (cell, row, rowIndex, colIndex) =>{
+            //     return {fontSize:12};
+            // },
             editable: (cell, row, rowIndex, colIndex) => {
                 // return true or false;
                 
@@ -130,7 +141,7 @@ const CompanyBoard = ({companyList, onClickAciton, onClickAddRow, addRows, onCha
         }, 
         {
             dataField: 'deletedYn',
-            text: '삭제여부',
+            text: '상태',
             sort: true,
             searchable: false,
             editor: {
@@ -160,6 +171,24 @@ const CompanyBoard = ({companyList, onClickAciton, onClickAddRow, addRows, onCha
         }
     ];
 
+    const MySearch = (props) => {
+        let input;
+        const handleChange = () => {
+          props.onSearch(input.value);
+        };
+        return (
+            <input
+              className="form-control"
+              placeholder="검색어를 입력해주세요."
+              size="15"
+            //   style={ { backgroundColor: 'pink' } }
+              ref={ n => input = n }
+              type="text"
+              onChange={handleChange}
+            />
+        );
+      };
+
     return (
         <ToolkitProvider
             keyField="companyIdx"
@@ -174,13 +203,18 @@ const CompanyBoard = ({companyList, onClickAciton, onClickAddRow, addRows, onCha
                         {newRows}
                     </div>
                     <hr />
-                <Button variant="outline-info" onClick={onClickAddRow}>행 추가</Button>
-                    <SearchBar { ...props.searchProps } />
+                        <Button variant="outline-info" onClick={onClickAddRow}>신규등록</Button>
                     <hr />
-                    <BootstrapTable 
-                        { ...props.baseProps } 
-                        cellEdit={cellEdit}
-                        selectRow={selectRow} />
+                    <div>
+                        {/* <SearchBar { ...props.searchProps } /> */}
+                        <MySearch { ...props.searchProps } />
+                    </div>
+                    <hr />
+                        <BootstrapTable classes="company-table"
+                            { ...props.baseProps } 
+                            bordered={false}
+                            cellEdit={cellEdit}
+                            selectRow={selectRow} />
                     </div>
                 )
             }

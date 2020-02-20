@@ -33,8 +33,6 @@ class CompanyBoardContainer extends React.Component {
     }
     
     componentDidUpdate(prevProps, prevState) {                  //props 변화에 따라 기존 컴포넌트의 업데이트 진행 함수
-        console.log(prevProps);
-        console.log(this.state);
     }
 
     //수정버튼 클릭시 이벤트
@@ -62,7 +60,6 @@ class CompanyBoardContainer extends React.Component {
 
     //추가된 Row의 값 추가
     handleChageValue = (e, indx) => {
-        console.log(e.target);
         const {name, value} = e.target
         const addRows = [...this.state.addRows];
         addRows[indx] ={
@@ -74,14 +71,80 @@ class CompanyBoardContainer extends React.Component {
             addRows: addRows
         })
     }
+
+    //추가된 Row 등록버튼 클릭시
+    handleSubmitValue = (e) => {
+        this.insertCompany(this.state.addRows);
+    }
     
+    //회사추가 프로세스
+    insertCompany = async (data) => { 
+        confirmAlert({
+            title: '추가하시겠습니까?',
+            message: '총 ' + data.length + '개의 회사를 추가하시려면 예를 클릭하세요.',
+            buttons: [
+              {
+                label: '예',
+                onClick: async () => {
+                           
+                    try {
+                        this.setState({
+                            pending: true,
+                            isOk: false
+                        })
+                        const insertResult = await service.insertCompany(this.props.userInfo.X_AUTH_TOKEN, data);
+                        let failNameList = "";
+                        insertResult.data.data.failNameList.forEach(element => {
+                            failNameList = failNameList + ',' + element;
+                        })
+                        
+                        if(insertResult.data.success){
+                            this.setState({
+                                pending: false,
+                                isOk: true
+                            })
+                            this.props.alert.show(  <div>
+                                                        정상 추가되었습니다.<br/>
+                                                        성공 건수: {insertResult.data.data.successInsertCount} <br />
+                                                        실패 건수: {insertResult.data.data.failInsertCount} <br />
+                                                        실패 목록: {failNameList}
+                                                    </div>, {type: 'success'});
+                            this.getCompanyList();
+                        }else{
+                            this.props.alert.show(  <div>
+                                                        실패하였습니다.<br/>
+                                                        실패 건수: {insertResult.data.data.failInsertCount} <br/>
+                                                        실패 목록: {failNameList} <br />
+                                                    </div>, {type: 'error'})
+                            this.setState({
+                                pending: false,
+                                isOk: true
+                            })
+                            this.getCompanyList();        
+                        }
+                        console.log('요청이 완료 된 다음에 실행됨')
+                    } catch(e) {
+                        this.props.alert.show('실패하였습니다.', {type: 'error'})
+                        this.setState({
+                            pending: false,
+                            isOk: true
+                        })
+                        this.getCompanyList();
+                    }
+                    
+                }
+              },
+              {
+                label: '아니오',
+                onClick: () => {}
+              }
+            ]
+        });
+    }
 
+
+    //회사 수정 프로세스
     updateCompany = async (row) => { 
-
-        
-
-        console.log(this.props);
-
         confirmAlert({
             title: '수정하시겠습니까?',
             message: '수정하시려면 예를 클릭하세요.',
@@ -123,11 +186,9 @@ class CompanyBoardContainer extends React.Component {
               }
             ]
         });
-        
+    }
 
-      }
-  
-
+    //회사목록 호출 프로세스
     getCompanyList = async () => {  
         try {
             this.setState({
@@ -159,7 +220,8 @@ class CompanyBoardContainer extends React.Component {
                 onClickAddRow={this.handleAddRowClick}
                 addRows={this.state.addRows}
                 onChangeAddRow={this.handleChageValue}
-                onClickRemoveButton={this.handleRemoveRowButtonClick}  />
+                onClickRemove={this.handleRemoveRowButtonClick}
+                onClickRowSubmit={this.handleSubmitValue}  />
                 
             )
         }else{

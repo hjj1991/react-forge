@@ -39,6 +39,8 @@ axios.interceptors.response.use( response => {
                 error.response.config.headers.X_AUTH_TOKEN = result.data.data.X_AUTH_TOKEN;
                 return await axios(error.response.config);
 
+            }else{
+                return Promise.reject(error);
             }
         }
     }
@@ -46,7 +48,7 @@ axios.interceptors.response.use( response => {
     
 });
 
-var siteUrl = "http://localhost:8080";
+var siteUrl = "http://10.131.109.51:8080";
 
 
 
@@ -161,6 +163,21 @@ export function updateCompany(token, data){
         {
             url:siteUrl + '/v1/company',
             method: 'PUT',
+            data: data,
+            headers:{
+                "X_AUTH_TOKEN": token
+            }
+        }
+    )
+}
+/*
+    회사 등록 호출 API
+*/
+export function insertCompany(token, data){
+    return axios(
+        {
+            url:siteUrl + '/v1/company',
+            method: 'POST',
             data: data,
             headers:{
                 "X_AUTH_TOKEN": token

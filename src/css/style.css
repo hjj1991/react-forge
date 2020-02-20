@@ -59,3 +59,74 @@
 .nav.nav-tabs{
     font-size: 30px;
 }
+
+
+
+@media only screen and (min-width: 1200px) {
+
+}
+
+@media only screen and (max-width: 1199px) {
+
+    .company-table th,
+    .company-table td{
+        padding: 5px;
+    }
+}
+
+@media only screen and (max-width: 1108px) {
+    
+
+}
+
+
+@media only screen and (max-width: 991px) {
+
+    /* .company-table td:nth-child(n+2):nth-child(-n+3),
+    .company-table td:nth-child(n+5):nth-child(-n+7), */
+    .company-table td:nth-child(4),
+    /* .company-table th:nth-child(n+2):nth-child(-n+3),
+    .company-table th:nth-child(n+5):nth-child(-n+7), */
+    .company-table th:nth-child(4) {display: none;}
+
+
+
+    .company-table th:nth-child(4),
+    .company-table th:nth-child(8),
+    .company-table td:nth-child(8){
+        text-align: center;
+        width: 50%;
+        word-break: break-all;
+    }
+
+}
+
+@media only screen and (max-width: 768px) {
+
+
+    .company-table th:nth-child(4),
+    .company-table th:nth-child(8),
+    .company-table td:nth-child(8){
+        text-align: center;
+        width: 50%;
+        word-break: break-all;
+    }
+
+}
+
+
+
+@media only screen and (max-width: 576px) {
+    .form-control.editor.edit-text {
+        font-size: 10px !important;
+    }
+    .company-table th,
+    .company-table td{
+        font-size: 12px;
+    }
+    .company-table td:nth-child(6) button{
+        font-size: 4px;
+    }
+
+
+}

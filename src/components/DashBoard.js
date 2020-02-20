@@ -16,7 +16,7 @@ const DashBoardItem = ({ CurrentState, Name, OperatingSystem, bgColor, itemIndex
 
     return (
         <Col xs={4} md={4} lg={3} xl={2} >
-            <Card bg={bgColor} text="white" style={{ "margin": "10px auto 10px auto", "textAlign": "center", "font-size": "9px" }}>
+            <Card bg={bgColor} text="white" style={{ "margin": "10px auto 10px auto", "textAlign": "center", "fontSize": "9px" }}>
                 <Card.Header style={{"textOverflow":"ellipsis",  "overflow":"hidden", "whiteSpace":"nowrap", "padding": "2px"}}>{OperatingSystem.substring(0, 6) === 'Window' ? <img  alt={OperatingSystem} src={WindowImage} /> : <img  alt={OperatingSystem} width="16px" src={LinuxImage} />} {Name}</Card.Header>
                 <Card.Body>
                     <Card.Text style={{"textOverflow":"ellipsis", "overflow":"hidden", "whiteSpace":"nowrap", "padding": "0px"}}>{CurrentState}</Card.Text>

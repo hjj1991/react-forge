@@ -11,6 +11,9 @@
     #workloadTable td{
         padding: 5px;
     }
+    #search-bar-0 {
+        size: 50;
+    }
 }
 
 @media only screen and (max-width: 1108px) {
