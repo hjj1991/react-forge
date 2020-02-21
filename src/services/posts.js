@@ -185,3 +185,55 @@ export function insertCompany(token, data){
         }
     )
 }
+
+
+/*
+    API서버목록 호출 API
+*/
+export function getApiServerList(token, data){
+    return axios(
+        {
+            url:siteUrl + '/v1/apiserver',
+            method: 'get',
+            params: {
+                inCompanyName: data.inCompanyName,
+                userRole: data.userRole
+            },
+            headers:{
+                "X_AUTH_TOKEN": token
+            }
+        }
+    )
+}
+
+/*
+    API서버수정 호출 API
+*/
+export function updateApiServer(token, data){
+    return axios(
+        {
+            url:siteUrl + '/v1/apiserver',
+            method: 'PUT',
+            data: data,
+            headers:{
+                "X_AUTH_TOKEN": token
+            }
+        }
+    )
+}
+
+/*
+    API서버등록 호출 API
+*/
+export function insertApiServer(token, data){
+    return axios(
+        {
+            url:siteUrl + '/v1/apiserver',
+            method: 'POST',
+            data: data,
+            headers:{
+                "X_AUTH_TOKEN": token
+            }
+        }
+    )
+}
