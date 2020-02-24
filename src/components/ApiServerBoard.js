@@ -34,20 +34,32 @@ const ApiServerBoard = ({apiServerList, onClickAciton, onClickAddRow, addRows, o
             blurToSave: true,
         }) 
 
+    // let arrOption = [];
+
+    // apiServerList.companyList.forEach(value => {
+    //     let companyValue ={}
+
+    //     companyValue.label = value;
+    //     companyValue.value = value;
+    //     arrOption.push(companyValue);
+    // });
+
     let newRows;
     if(addRows.length > 0){
         newRows =  (
             <Fragment>
                 <Alert variant="danger" style={{marginTop:'10px'}}>
-                    ※ 회사명, 회사ID는 고유값입니다.
+                    ※ 추가할 Migrate API서버 정보를 입력해주세요.
                 </Alert>
                 <Table  hover >
                 <thead>
                     <tr>
                         <th width="2%"></th>
-                        <th>회사ID</th>
-                        <th>회사명</th>
-                        <th></th>
+                        <th>소속</th>
+                        <th>호스트</th>
+                        <th>도메인네임</th>
+                        <th>계정</th>
+                        <th>암호</th>
                     </tr>
                 </thead>
                 <tbody> 
@@ -55,16 +67,40 @@ const ApiServerBoard = ({apiServerList, onClickAciton, onClickAddRow, addRows, o
                     <tr id="row0" key ={idx}>
                         <td>{idx+1}</td>
                         <td>
+                            <select className="form-control"
+                                value={addRows[idx].companyName == null? "" : addRows[idx].companyName}
+                                onChange={(e) => {(onChangeAddRow(e, idx))}}
+                                name="companyName">
+                                    {apiServerList.companyList.map((item2, indx) => (
+                                    <option value={item2}>{item2}</option>
+                                ))}
+                            </select>
+                        </td>
+                        <td>
                             <input className="form-control form-control-sm" type="text"
-                                value={addRows[idx].companyId == null? "" : addRows[idx].companyId}
-                                name="companyId"
+                                value={addRows[idx].serverHost == null? "" : addRows[idx].serverHost}
+                                name="serverHost"
                                 onChange={(e) => {(onChangeAddRow(e, idx))}}
                             />
                         </td>
                         <td>
                             <input className="form-control form-control-sm" type="text"
-                                value={addRows[idx].companyName == null? "" : addRows[idx].companyName}
-                                name="companyName"
+                                value={addRows[idx].domainNameToAccessProtectServer == null? "" : addRows[idx].domainNameToAccessProtectServer}
+                                name="domainNameToAccessProtectServer"
+                                onChange={(e) => {(onChangeAddRow(e, idx))}}
+                            />
+                        </td>
+                        <td>
+                            <input className="form-control form-control-sm" type="text"
+                                value={addRows[idx].userNameToAccessProtectServer == null? "" : addRows[idx].userNameToAccessProtectServer}
+                                name="userNameToAccessProtectServer"
+                                onChange={(e) => {(onChangeAddRow(e, idx))}}
+                            />
+                        </td>
+                        <td>
+                            <input className="form-control form-control-sm" type="text"
+                                value={addRows[idx].passwordToAccessProtectServer == null? "" : addRows[idx].passwordToAccessProtectServer}
+                                name="passwordToAccessProtectServer"
                                 onChange={(e) => {(onChangeAddRow(e, idx))}}
                             />
                         </td>
@@ -84,14 +120,12 @@ const ApiServerBoard = ({apiServerList, onClickAciton, onClickAddRow, addRows, o
     
     
     const companyList = [];
-    console.log(apiServerList.companyList);
     apiServerList.companyList.forEach(company => {
         const companyValue = {};
         companyValue.value = company
         companyValue.label = company
         companyList.push(companyValue);
     });
-    console.log(companyList);
     const products = apiServerList.data.content;
     const columns = [
         // {

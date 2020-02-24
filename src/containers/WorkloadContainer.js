@@ -68,86 +68,92 @@ class WorkloadContainer extends React.Component {
         }
     }
 
-
+    handleCheckBoxClick = (row, isSelect, rowIndex, e, rows) => {
+        console.log(row);
+        console.log(isSelect);
+        console.log(rowIndex);
+        console.log(e.target.checked);
+        console.log(rows);
+    }
     
-    handleCheckBoxClick = (e, availableTransitions) => {  //체크박스 선택에따른 이벤트
-        const checkboxes = this.state.checkboxes;
-        let index;
-        let runReplicationCount = 0;
-        let runIncrementalCount = 0;
-        let runIncrementalAndTestFailoverCount = 0;
-        let testFailoverCount = 0;
-        let abortCount = 0;
-        let isRunIncremental, isRunReplication, isRunIncrementalAndTestFailover, isTestFailover, isAbort = false;
+    // handleCheckBoxClick = (e, availableTransitions) => {  //체크박스 선택에따른 이벤트
+    //     const checkboxes = this.state.checkboxes;
+    //     let index;
+    //     let runReplicationCount = 0;
+    //     let runIncrementalCount = 0;
+    //     let runIncrementalAndTestFailoverCount = 0;
+    //     let testFailoverCount = 0;
+    //     let abortCount = 0;
+    //     let isRunIncremental, isRunReplication, isRunIncrementalAndTestFailover, isTestFailover, isAbort = false;
 
 
-        if(e.target.checked){      //체크 된 값
-            checkboxes.push(availableTransitions);
-        }else{  //체크 해제된 값
-            // index = checkboxes.indexOf(e.target.value); //타겟값으로 배열의 index값을 구한다.
-            index = checkboxes.indexOf(availableTransitions); //타겟값으로 배열의 index값을 구한다.
-            checkboxes.splice(index, 1);                //해당 index값으로 체크박스 배열의 해당 값을 삭제
-        }
+    //     if(e.target.checked){      //체크 된 값
+    //         checkboxes.push(availableTransitions);
+    //     }else{  //체크 해제된 값
+    //         // index = checkboxes.indexOf(e.target.value); //타겟값으로 배열의 index값을 구한다.
+    //         index = checkboxes.indexOf(availableTransitions); //타겟값으로 배열의 index값을 구한다.
+    //         checkboxes.splice(index, 1);                //해당 index값으로 체크박스 배열의 해당 값을 삭제
+    //     }
 
-        checkboxes.forEach(checkbox => { 
-            checkbox.forEach(jsonValue => {
-                if(jsonValue.Name ==  "RunReplication"){
-                    runReplicationCount++;
-                }
-                if(jsonValue.Name == "RunIncremental"){
-                    runIncrementalCount++;
-                }
-                if(jsonValue.Name == "RunIncrementalAndTestFailover"){
-                    runIncrementalAndTestFailoverCount++;
-                }
-                if(jsonValue.Name == "TestFailover"){
-                    testFailoverCount++;
-                }
-                if(jsonValue.Name == "Abort"){
-                    abortCount++;
-                }
-            });
+    //     checkboxes.forEach(checkbox => { 
+    //         checkbox.forEach(jsonValue => {
+    //             if(jsonValue.Name ==  "RunReplication"){
+    //                 runReplicationCount++;
+    //             }
+    //             if(jsonValue.Name == "RunIncremental"){
+    //                 runIncrementalCount++;
+    //             }
+    //             if(jsonValue.Name == "RunIncrementalAndTestFailover"){
+    //                 runIncrementalAndTestFailoverCount++;
+    //             }
+    //             if(jsonValue.Name == "TestFailover"){
+    //                 testFailoverCount++;
+    //             }
+    //             if(jsonValue.Name == "Abort"){
+    //                 abortCount++;
+    //             }
+    //         });
 
-            if(runReplicationCount == checkboxes.length){
-                isRunReplication = true;
-            }else{
-                isRunReplication = false;
-            }
-            if(runIncrementalCount == checkboxes.length){
-                isRunIncremental = true;
-            }else{
-                isRunIncremental = false;
-            }
-            if(runIncrementalAndTestFailoverCount == checkboxes.length){
-                isRunIncrementalAndTestFailover = true;
-            }else{
-                isRunIncrementalAndTestFailover = false;
-            }
-            if(testFailoverCount == checkboxes.length){
-                isTestFailover = true;
-            }else{
-                isTestFailover = false;
-            }
-            if(abortCount == checkboxes.length){
-                isAbort = true;
-            }else{
-                isAbort = false;
-            }
-        });
+    //         if(runReplicationCount == checkboxes.length){
+    //             isRunReplication = true;
+    //         }else{
+    //             isRunReplication = false;
+    //         }
+    //         if(runIncrementalCount == checkboxes.length){
+    //             isRunIncremental = true;
+    //         }else{
+    //             isRunIncremental = false;
+    //         }
+    //         if(runIncrementalAndTestFailoverCount == checkboxes.length){
+    //             isRunIncrementalAndTestFailover = true;
+    //         }else{
+    //             isRunIncrementalAndTestFailover = false;
+    //         }
+    //         if(testFailoverCount == checkboxes.length){
+    //             isTestFailover = true;
+    //         }else{
+    //             isTestFailover = false;
+    //         }
+    //         if(abortCount == checkboxes.length){
+    //             isAbort = true;
+    //         }else{
+    //             isAbort = false;
+    //         }
+    //     });
 
-        this.setState({ 
-            checkboxes: checkboxes,
-            isRunReplication: isRunReplication,
-            isRunIncremental: isRunIncremental,
-            isRunIncrementalAndTestFailover: isRunIncrementalAndTestFailover,
-            isTestFailover: isTestFailover,
-            isAbort: isAbort
-        })
+    //     this.setState({ 
+    //         checkboxes: checkboxes,
+    //         isRunReplication: isRunReplication,
+    //         isRunIncremental: isRunIncremental,
+    //         isRunIncrementalAndTestFailover: isRunIncrementalAndTestFailover,
+    //         isTestFailover: isTestFailover,
+    //         isAbort: isAbort
+    //     })
 
-        console.log(checkboxes);
-        // console.log(e.target);
-        // console.log(e.workloadBox);
-    };
+    //     console.log(checkboxes);
+    //     // console.log(e.target);
+    //     // console.log(e.workloadBox);
+    // };
 
     handleButtonClick = (e) => {  //버튼 선택에따른 이벤트
 

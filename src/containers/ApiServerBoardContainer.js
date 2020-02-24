@@ -72,7 +72,7 @@ class ApiServerBoardContainer extends React.Component {
 
     //추가된 Row 등록버튼 클릭시
     handleSubmitValue = (e) => {
-        this.insertCompany(this.state.addRows);
+        this.insertApiServer(this.state.addRows);
     }
     
     //회사추가 프로세스
