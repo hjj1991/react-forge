@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, Fragment } from 'react'
 import Table from 'react-bootstrap/Table'
 import Button from 'react-bootstrap/Button'
 import Row from 'react-bootstrap/Row'
@@ -85,7 +85,7 @@ function leadingZeros(n, digits) {
 //   };
 
 
-const Workload = ({ workloadList, onClickButton, onChangeCheckBox, isRunReplication, isRunIncremental, isRunIncrementalAndTestFailover, isTestFailover, isAbort }) => {
+const Workload = ({ workloadList, onClickButton, onChangeCheckBox, isRunReplication, isRunIncremental, isRunIncrementalAndTestFailover, isTestFailover, isAbort, node }) => {
 
 
     const inputEl = useRef(null);
@@ -145,11 +145,8 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, isRunReplicat
     //         currentState = workload.CurrentState;
     //     }
 
-        workloadList.map((workload, index) => {
+        workloadList.forEach(workload => {
         // console.log(workload.AvailableTransitions);
-            var lastReplication;
-
-            var currentState;
             workload.lastTestedFailoverOn = convertDate(workload.Parameters[12].Value); 
             workload.nextIncrementalOn = convertDate(workload.Parameters[16].Value);
 
@@ -186,7 +183,6 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, isRunReplicat
     //     />
     // )}
     // );
-    console.log(workloadList);
     const products = workloadList;
     const columns = [
         {
@@ -249,7 +245,8 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, isRunReplicat
     const selectRow = {
         mode: 'checkbox',
         clickToSelect: true,
-        onSelect: onChangeCheckBox
+        onSelect: onChangeCheckBox,
+        hideSelectAll: true
       };
 
     const customTotal = (from, to, size) => (
@@ -257,7 +254,6 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, isRunReplicat
           Showing { from } to { to } of { size } Results
         </span>
       );
-
 
     const paginationOptions = {
         custom: true,
@@ -308,33 +304,12 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, isRunReplicat
     return (
         <div className="main-contents" >
             <p className="main-contents-title"><b>서버</b></p>
-            <div className="table-responsive">
-                {/* <Table id="workloadTable" striped bordered hover variant="dark">
-                    <thead>
-                        <tr>
-                            <th width="2%"></th>
-                            <th>작업</th>
-                            <th>온라인</th>
-                            <th>서버</th>
-                            <th>타겟</th>
-                            <th>태그</th>
-                            <th>스케줄</th>
-                            <th>상태</th>
-                            <th>마지막복제</th>
-                            <th>복제예정</th>
-                            <th>마지막테스트</th>
-                        </tr>
-                    </thead>
-                    <tbody> 
-                        { workloadItems }
-                    </tbody>
-                </Table> */}
-                    <div>
-          <PaginationProvider
-            pagination={
-              paginationFactory(paginationOptions)
-            }
-          >
+            <div>
+                <PaginationProvider
+                    pagination={
+                    paginationFactory(paginationOptions)
+                    }
+                >
               {
                   ({
                       paginationProps,
@@ -342,34 +317,33 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, isRunReplicat
                   }) => (
                     <div>
                     <ToolkitProvider
-                      keyField="Uri"
-                      columns={ columns }
-                      data={ products }
-                     
-                      search
+                        keyField="Uri"
+                        columns={ columns }
+                        data={ products }
+                        search
                     >
                       {
                         toolkitprops => (
-                          <div>
+                            <Fragment>
                               <hr />
                             
                               <hr />
-                              <div>
+                            <div>
                             <MySearch { ...toolkitprops.searchProps } />
                             </div>
                             <hr />
                             <SizePerPageDropdownStandalone { ...paginationProps } />
                             <BootstrapTable classes="company-table"
-                                ref={inputEl}
-                                bordered={false}
-                                selectRow={ selectRow }
                                 { ...toolkitprops.baseProps }
                                 { ...paginationTableProps }
+                                ref={node}
+                                bordered={false}
+                                selectRow={ selectRow }
                             />
                             <PaginationTotalStandalone { ...paginationProps }/>
                             
                             <PaginationListStandalone { ...paginationProps } />
-                          </div>
+                            </Fragment>
                         )
                       }
                     </ToolkitProvider>
@@ -378,26 +352,25 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, isRunReplicat
                   )
               }
           </PaginationProvider>
-        </div >
             </div>
             <div className="workloadSelection">
                 <Row style={{"marginBottom": "20px"}}>
                     <Col xs={12} md={3} style={{"textAlign": "center"}}>
-                        <Button name="configuration" variant="secondary" size="lg"  block disabled={!isRunReplication} onClick={onClickButton} value="runReplication">Run Replication</Button>
+                        <Button name="configuration" variant="secondary" size="lg"  block disabled={!isRunReplication} onClick={onClickButton} value="RunReplication">Run Replication</Button>
                     </Col>
                     <Col xs={12} md={3} style={{"textAlign": "center"}}>
-                        <Button name="runReplication" variant="secondary" size="lg"   block disabled={!isRunIncremental} onClick={onClickButton} value="runIncremental">RunIncremental</Button>
+                        <Button name="runReplication" variant="secondary" size="lg"   block disabled={!isRunIncremental} onClick={onClickButton} value="RunIncremental">RunIncremental</Button>
                     </Col>
                     <Col xs={12} md={3} style={{"textAlign": "center"}}>
-                        <Button name="testFailover" variant="secondary" size="lg"   block disabled={!isRunIncrementalAndTestFailover} onClick={onClickButton} value="runIncrementalAndTestFailover">RunIncrementalAndTestFailover</Button>
+                        <Button name="testFailover" variant="secondary" size="lg"   block disabled={!isRunIncrementalAndTestFailover} onClick={onClickButton} value="RunIncrementalAndTestFailover">RunIncrementalAndTestFailover</Button>
                     </Col>
                     <Col xs={12} md={3} style={{"textAlign": "center"}}>
-                        <Button name="pauseSchedule" variant="secondary" size="lg"   block disabled={!isTestFailover} onClick={onClickButton} value="testFailover">TestFailover</Button>
+                        <Button name="pauseSchedule" variant="secondary" size="lg"   block disabled={!isTestFailover} onClick={onClickButton} value="TestFailover">TestFailover</Button>
                     </Col>  
                 </Row>
                 <Row>
                     <Col xs={12} md={3} style={{"textAlign": "center"}}>
-                        <Button name="prepareMigration" variant="secondary" size="lg"   block disabled={!isAbort} onClick={onClickButton} value="abort">Abort</Button>
+                        <Button name="prepareMigration" variant="secondary" size="lg"   block disabled={!isAbort} onClick={onClickButton} value="Abort">Abort</Button>
                     </Col>
                     <Col xs={12} md={3} style={{"textAlign": "center"}}>
                         <Button name="runFailover" variant="secondary" size="lg"   block disabled>Run Failover</Button>

@@ -2,16 +2,17 @@ import React from 'react';
 import Workload from '../components/Workload';
 import * as service from 'services/posts'
 import { connect } from 'react-redux';
+import { confirmAlert } from 'react-confirm-alert'; // Import
 import mypic from '../images/ajax-loader.gif';
 
 
 class WorkloadContainer extends React.Component {
     constructor(props) {
         super(props);
+        this.nodeRef = React.createRef();
         this.state = {
             pending: false,
             isOk: false,
-            checkboxes: [],
             isRunReplication: false,
             isRunIncremental: false,
             isRunIncrementalAndTestFailover: false,
@@ -19,6 +20,8 @@ class WorkloadContainer extends React.Component {
             isAbort: false
         };
     }
+
+    node = null;
     componentDidMount() {
         const interval = setInterval(this.getWorkloadList, 1000 * 60 * 6); //1000 * 60 = 분입니다.
         this.getWorkloadList(); //workload 리스트 콜
@@ -59,6 +62,7 @@ class WorkloadContainer extends React.Component {
                 isOk: false
             })
             await service.postWorkloadAction(this.props.userInfo.X_AUTH_TOKEN, serverHost, actionUrl);
+            await this.getWorkloadList();
             this.setState({
                 isOk: true
             })
@@ -68,179 +72,140 @@ class WorkloadContainer extends React.Component {
         }
     }
 
-    handleCheckBoxClick = (row, isSelect, rowIndex, e, rows) => {
-        console.log(row);
-        console.log(isSelect);
-        console.log(rowIndex);
-        console.log(e.target.checked);
-        console.log(rows);
+    handleCheckBoxClick = (row, isSelect, rowIndex, e) => {
+
+        let runReplicationCount = 0, runIncrementalCount = 0, runIncrementalAndTestFailoverCount = 0, testFailoverCount = 0, abortCount = 0;
+        let isRunIncremental = false, isRunReplication = false, isRunIncrementalAndTestFailover = false, isTestFailover = false, isAbort = false;
+        let checkboxCheckedCount = 0;
+        if(row.checked === true){
+            row.checked = false;
+        }else{
+            row.checked = true;
+        }
+        const rows = this.nodeRef.current.table.props.data;
+
+        rows.forEach(rowValue =>{
+            if(rowValue.checked === true){
+                checkboxCheckedCount++;
+                rowValue.AvailableTransitions.forEach(rowAvailableAction => {
+                    console.log(rowAvailableAction);
+                    if(rowAvailableAction.Name ===  "RunReplication"){
+                        runReplicationCount++;
+                    }
+                    if(rowAvailableAction.Name === "RunIncremental"){
+                        runIncrementalCount++;
+                    }
+                    if(rowAvailableAction.Name === "RunIncrementalAndTestFailover"){
+                        runIncrementalAndTestFailoverCount++;
+                    }
+                    if(rowAvailableAction.Name === "TestFailover"){
+                        testFailoverCount++;
+                    }
+                    if(rowAvailableAction.Name === "Abort"){
+                        abortCount++;
+                    }
+                })
+            }
+        });
+
+        if(runReplicationCount === checkboxCheckedCount){
+            isRunReplication = true;
+        }else{
+            isRunReplication = false;
+        }
+        if(runIncrementalCount === checkboxCheckedCount){
+            isRunIncremental = true;
+        }else{
+            isRunIncremental = false;
+        }
+        if(runIncrementalAndTestFailoverCount === checkboxCheckedCount){
+            isRunIncrementalAndTestFailover = true;
+        }else{
+            isRunIncrementalAndTestFailover = false;
+        }
+        if(testFailoverCount === checkboxCheckedCount){
+            isTestFailover = true;
+        }else{
+            isTestFailover = false;
+        }
+        if(abortCount === checkboxCheckedCount){
+            isAbort = true;
+        }else{
+            isAbort = false;
+        }
+
+        if(checkboxCheckedCount === 0){
+            isRunReplication = false;
+            isRunIncremental = false;
+            isRunIncrementalAndTestFailover = false;
+            isTestFailover = false;
+            isAbort = false;
+        }
+
+        console.log(runReplicationCount);
+        console.log(checkboxCheckedCount);
+
+        this.setState({ 
+            isRunReplication: isRunReplication,
+            isRunIncremental: isRunIncremental,
+            isRunIncrementalAndTestFailover: isRunIncrementalAndTestFailover,
+            isTestFailover: isTestFailover,
+            isAbort: isAbort
+        })
+
+
     }
-    
-    // handleCheckBoxClick = (e, availableTransitions) => {  //체크박스 선택에따른 이벤트
-    //     const checkboxes = this.state.checkboxes;
-    //     let index;
-    //     let runReplicationCount = 0;
-    //     let runIncrementalCount = 0;
-    //     let runIncrementalAndTestFailoverCount = 0;
-    //     let testFailoverCount = 0;
-    //     let abortCount = 0;
-    //     let isRunIncremental, isRunReplication, isRunIncrementalAndTestFailover, isTestFailover, isAbort = false;
-
-
-    //     if(e.target.checked){      //체크 된 값
-    //         checkboxes.push(availableTransitions);
-    //     }else{  //체크 해제된 값
-    //         // index = checkboxes.indexOf(e.target.value); //타겟값으로 배열의 index값을 구한다.
-    //         index = checkboxes.indexOf(availableTransitions); //타겟값으로 배열의 index값을 구한다.
-    //         checkboxes.splice(index, 1);                //해당 index값으로 체크박스 배열의 해당 값을 삭제
-    //     }
-
-    //     checkboxes.forEach(checkbox => { 
-    //         checkbox.forEach(jsonValue => {
-    //             if(jsonValue.Name ==  "RunReplication"){
-    //                 runReplicationCount++;
-    //             }
-    //             if(jsonValue.Name == "RunIncremental"){
-    //                 runIncrementalCount++;
-    //             }
-    //             if(jsonValue.Name == "RunIncrementalAndTestFailover"){
-    //                 runIncrementalAndTestFailoverCount++;
-    //             }
-    //             if(jsonValue.Name == "TestFailover"){
-    //                 testFailoverCount++;
-    //             }
-    //             if(jsonValue.Name == "Abort"){
-    //                 abortCount++;
-    //             }
-    //         });
-
-    //         if(runReplicationCount == checkboxes.length){
-    //             isRunReplication = true;
-    //         }else{
-    //             isRunReplication = false;
-    //         }
-    //         if(runIncrementalCount == checkboxes.length){
-    //             isRunIncremental = true;
-    //         }else{
-    //             isRunIncremental = false;
-    //         }
-    //         if(runIncrementalAndTestFailoverCount == checkboxes.length){
-    //             isRunIncrementalAndTestFailover = true;
-    //         }else{
-    //             isRunIncrementalAndTestFailover = false;
-    //         }
-    //         if(testFailoverCount == checkboxes.length){
-    //             isTestFailover = true;
-    //         }else{
-    //             isTestFailover = false;
-    //         }
-    //         if(abortCount == checkboxes.length){
-    //             isAbort = true;
-    //         }else{
-    //             isAbort = false;
-    //         }
-    //     });
-
-    //     this.setState({ 
-    //         checkboxes: checkboxes,
-    //         isRunReplication: isRunReplication,
-    //         isRunIncremental: isRunIncremental,
-    //         isRunIncrementalAndTestFailover: isRunIncrementalAndTestFailover,
-    //         isTestFailover: isTestFailover,
-    //         isAbort: isAbort
-    //     })
-
-    //     console.log(checkboxes);
-    //     // console.log(e.target);
-    //     // console.log(e.workloadBox);
-    // };
 
     handleButtonClick = (e) => {  //버튼 선택에따른 이벤트
 
-        const checkedList = this.state.checkboxes;
-        console.log(e.target.value);
-        if(e.target.value == "runReplication"){
-            checkedList.forEach(checkbox => {
-                checkbox.forEach(jsonValue => {
-                    if(jsonValue.Name == "RunReplication"){
-                        // jsonValue.Uri
-                        const actionUrl = jsonValue.Uri;        //액션 URL VALUE 값
-                        const serverHost = checkbox.serverHost; //워크로드가 해당되어있는 api 서버 URL            
-                        this.postWorkloadAction(serverHost, actionUrl);
-                        
-                    }
-                })
+        const rows = this.nodeRef.current.table.props.data;
+        const checkedList = []
+        var targetValue = e.target.value;
+        rows.forEach(row => {
+            if(row.checked === true){
+                checkedList.push(row);
+            }
+        })
 
-            })
-        }else if(e.target.value == "runIncremental"){
-            checkedList.forEach(checkbox => {
-                checkbox.forEach(jsonValue => {
-                    if(jsonValue.Name == "RunIncremental"){
-                        // jsonValue.Uri
-                        const actionUrl = jsonValue.Uri;        //액션 URL VALUE 값
-                        const serverHost = checkbox.serverHost; //워크로드가 해당되어있는 api 서버 URL            
-                        this.postWorkloadAction(serverHost, actionUrl);
-                        
-                    }
-                })
 
-            })
-        }else if(e.target.value == "runIncrementalAndTestFailover"){
-            checkedList.forEach(checkbox => {
-                checkbox.forEach(jsonValue => {
-                    if(jsonValue.Name == "RunIncrementalAndTestFailover"){
-                        // jsonValue.Uri
-                        const actionUrl = jsonValue.Uri;        //액션 URL VALUE 값
-                        const serverHost = checkbox.serverHost; //워크로드가 해당되어있는 api 서버 URL            
-                        this.postWorkloadAction(serverHost, actionUrl);
-                        
-                    }
-                })
-
-            })
-        }else if(e.target.value == "testFailover"){
-            checkedList.forEach(checkbox => {
-                checkbox.forEach(jsonValue => {
-                    if(jsonValue.Name == "TestFailover"){
-                        // jsonValue.Uri
-                        const actionUrl = jsonValue.Uri;        //액션 URL VALUE 값
-                        const serverHost = checkbox.serverHost; //워크로드가 해당되어있는 api 서버 URL            
-                        this.postWorkloadAction(serverHost, actionUrl);
-                        
-                    }
-                })
-
-            })
-        }else if(e.target.value == "abort"){
-            checkedList.forEach(checkbox => {
-                checkbox.forEach(jsonValue => {
-                    if(jsonValue.Name == "Abort"){
-                        // jsonValue.Uri
-                        const actionUrl = jsonValue.Uri;        //액션 URL VALUE 값
-                        const serverHost = checkbox.serverHost; //워크로드가 해당되어있는 api 서버 URL            
-                        this.postWorkloadAction(serverHost, actionUrl);
-                        
-                    }
-                })
-
-            })
-        }
+        confirmAlert({
+            title: '작업하시겠습니까?',
+            message: '진행하시려면 예를 클릭하세요.',
+            buttons: [
+              {
+                label: '예',
+                onClick: () => {
+                    console.log(checkedList);
+                    checkedList.forEach( checkedValue => {
+                        console.log("2");
+                        checkedValue.AvailableTransitions.forEach(availableAction => {
+                            console.log("3");
+                            console.log(targetValue);
+                            if(availableAction.Name === targetValue){
+                                console.log("4");
+                                const actionUrl = availableAction.Uri;
+                                const serverHost = checkedValue.workloadServerHost;
+                                this.postWorkloadAction(serverHost, actionUrl);
+                                
+                            }
+                        })
+                    })
+                }
+              },
+              {
+                label: '아니오',
+                onClick: () => {}
+              }
+            ]
+        });
 
 
         this.setState({ 
-            checkboxes: [],
             isRunReplication: false,
             isRunIncremental: false,
             isRunIncrementalAndTestFailover: false,
             isTestFailover: false
         })
-
-        console.log("훠이후이");
-        // const { ButtonActions } = this.props;
-        // ButtonActions.buttonItem(e);
-        // console.log(this.props.checkedListValue);
-        // window.location.assign('/workloadReplication');
-        // this.setState({referrer: '/workloadReplication', clickE: e.target.value});
 
 
     };
@@ -259,7 +224,8 @@ class WorkloadContainer extends React.Component {
                         isRunIncremental={this.state.isRunIncremental}
                         isRunIncrementalAndTestFailover={this.state.isRunIncrementalAndTestFailover}
                         isTestFailover={this.state.isTestFailover}
-                        isAbort={this.state.isAbort} />
+                        isAbort={this.state.isAbort}
+                        node={this.nodeRef} />
             )
         }else{
             return (
