@@ -26,8 +26,19 @@ class SignInContainer extends React.Component {
     }
 
     componentDidMount() {
-    
+            document.body.style.background = "url('/static/media/login_form.82ced6c4.jpg') no-repeat fixed center center";
+            document.body.style.backgroundSize = "cover";
+            document.body.style.fontFamily = "Montserrat";
+
     }
+
+    componentWillUnmount(){
+        document.body.style.background = null;
+        document.body.style.backgroundSize = null;
+        document.body.style.fontFamily = null;
+
+    }
+
 
     getPost = async (signInData) => {
         const { LoginOkActions } = this.props;

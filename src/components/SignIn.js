@@ -20,7 +20,7 @@ const SighIn = ({ onClickSubmit, msg, success }) => {
 
     return (
 
-        <Container>
+        <Container className="login-form">
             <div className="logo"></div>
             <Form onSubmit={onClickSubmit}>
             <div className="login-block">
