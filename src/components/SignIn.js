@@ -1,7 +1,7 @@
 import React from 'react';
 import {Container, Row, Col, Form, Button} from 'react-bootstrap'
 import { Redirect } from 'react-router-dom';
-import './SignUp.css'
+import 'css/signIn.css'
 
 
 
@@ -21,12 +21,18 @@ const SighIn = ({ onClickSubmit, msg, success }) => {
     return (
 
         <Container>
-            <Row id="title">
-                <Col>
-                    <h1>로그인</h1>
-                </Col>
-            </Row>
+            <div className="logo"></div>
             <Form onSubmit={onClickSubmit}>
+            <div className="login-block">
+            
+                <h1>Login</h1>
+                <input type="text"  placeholder="ID" id="userId" />
+                <input type="password"  placeholder="Password" id="userPw" />
+                <button>로그인</button>
+                
+            </div>
+            </Form>
+            {/* <Form onSubmit={onClickSubmit}>
                 <Form.Group controlId="userId"  >
                     <Form.Label>아이디</Form.Label>
                     <Form.Control type="text" placeholder="아이디를 입력하세요" />
@@ -41,7 +47,7 @@ const SighIn = ({ onClickSubmit, msg, success }) => {
                 <Button variant="outline-secondary" type="submit" size="lg" block>
                     로그인
                 </Button>
-            </Form>
+            </Form> */}
         </Container>
 )
 };
