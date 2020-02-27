@@ -4,6 +4,7 @@ import Tabs from 'react-bootstrap/Tabs'
 import {Container, Row, Col, Form, Button} from 'react-bootstrap'
 import CompanyBoardContainer from '../containers/CompanyBoardContainer';
 import ApiServerBoardContainer from '../containers/ApiServerBoardContainer';
+import UserBoardContainer from '../containers/ApiServerBoardContainer';
 
 
 const Admin = () => {
@@ -20,10 +21,7 @@ const Admin = () => {
                     <ApiServerBoardContainer />
                 </Tab>
                 <Tab eventKey="user" title="사용자">
-                {/* <Sonnet /> */}
-                </Tab>
-                <Tab eventKey="contact" title="Contact" disabled>
-                {/* <Sonnet /> */}
+                    <UserBoardContainer />
                 </Tab>
             </Tabs>
         </div>

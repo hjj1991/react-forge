@@ -144,7 +144,7 @@ class ApiServerBoardContainer extends React.Component {
     //API서버 수정 프로세스
     updateApiServer = async (row) => { 
         confirmAlert({
-            title: '수정하시겠습니까?',
+            // title: '수정하시겠습니까?',
             message: '수정하시려면 예를 클릭하세요.',
             buttons: [
               {

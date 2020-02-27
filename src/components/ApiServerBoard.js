@@ -23,27 +23,6 @@ const GetActionFormat = (onClickAciton, cell, row) => {
 
 
 const ApiServerBoard = ({apiServerList, onClickAciton, onClickAddRow, addRows, onChangeAddRow, onClickRemove, onClickRowSubmit}) => {
-
-    const selectRow = {
-        mode: 'checkbox',
-        clickToSelect: false,
-        clickToEdit: true
-      };
-    const cellEdit = cellEditFactory({
-            mode: 'click',
-            blurToSave: true,
-        }) 
-
-    // let arrOption = [];
-
-    // apiServerList.companyList.forEach(value => {
-    //     let companyValue ={}
-
-    //     companyValue.label = value;
-    //     companyValue.value = value;
-    //     arrOption.push(companyValue);
-    // });
-
     let newRows;
     if(addRows.length > 0){
         newRows =  (
@@ -57,7 +36,7 @@ const ApiServerBoard = ({apiServerList, onClickAciton, onClickAddRow, addRows, o
                         <th width="2%"></th>
                         <th>소속</th>
                         <th>호스트</th>
-                        <th>도메인네임</th>
+                        {/* <th>도메인네임</th> */}
                         <th>계정</th>
                         <th>암호</th>
                     </tr>
@@ -83,13 +62,13 @@ const ApiServerBoard = ({apiServerList, onClickAciton, onClickAddRow, addRows, o
                                 onChange={(e) => {(onChangeAddRow(e, idx))}}
                             />
                         </td>
-                        <td>
+                        {/* <td>
                             <input className="form-control form-control-sm" type="text"
                                 value={addRows[idx].domainNameToAccessProtectServer == null? "" : addRows[idx].domainNameToAccessProtectServer}
                                 name="domainNameToAccessProtectServer"
                                 onChange={(e) => {(onChangeAddRow(e, idx))}}
                             />
-                        </td>
+                        </td> */}
                         <td>
                             <input className="form-control form-control-sm" type="text"
                                 value={addRows[idx].userNameToAccessProtectServer == null? "" : addRows[idx].userNameToAccessProtectServer}
@@ -155,19 +134,19 @@ const ApiServerBoard = ({apiServerList, onClickAciton, onClickAddRow, addRows, o
             text: '호스트',
             sort: true
         }, 
-        {
-            dataField: 'domainNameToAccessProtectServer',
-            text: '도메인네임',
-            sort: true,
-            // editorStyle: (cell, row, rowIndex, colIndex) =>{
-            //     return {fontSize:12};
-            // },
-            editable: (cell, row, rowIndex, colIndex) => {
-                // return true or false;
+        // {
+        //     dataField: 'domainNameToAccessProtectServer',
+        //     text: '도메인네임',
+        //     sort: true,
+        //     // editorStyle: (cell, row, rowIndex, colIndex) =>{
+        //     //     return {fontSize:12};
+        //     // },
+        //     editable: (cell, row, rowIndex, colIndex) => {
+        //         // return true or false;
                 
-                return true;
-            }
-        }, 
+        //         return true;
+        //     }
+        // }, 
         {
             dataField: 'userNameToAccessProtectServer',
             text: '계정',
@@ -219,7 +198,7 @@ const ApiServerBoard = ({apiServerList, onClickAciton, onClickAddRow, addRows, o
             onsort: (field, order) => {
             },
             formatter: (cell) => {
-                if(cell == "Y"){
+                if(cell == "N"){
                     return <img width="24px" alt="삭제됨" src={complete}/>
                 }else{
                     return <img width="24px" alt="정상" src={cancelImg}/>
@@ -239,12 +218,35 @@ const ApiServerBoard = ({apiServerList, onClickAciton, onClickAddRow, addRows, o
         }
     ];
 
+
+    const selectRow = {
+        mode: 'checkbox',
+        clickToSelect: false,
+        clickToEdit: true,
+        // clickToExpand: true
+      };
+    const cellEdit = cellEditFactory({
+            mode: 'click',
+            blurToSave: true,
+        }) 
+
     const customTotal = (from, to, size) => (
         <span className="react-bootstrap-table-pagination-total">
           Showing { from } to { to } of { size } Results
         </span>
       );
 
+    const expandRow = {
+        onlyOneExpanding: true,
+        showExpandColumn: false,
+        renderer: row => (
+          <div>
+            <p>{ `This Expand row is belong to rowKey ${row.id}` }</p>
+            <p>You can render anything here, also you can add additional data on every row object</p>
+            <p>expandRow.renderer callback will pass the origin row object to you</p>
+          </div>
+        )
+      };
 
     const paginationOptions = {
         custom: true,
@@ -293,7 +295,7 @@ const ApiServerBoard = ({apiServerList, onClickAciton, onClickAddRow, addRows, o
       };
       
       return (
-        <div>
+        <Fragment>
           <PaginationProvider
             pagination={
               paginationFactory(paginationOptions)
@@ -326,12 +328,14 @@ const ApiServerBoard = ({apiServerList, onClickAciton, onClickAddRow, addRows, o
                             </div>
                             <hr />
                             <SizePerPageDropdownStandalone { ...paginationProps } />
-                            <BootstrapTable classes="company-table"
+                            <BootstrapTable classes="apiserver-table"
                                       bordered={false}
                                       cellEdit={cellEdit}
                                       selectRow={selectRow}
                               { ...toolkitprops.baseProps }
                               { ...paginationTableProps }
+                              wrapperClasses="table-responsive"
+                            //   expandRow = { expandRow }
                             />
                             <PaginationTotalStandalone { ...paginationProps }/>
                             
@@ -345,7 +349,7 @@ const ApiServerBoard = ({apiServerList, onClickAciton, onClickAddRow, addRows, o
                   )
               }
           </PaginationProvider>
-        </div >
+        </Fragment>
       );
 };
 export default ApiServerBoard;

@@ -1,7 +1,6 @@
 import React, { Fragment } from 'react';
 import BootstrapTable from 'react-bootstrap-table-next';
 import cellEditFactory, { Type } from 'react-bootstrap-table2-editor';
-import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
 import paginationFactory, { PaginationProvider, PaginationListStandalone, SizePerPageDropdownStandalone, PaginationTotalStandalone   } from 'react-bootstrap-table2-paginator';
 import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
 import {Container, Row, Col, Form, Button, ListGroup} from 'react-bootstrap'
@@ -23,32 +22,23 @@ const GetActionFormat = (onClickAciton, cell, row) => {
 }
 
 
-const CompanyBoard = ({companyList, onClickAciton, onClickAddRow, addRows, onChangeAddRow, onClickRemove, onClickRowSubmit}) => {
-
-    const selectRow = {
-        mode: 'checkbox',
-        clickToSelect: false,
-        clickToEdit: true
-      };
-    const cellEdit = cellEditFactory({
-            mode: 'click',
-            blurToSave: true,
-        }) 
-
+const UserBoard = ({apiServerList, onClickAciton, onClickAddRow, addRows, onChangeAddRow, onClickRemove, onClickRowSubmit}) => {
     let newRows;
     if(addRows.length > 0){
         newRows =  (
             <Fragment>
                 <Alert variant="danger" style={{marginTop:'10px'}}>
-                    ※ 회사명, 회사ID는 고유값입니다.
+                    ※ 추가할 Migrate API서버 정보를 입력해주세요.
                 </Alert>
                 <Table  hover >
                 <thead>
                     <tr>
                         <th width="2%"></th>
-                        <th>회사ID</th>
-                        <th>회사명</th>
-                        <th></th>
+                        <th>소속</th>
+                        <th>호스트</th>
+                        {/* <th>도메인네임</th> */}
+                        <th>계정</th>
+                        <th>암호</th>
                     </tr>
                 </thead>
                 <tbody> 
@@ -56,16 +46,40 @@ const CompanyBoard = ({companyList, onClickAciton, onClickAddRow, addRows, onCha
                     <tr id="row0" key ={idx}>
                         <td>{idx+1}</td>
                         <td>
+                            <select className="form-control"
+                                value={addRows[idx].companyName == null? "" : addRows[idx].companyName}
+                                onChange={(e) => {(onChangeAddRow(e, idx))}}
+                                name="companyName">
+                                    {apiServerList.companyList.map((item2, indx) => (
+                                    <option value={item2}>{item2}</option>
+                                ))}
+                            </select>
+                        </td>
+                        <td>
                             <input className="form-control form-control-sm" type="text"
-                                value={addRows[idx].companyId == null? "" : addRows[idx].companyId}
-                                name="companyId"
+                                value={addRows[idx].serverHost == null? "" : addRows[idx].serverHost}
+                                name="serverHost"
+                                onChange={(e) => {(onChangeAddRow(e, idx))}}
+                            />
+                        </td>
+                        {/* <td>
+                            <input className="form-control form-control-sm" type="text"
+                                value={addRows[idx].domainNameToAccessProtectServer == null? "" : addRows[idx].domainNameToAccessProtectServer}
+                                name="domainNameToAccessProtectServer"
+                                onChange={(e) => {(onChangeAddRow(e, idx))}}
+                            />
+                        </td> */}
+                        <td>
+                            <input className="form-control form-control-sm" type="text"
+                                value={addRows[idx].userNameToAccessProtectServer == null? "" : addRows[idx].userNameToAccessProtectServer}
+                                name="userNameToAccessProtectServer"
                                 onChange={(e) => {(onChangeAddRow(e, idx))}}
                             />
                         </td>
                         <td>
                             <input className="form-control form-control-sm" type="text"
-                                value={addRows[idx].companyName == null? "" : addRows[idx].companyName}
-                                name="companyName"
+                                value={addRows[idx].passwordToAccessProtectServer == null? "" : addRows[idx].passwordToAccessProtectServer}
+                                name="passwordToAccessProtectServer"
                                 onChange={(e) => {(onChangeAddRow(e, idx))}}
                             />
                         </td>
@@ -82,7 +96,16 @@ const CompanyBoard = ({companyList, onClickAciton, onClickAddRow, addRows, onCha
             </Fragment>
         )
     }
-    const products = companyList;
+    
+    
+    const companyList = [];
+    apiServerList.companyList.forEach(company => {
+        const companyValue = {};
+        companyValue.value = company
+        companyValue.label = company
+        companyList.push(companyValue);
+    });
+    const products = apiServerList.data.content;
     const columns = [
         // {
         //     dataField: 'companyIdx',
@@ -95,25 +118,51 @@ const CompanyBoard = ({companyList, onClickAciton, onClickAddRow, addRows, onCha
         //     }
         // },
         {
-            dataField: 'companyId',
-            text: '회사ID',
+            dataField: 'companyName',
+            text: '소속',
             sort: true,
-            validator: (newValue, row, column) => {
-                
-                var checkVal = /^[a-zA-Z0-9_]{2,20}$/
-                console.log(!checkVal.test(newValue));
-                if (!checkVal.test(newValue)) {
-                  return {
-                    valid: false,
-                    message: '2 ~ 20자리 숫자, 영문, _ 문자만 사용가능합니다.'
-                  };
-                }
-                return true;
-              }
+            // editorStyle: (cell, row, rowIndex, colIndex) =>{
+            //     return {fontSize:12};
+            // },
+            editor: {
+                type: Type.SELECT,
+                options: companyList
+            }
         }, 
         {
-            dataField: 'companyName',
-            text: '회사명',
+            dataField: 'serverHost',
+            text: '호스트',
+            sort: true
+        }, 
+        // {
+        //     dataField: 'domainNameToAccessProtectServer',
+        //     text: '도메인네임',
+        //     sort: true,
+        //     // editorStyle: (cell, row, rowIndex, colIndex) =>{
+        //     //     return {fontSize:12};
+        //     // },
+        //     editable: (cell, row, rowIndex, colIndex) => {
+        //         // return true or false;
+                
+        //         return true;
+        //     }
+        // }, 
+        {
+            dataField: 'userNameToAccessProtectServer',
+            text: '계정',
+            sort: true,
+            // editorStyle: (cell, row, rowIndex, colIndex) =>{
+            //     return {fontSize:12};
+            // },
+            editable: (cell, row, rowIndex, colIndex) => {
+                // return true or false;
+                
+                return true;
+            }
+        }, 
+        {
+            dataField: 'passwordToAccessProtectServer',
+            text: '암호',
             sort: true,
             // editorStyle: (cell, row, rowIndex, colIndex) =>{
             //     return {fontSize:12};
@@ -169,12 +218,35 @@ const CompanyBoard = ({companyList, onClickAciton, onClickAddRow, addRows, onCha
         }
     ];
 
+
+    const selectRow = {
+        mode: 'checkbox',
+        clickToSelect: false,
+        clickToEdit: true,
+        // clickToExpand: true
+      };
+    const cellEdit = cellEditFactory({
+            mode: 'click',
+            blurToSave: true,
+        }) 
+
     const customTotal = (from, to, size) => (
         <span className="react-bootstrap-table-pagination-total">
           Showing { from } to { to } of { size } Results
         </span>
       );
 
+    const expandRow = {
+        onlyOneExpanding: true,
+        showExpandColumn: false,
+        renderer: row => (
+          <div>
+            <p>{ `This Expand row is belong to rowKey ${row.id}` }</p>
+            <p>You can render anything here, also you can add additional data on every row object</p>
+            <p>expandRow.renderer callback will pass the origin row object to you</p>
+          </div>
+        )
+      };
 
     const paginationOptions = {
         custom: true,
@@ -223,7 +295,7 @@ const CompanyBoard = ({companyList, onClickAciton, onClickAddRow, addRows, onCha
       };
       
       return (
-        <div>
+        <Fragment>
           <PaginationProvider
             pagination={
               paginationFactory(paginationOptions)
@@ -236,7 +308,7 @@ const CompanyBoard = ({companyList, onClickAciton, onClickAddRow, addRows, onCha
                   }) => (
                     <div>
                     <ToolkitProvider
-                      keyField="companyIdx"
+                      keyField="apiserverIdx"
                       columns={ columns }
                       data={ products }
                       search
@@ -256,12 +328,14 @@ const CompanyBoard = ({companyList, onClickAciton, onClickAddRow, addRows, onCha
                             </div>
                             <hr />
                             <SizePerPageDropdownStandalone { ...paginationProps } />
-                            <BootstrapTable classes="company-table"
+                            <BootstrapTable classes="apiserver-table"
                                       bordered={false}
                                       cellEdit={cellEdit}
                                       selectRow={selectRow}
                               { ...toolkitprops.baseProps }
                               { ...paginationTableProps }
+                              wrapperClasses="table-responsive"
+                            //   expandRow = { expandRow }
                             />
                             <PaginationTotalStandalone { ...paginationProps }/>
                             
@@ -275,8 +349,7 @@ const CompanyBoard = ({companyList, onClickAciton, onClickAddRow, addRows, onCha
                   )
               }
           </PaginationProvider>
-        </div >
+        </Fragment>
       );
 };
-
-export default CompanyBoard;
+export default UserBoard;

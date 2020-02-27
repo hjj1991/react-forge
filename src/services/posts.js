@@ -48,7 +48,8 @@ axios.interceptors.response.use( response => {
     
 });
 
-var siteUrl = "http://migrate.eonit.co.kr:8080";
+// var siteUrl = "http://migrate.eonit.co.kr:8080";
+var siteUrl = "http://localhost:8080";
 
 
 

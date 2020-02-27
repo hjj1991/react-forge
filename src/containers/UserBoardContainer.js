@@ -1,19 +1,19 @@
 import React from 'react';
 import { withAlert } from 'react-alert'
 import { useAlert } from 'react-alert'
-import CompanyBoard from '../components/CompanyBoard';
 import * as service from 'services/posts'
 import { connect } from 'react-redux';
 import mypic from '../images/ajax-loader.gif';
 import { confirmAlert } from 'react-confirm-alert'; // Import
+import UserBoard from '../components/UserBoard';
 
 
 
-class CompanyBoardContainer extends React.Component {
+class UserBoardContainer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            companyList: [],
+            apiServerList: [],
             addRows:[],
             pending: false,
             isOk: false,
@@ -23,8 +23,7 @@ class CompanyBoardContainer extends React.Component {
 
     
     componentDidMount() {
-        this.getCompanyList();
-        console.log(this.props);
+        this.getApiServerList();
         // this.props.companyList = this.state.companyList;
         
     }
@@ -37,8 +36,7 @@ class CompanyBoardContainer extends React.Component {
 
     //수정버튼 클릭시 이벤트
     handleActionClick = (e, row) => {
-        // console.log(row);
-        this.updateCompany(row);
+        this.updateApiServer(row);
 
     }
     //추가된 Row 삭제
@@ -74,13 +72,13 @@ class CompanyBoardContainer extends React.Component {
 
     //추가된 Row 등록버튼 클릭시
     handleSubmitValue = (e) => {
-        this.insertCompany(this.state.addRows);
+        this.insertApiServer(this.state.addRows);
     }
     
     //회사추가 프로세스
-    insertCompany = async (data) => { 
+    insertApiServer = async (data) => { 
         confirmAlert({
-            // title: '추가하시겠습니까?',
+            title: '추가하시겠습니까?',
             message: '총 ' + data.length + '개의 회사를 추가하시려면 예를 클릭하세요.',
             buttons: [
               {
@@ -92,7 +90,7 @@ class CompanyBoardContainer extends React.Component {
                             pending: true,
                             isOk: false
                         })
-                        const insertResult = await service.insertCompany(this.props.userInfo.X_AUTH_TOKEN, data);
+                        const insertResult = await service.insertApiServer(this.props.userInfo.X_AUTH_TOKEN, data);
                         let failNameList = "";
                         insertResult.data.data.failNameList.forEach(element => {
                             failNameList = failNameList + ',' + element;
@@ -109,7 +107,7 @@ class CompanyBoardContainer extends React.Component {
                                                         실패 건수: {insertResult.data.data.failInsertCount} <br />
                                                         실패 목록: {failNameList}
                                                     </div>, {type: 'success'});
-                            this.getCompanyList();
+                            this.getApiServerList();
                         }else{
                             this.props.alert.show(  <div>
                                                         실패하였습니다.<br/>
@@ -120,7 +118,7 @@ class CompanyBoardContainer extends React.Component {
                                 pending: false,
                                 isOk: true
                             })
-                            this.getCompanyList();        
+                            this.getApiServerList();        
                         }
                         console.log('요청이 완료 된 다음에 실행됨')
                     } catch(e) {
@@ -129,7 +127,7 @@ class CompanyBoardContainer extends React.Component {
                             pending: false,
                             isOk: true
                         })
-                        this.getCompanyList();
+                        this.getApiServerList();
                     }
                     
                 }
@@ -143,10 +141,10 @@ class CompanyBoardContainer extends React.Component {
     }
 
 
-    //회사 수정 프로세스
-    updateCompany = async (row) => { 
+    //API서버 수정 프로세스
+    updateApiServer = async (row) => { 
         confirmAlert({
-            title: '수정하시겠습니까?',
+            // title: '수정하시겠습니까?',
             message: '수정하시려면 예를 클릭하세요.',
             buttons: [
               {
@@ -158,7 +156,7 @@ class CompanyBoardContainer extends React.Component {
                             pending: true,
                             isOk: false
                         })
-                        const updateResult = await service.updateCompany(this.props.userInfo.X_AUTH_TOKEN, row);
+                        const updateResult = await service.updateApiServer(this.props.userInfo.X_AUTH_TOKEN, row);
                         
                         if(updateResult.data.success){
                             this.setState({
@@ -166,7 +164,7 @@ class CompanyBoardContainer extends React.Component {
                                 isOk: true
                             })
                             this.props.alert.show('정상 수정되었습니다.', {type: 'success'});
-                            this.getCompanyList();
+                            this.getApiServerList();
                         }
                         console.log('요청이 완료 된 다음에 실행됨')
                     } catch(e) {
@@ -175,7 +173,7 @@ class CompanyBoardContainer extends React.Component {
                             pending: false,
                             isOk: true
                         })
-                        this.getCompanyList();
+                        this.getApiServerList();
                     }
                     
                 }
@@ -188,17 +186,30 @@ class CompanyBoardContainer extends React.Component {
         });
     }
 
-    //회사목록 호출 프로세스
-    getCompanyList = async () => {  
+    //API서버목록 호출 프로세스
+    getApiServerList = async () => {  
+        const data = this.props.userInfo;
         try {
             this.setState({
                 pending: true,
                 isOk: false
             })
-            const companyList = await service.getCompanyList(this.props.userInfo.X_AUTH_TOKEN);
-            if(companyList.data.success){
+            const apiServerList = await service.getApiServerList(this.props.userInfo.X_AUTH_TOKEN, data);
+            if(apiServerList.data.success){
+                console.log(apiServerList.data.data);
+                apiServerList.data.data.data.content.forEach(element => {
+                    console.log(element.companyIdx);
+                    if(element.companyIdx !== null){
+                        element.companyName = element.companyIdx.companyName;
+                        delete element.companyIdx;
+                    }else{
+                        element.companyName ="";
+                        delete element.companyIdx;
+                    }
+                    
+                });
                 this.setState({
-                    companyList: companyList.data.data.content,
+                    apiServerList: apiServerList.data.data,
                     pending: false,
                     isOk: true
                 })
@@ -214,8 +225,8 @@ class CompanyBoardContainer extends React.Component {
     render(){
         if( this.state.isOk ){
             return(
-                <CompanyBoard 
-                companyList={this.state.companyList} 
+                <UserBoard 
+                apiServerList={this.state.apiServerList} 
                 onClickAciton={this.handleActionClick}
                 onClickAddRow={this.handleAddRowClick}
                 addRows={this.state.addRows}
@@ -244,4 +255,4 @@ let mapStateToProps = (state) => {
 }
 
 
-export default connect(mapStateToProps)(withAlert()(CompanyBoardContainer));
+export default connect(mapStateToProps)(withAlert()(UserBoardContainer));

@@ -169,7 +169,7 @@ class WorkloadContainer extends React.Component {
 
 
         confirmAlert({
-            title: '작업하시겠습니까?',
+            // title: '작업하시겠습니까?',
             message: '진행하시려면 예를 클릭하세요.',
             buttons: [
               {
@@ -177,12 +177,8 @@ class WorkloadContainer extends React.Component {
                 onClick: () => {
                     console.log(checkedList);
                     checkedList.forEach( checkedValue => {
-                        console.log("2");
                         checkedValue.AvailableTransitions.forEach(availableAction => {
-                            console.log("3");
-                            console.log(targetValue);
                             if(availableAction.Name === targetValue){
-                                console.log("4");
                                 const actionUrl = availableAction.Uri;
                                 const serverHost = checkedValue.workloadServerHost;
                                 this.postWorkloadAction(serverHost, actionUrl);
