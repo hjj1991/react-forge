@@ -48,13 +48,13 @@ axios.interceptors.response.use( response => {
     
 });
 
-// var siteUrl = "http://migrate.eonit.co.kr:8080";
-var siteUrl = "http://localhost:8080";
+var siteUrl = "http://migrate.eonit.co.kr:8080";
+// var siteUrl = "http://localhost:8080";
 
 
 
 /*
-사용자 정보 호출 API
+    사용자 정보 호출 API
 */
 export function getUserDetail(token){
     console.log(token);
@@ -69,6 +69,21 @@ export function getUserDetail(token){
     )
 }
 
+/*
+    사용자 리스트 호출 API
+*/
+export function getUserList(token){
+    console.log(token);
+    return axios(
+        {
+            url:siteUrl + '/v1/user/list',
+            method: 'get',
+            headers: {
+                "X_AUTH_TOKEN": token
+            }
+        }
+    )
+}
 /*
 워크로드리스트 호출 API
 */

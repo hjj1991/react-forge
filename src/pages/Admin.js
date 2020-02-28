@@ -4,7 +4,7 @@ import Tabs from 'react-bootstrap/Tabs'
 import {Container, Row, Col, Form, Button} from 'react-bootstrap'
 import CompanyBoardContainer from '../containers/CompanyBoardContainer';
 import ApiServerBoardContainer from '../containers/ApiServerBoardContainer';
-import UserBoardContainer from '../containers/ApiServerBoardContainer';
+import UserBoardContainer from '../containers/UserBoardContainer';
 
 
 const Admin = () => {

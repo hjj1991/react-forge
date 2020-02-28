@@ -21,157 +21,31 @@ const GetActionFormat = (onClickAciton, cell, row) => {
         )
 }
 
+const UserBoard = ({userList, onClickAciton, onClickAddRow, addRows, onChangeAddRow, onClickRemove, onClickRowSubmit}) => {
+    
 
-const UserBoard = ({apiServerList, onClickAciton, onClickAddRow, addRows, onChangeAddRow, onClickRemove, onClickRowSubmit}) => {
-    let newRows;
-    if(addRows.length > 0){
-        newRows =  (
-            <Fragment>
-                <Alert variant="danger" style={{marginTop:'10px'}}>
-                    ※ 추가할 Migrate API서버 정보를 입력해주세요.
-                </Alert>
-                <Table  hover >
-                <thead>
-                    <tr>
-                        <th width="2%"></th>
-                        <th>소속</th>
-                        <th>호스트</th>
-                        {/* <th>도메인네임</th> */}
-                        <th>계정</th>
-                        <th>암호</th>
-                    </tr>
-                </thead>
-                <tbody> 
-                    {addRows.map((item, idx) => (
-                    <tr id="row0" key ={idx}>
-                        <td>{idx+1}</td>
-                        <td>
-                            <select className="form-control"
-                                value={addRows[idx].companyName == null? "" : addRows[idx].companyName}
-                                onChange={(e) => {(onChangeAddRow(e, idx))}}
-                                name="companyName">
-                                    {apiServerList.companyList.map((item2, indx) => (
-                                    <option value={item2}>{item2}</option>
-                                ))}
-                            </select>
-                        </td>
-                        <td>
-                            <input className="form-control form-control-sm" type="text"
-                                value={addRows[idx].serverHost == null? "" : addRows[idx].serverHost}
-                                name="serverHost"
-                                onChange={(e) => {(onChangeAddRow(e, idx))}}
-                            />
-                        </td>
-                        {/* <td>
-                            <input className="form-control form-control-sm" type="text"
-                                value={addRows[idx].domainNameToAccessProtectServer == null? "" : addRows[idx].domainNameToAccessProtectServer}
-                                name="domainNameToAccessProtectServer"
-                                onChange={(e) => {(onChangeAddRow(e, idx))}}
-                            />
-                        </td> */}
-                        <td>
-                            <input className="form-control form-control-sm" type="text"
-                                value={addRows[idx].userNameToAccessProtectServer == null? "" : addRows[idx].userNameToAccessProtectServer}
-                                name="userNameToAccessProtectServer"
-                                onChange={(e) => {(onChangeAddRow(e, idx))}}
-                            />
-                        </td>
-                        <td>
-                            <input className="form-control form-control-sm" type="text"
-                                value={addRows[idx].passwordToAccessProtectServer == null? "" : addRows[idx].passwordToAccessProtectServer}
-                                name="passwordToAccessProtectServer"
-                                onChange={(e) => {(onChangeAddRow(e, idx))}}
-                            />
-                        </td>
-                        <td>
-                            <Button variant="outline-danger" onClick={() => {(onClickRemove(idx))}}>X</Button>
-                        </td>
-                    </tr>
-                    ))}
-                    </tbody>
-                </Table>
-                <div>
-                    <Button variant="outline-info" onClick={onClickRowSubmit}>일괄등록</Button>
-                </div>
-            </Fragment>
-        )
-    }
-    
-    
-    const companyList = [];
-    apiServerList.companyList.forEach(company => {
-        const companyValue = {};
-        companyValue.value = company
-        companyValue.label = company
-        companyList.push(companyValue);
-    });
-    const products = apiServerList.data.content;
+    const products = userList.data.content;
+    console.log(products);
     const columns = [
-        // {
-        //     dataField: 'companyIdx',
-        //     text: '번호',
-        //     sort: true,
-        //     searchable: false,
-        //     editable: (cell, row, rowIndex, colIndex) => {
-        //         // return true or false;
-        //         return false;
-        //     }
-        // },
         {
-            dataField: 'companyName',
+            dataField: 'companyIdx.companyName',
             text: '소속',
             sort: true,
-            // editorStyle: (cell, row, rowIndex, colIndex) =>{
-            //     return {fontSize:12};
-            // },
-            editor: {
-                type: Type.SELECT,
-                options: companyList
-            }
         }, 
         {
-            dataField: 'serverHost',
-            text: '호스트',
+            dataField: 'userId',
+            text: '계정',
             sort: true
         }, 
-        // {
-        //     dataField: 'domainNameToAccessProtectServer',
-        //     text: '도메인네임',
-        //     sort: true,
-        //     // editorStyle: (cell, row, rowIndex, colIndex) =>{
-        //     //     return {fontSize:12};
-        //     // },
-        //     editable: (cell, row, rowIndex, colIndex) => {
-        //         // return true or false;
-                
-        //         return true;
-        //     }
-        // }, 
         {
-            dataField: 'userNameToAccessProtectServer',
-            text: '계정',
+            dataField: 'name',
+            text: '이름',
             sort: true,
-            // editorStyle: (cell, row, rowIndex, colIndex) =>{
-            //     return {fontSize:12};
-            // },
-            editable: (cell, row, rowIndex, colIndex) => {
-                // return true or false;
-                
-                return true;
-            }
         }, 
         {
-            dataField: 'passwordToAccessProtectServer',
-            text: '암호',
+            dataField: 'userEmail',
+            text: '이메일',
             sort: true,
-            // editorStyle: (cell, row, rowIndex, colIndex) =>{
-            //     return {fontSize:12};
-            // },
-            editable: (cell, row, rowIndex, colIndex) => {
-                // return true or false;
-                
-                return true;
-            }
         }, 
         {
             dataField: 'createdDate',
@@ -223,7 +97,7 @@ const UserBoard = ({apiServerList, onClickAciton, onClickAddRow, addRows, onChan
         mode: 'checkbox',
         clickToSelect: false,
         clickToEdit: true,
-        // clickToExpand: true
+        clickToExpand: true
       };
     const cellEdit = cellEditFactory({
             mode: 'click',
@@ -240,11 +114,33 @@ const UserBoard = ({apiServerList, onClickAciton, onClickAddRow, addRows, onChan
         onlyOneExpanding: true,
         showExpandColumn: false,
         renderer: row => (
-          <div>
-            <p>{ `This Expand row is belong to rowKey ${row.id}` }</p>
-            <p>You can render anything here, also you can add additional data on every row object</p>
-            <p>expandRow.renderer callback will pass the origin row object to you</p>
-          </div>
+            <Container>
+                <Row>
+                    <Col>
+                        소속: {row.companyIdx.companyName}
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        이메일: {row.userEmail}
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        전화번호: {row.userTel}
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        휴대폰번호: {row.userTel}
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        생성일자: {row.createdDate.substring(0, 10)}
+                    </Col>
+                </Row>
+            </Container>
         )
       };
 
@@ -308,7 +204,7 @@ const UserBoard = ({apiServerList, onClickAciton, onClickAddRow, addRows, onChan
                   }) => (
                     <div>
                     <ToolkitProvider
-                      keyField="apiserverIdx"
+                      keyField="userIdx"
                       columns={ columns }
                       data={ products }
                       search
@@ -316,9 +212,6 @@ const UserBoard = ({apiServerList, onClickAciton, onClickAddRow, addRows, onChan
                       {
                         toolkitprops => (
                           <div>
-                              <div>
-                                  {newRows}
-                              </div>
                               <hr />
                               
                                   <Button variant="outline-info" onClick={onClickAddRow}>신규등록</Button>
@@ -328,14 +221,14 @@ const UserBoard = ({apiServerList, onClickAciton, onClickAddRow, addRows, onChan
                             </div>
                             <hr />
                             <SizePerPageDropdownStandalone { ...paginationProps } />
-                            <BootstrapTable classes="apiserver-table"
+                            <BootstrapTable classes="user-table"
                                       bordered={false}
-                                      cellEdit={cellEdit}
-                                      selectRow={selectRow}
+                                    //   cellEdit={cellEdit}
+                                    //   selectRow={selectRow}
                               { ...toolkitprops.baseProps }
                               { ...paginationTableProps }
                               wrapperClasses="table-responsive"
-                            //   expandRow = { expandRow }
+                              expandRow = { expandRow }
                             />
                             <PaginationTotalStandalone { ...paginationProps }/>
                             

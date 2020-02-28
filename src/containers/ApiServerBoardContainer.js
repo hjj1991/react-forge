@@ -196,9 +196,9 @@ class ApiServerBoardContainer extends React.Component {
             })
             const apiServerList = await service.getApiServerList(this.props.userInfo.X_AUTH_TOKEN, data);
             if(apiServerList.data.success){
-                console.log(apiServerList.data.data);
+                // console.log(apiServerList.data.data);
                 apiServerList.data.data.data.content.forEach(element => {
-                    console.log(element.companyIdx);
+                    // console.log(element.companyIdx);
                     if(element.companyIdx !== null){
                         element.companyName = element.companyIdx.companyName;
                         delete element.companyIdx;
@@ -237,7 +237,7 @@ class ApiServerBoardContainer extends React.Component {
             )
         }else{
             return(
-                <div style={{"textAlign": "center"}}>
+                <div className="loding-div">
                     <img  alt="로딩중" src={mypic}/>
                 </div>
             )

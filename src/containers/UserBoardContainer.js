@@ -13,7 +13,7 @@ class UserBoardContainer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            apiServerList: [],
+            userList: [],
             addRows:[],
             pending: false,
             isOk: false,
@@ -23,7 +23,7 @@ class UserBoardContainer extends React.Component {
 
     
     componentDidMount() {
-        this.getApiServerList();
+        this.getUserList();
         // this.props.companyList = this.state.companyList;
         
     }
@@ -186,30 +186,18 @@ class UserBoardContainer extends React.Component {
         });
     }
 
-    //API서버목록 호출 프로세스
-    getApiServerList = async () => {  
+    //API사용자목록 호출 프로세스
+    getUserList = async () => {  
         const data = this.props.userInfo;
         try {
             this.setState({
                 pending: true,
                 isOk: false
             })
-            const apiServerList = await service.getApiServerList(this.props.userInfo.X_AUTH_TOKEN, data);
-            if(apiServerList.data.success){
-                console.log(apiServerList.data.data);
-                apiServerList.data.data.data.content.forEach(element => {
-                    console.log(element.companyIdx);
-                    if(element.companyIdx !== null){
-                        element.companyName = element.companyIdx.companyName;
-                        delete element.companyIdx;
-                    }else{
-                        element.companyName ="";
-                        delete element.companyIdx;
-                    }
-                    
-                });
+            const userList = await service.getUserList(this.props.userInfo.X_AUTH_TOKEN);
+            if(userList.data.success){
                 this.setState({
-                    apiServerList: apiServerList.data.data,
+                    userList: userList.data.data,
                     pending: false,
                     isOk: true
                 })
@@ -226,7 +214,7 @@ class UserBoardContainer extends React.Component {
         if( this.state.isOk ){
             return(
                 <UserBoard 
-                apiServerList={this.state.apiServerList} 
+                userList={this.state.userList} 
                 onClickAciton={this.handleActionClick}
                 onClickAddRow={this.handleAddRowClick}
                 addRows={this.state.addRows}
@@ -237,7 +225,7 @@ class UserBoardContainer extends React.Component {
             )
         }else{
             return(
-                <div style={{"textAlign": "center"}}>
+                <div className="loding-div">
                     <img  alt="로딩중" src={mypic}/>
                 </div>
             )

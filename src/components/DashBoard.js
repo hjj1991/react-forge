@@ -103,7 +103,7 @@ const DashBoard = ({ workloadList }) => {
     return (
         <div className="main-contents" >
             
-            <Row >
+            <Row>
                 <Col xs={12} md={4} style={{"marginBottom": "20px"}}>
                 <p className="main-contents-title"><b>대시보드</b></p>
                     <Row>

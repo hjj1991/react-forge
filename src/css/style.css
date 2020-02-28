@@ -65,6 +65,15 @@
     display: none;
 }
 
+.loding-div {
+    text-align: center;
+
+}
+
+.loding-div img {
+    width: 100%;
+}
+
 
 @media only screen and (min-width: 1200px) {
     .nav.nav-tabs{
@@ -99,6 +108,9 @@
     .apiserver-table td:nth-child(6),
     .apiserver-table th:nth-child(6) {display: none;}
 
+    .user-table td:nth-child(5),
+    .user-table th:nth-child(5) {display: none;}
+
 
 
 
@@ -113,6 +125,12 @@
     .nav.nav-tabs{
         font-size: 20px;
     }
+
+    .user-table td:nth-child(4),
+    .user-table td:nth-child(7),
+    .user-table th:nth-child(4),
+    .user-table th:nth-child(7) {display: none;}
+
 
 }
 

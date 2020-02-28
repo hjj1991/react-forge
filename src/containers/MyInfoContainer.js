@@ -107,7 +107,6 @@ class MyInfoContainer extends React.Component {
         if(typeof this.props.userInfo == "undefined"){
             return <Modal isOpen="true" contents="잘못된 접근입니다." page="/" />
         }
-        console.log(this.props.userInfo.name);
         return(
             this.state.isModalOpen?(
                 <Modal isOpen="true" contents={this.state.contents} page={this.state.page}/>

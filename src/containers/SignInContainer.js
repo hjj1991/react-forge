@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import * as service from 'services/posts'
 import { connect } from 'react-redux';
 import * as loginOkActions from '../store/modules/userLogin';
-import loding from 'images/ajax-loader.gif';
+import mypic from 'images/ajax-loader.gif';
 import storage from 'lib/storage';
 
 // import { bindActionCreators } from 'redux';
@@ -90,7 +90,11 @@ class SignInContainer extends React.Component {
         const { data, loading, msg, success } = this.state;
         return(
             loading?
-            (<img style={{"width": "100%"}} src={loding} />):
+            (
+                <div className="loding-div">
+                    <img  alt="로딩중" src={mypic}/>
+                 </div>
+            ):
             (
             <SignIn
             onClickSubmit={this.hanldeLoginClick}

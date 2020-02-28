@@ -58,9 +58,9 @@ class DashBoardContainer extends React.Component {
           )
           }else{
             return (
-              <div style={{"textAlign": "center"}}>
-                <img  alt="로딩중" src={mypic}/>
-              </div>
+                <div className="loding-div">
+                    <img  alt="로딩중" src={mypic}/>
+                </div>
             );
           }
       }

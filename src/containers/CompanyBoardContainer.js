@@ -226,7 +226,7 @@ class CompanyBoardContainer extends React.Component {
             )
         }else{
             return(
-                <div style={{"textAlign": "center"}}>
+                <div className="loding-div">
                     <img  alt="로딩중" src={mypic}/>
                 </div>
             )
