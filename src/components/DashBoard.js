@@ -10,16 +10,16 @@ import Card from 'react-bootstrap/Card'
 import WindowImage from 'images/windowsWorkload.png';
 import LinuxImage from 'images/linuxWorkload.png';
 
-const DashBoardItem = ({ CurrentState, Name, OperatingSystem, bgColor, itemIndex}) => {
+const DashBoardItem = ({ currentState, name, operatingSystem, bgColor, itemIndex}) => {
 
 
 
     return (
         <Col xs={4} md={4} lg={3} xl={2} >
             <Card bg={bgColor} text="white" style={{ "margin": "10px auto 10px auto", "textAlign": "center", "fontSize": "9px" }}>
-                <Card.Header style={{"textOverflow":"ellipsis",  "overflow":"hidden", "whiteSpace":"nowrap", "padding": "2px"}}>{OperatingSystem.substring(0, 6) === 'Window' ? <img  alt={OperatingSystem} src={WindowImage} /> : <img  alt={OperatingSystem} width="16px" src={LinuxImage} />} {Name}</Card.Header>
+                <Card.Header style={{"textOverflow":"ellipsis",  "overflow":"hidden", "whiteSpace":"nowrap", "padding": "2px"}}>{operatingSystem.substring(0, 6) === 'Window' ? <img  alt={operatingSystem} src={WindowImage} /> : <img  alt={operatingSystem} width="16px" src={LinuxImage} />} {name}</Card.Header>
                 <Card.Body>
-                    <Card.Text style={{"textOverflow":"ellipsis", "overflow":"hidden", "whiteSpace":"nowrap", "padding": "0px"}}>{CurrentState}</Card.Text>
+                    <Card.Text style={{"textOverflow":"ellipsis", "overflow":"hidden", "whiteSpace":"nowrap", "padding": "0px"}}>{currentState}</Card.Text>
                 </Card.Body>
             </Card>
         </Col>
@@ -60,25 +60,25 @@ const DashBoard = ({ workloadList }) => {
 
     const DashBoardItems = workloadList.map((workload, index) => {
         var bgColor;
-        if(workload.CurrentState === "Idle"){
+        if(workload.currentState === "Idle"){
             idle = idle + 1;
             bgColor = "success";
-        }else if(workload.CurrentState === "RunningIncremental"){
+        }else if(workload.currentState === "RunningIncremental"){
             runningIncremental = runningIncremental + 1;
             bgColor = "warning";
-        }else if(workload.CurrentState === "Replicating"){
+        }else if(workload.currentState === "Replicating"){
             replicating = replicating + 1;
             bgColor = "warning";
-        }else if(workload.CurrentState === "RunningIncrementalAndTestFailover"){
+        }else if(workload.currentState === "RunningIncrementalAndTestFailover"){
             runningIncrementalAndTestFailover = runningIncrementalAndTestFailover + 1;
             bgColor = "warning";
-        }else if(workload.CurrentState === "WaitingForCancelTestFailover"){
+        }else if(workload.currentState === "WaitingForCancelTestFailover"){
             waitingForCancelTestFailover = waitingForCancelTestFailover + 1;
             bgColor = "danger";
-        }else if(workload.CurrentState === "RunningTestFailover"){
+        }else if(workload.currentState === "RunningTestFailover"){
             runningTestFailover = runningTestFailover + 1;
             bgColor = "danger";
-        }else if(workload.CurrentState === "CancellingFailover"){
+        }else if(workload.currentState === "CancellingFailover"){
             cancellingFailover = cancellingFailover + 1;
             bgColor = "danger";
         }else{
@@ -88,9 +88,9 @@ const DashBoard = ({ workloadList }) => {
         return(
                 <DashBoardItem
                     itemIndex={index}
-                    CurrentState={workload.CurrentState}
-                    Name={workload.Name}
-                    OperatingSystem={workload.OperatingSystem}
+                    currentState={workload.currentState}
+                    name={workload.name}
+                    operatingSystem={workload.operatingSystem}
                     bgColor={bgColor}
                 />
              

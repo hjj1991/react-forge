@@ -154,7 +154,7 @@ const CompanyBoard = ({companyList, onClickAciton, onClickAddRow, addRows, onCha
                 }else{
                     return <img width="24px" alt="정상" src={cancelImg}/>
                 }
-                }
+            }
         },
         {
             text: 'action',

@@ -91,6 +91,7 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, isRunReplicat
     const inputEl = useRef(null);
     function convertDate(oldDate){
         var convertedDate;
+        console.log(oldDate);
         // if (workload.detail.Parameters[15].Value )
         // console.log(workload.detail.Parameters[12].Value.substring(11,13))
         if (oldDate.substring(11, 13) === "오후"){
@@ -146,18 +147,23 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, isRunReplicat
     //     }
 
         workloadList.forEach(workload => {
-        // console.log(workload.AvailableTransitions);
-            workload.lastTestedFailoverOn = convertDate(workload.Parameters[12].Value); 
-            workload.nextIncrementalOn = convertDate(workload.Parameters[16].Value);
+        console.log(workload);
+            workload.lastTestedFailoverOn = workload.lastTestedFailoverOn; 
+            workload.nextIncrementalOn = workload.lastIncrementalOn;
+
+            console.log(workload.lastFullOn);
+            console.log(new Date(workload.lastFullOn));
 
 
-            if (workload.Parameters[10].Value >= workload.Parameters[11].Value){
-                workload.lastReplication = convertDate(workload.Parameters[10].Value);
+            if (workload.lastFullOn >= workload.lastIncrementalOn){
+                workload.lastReplication = getTimeStamp(new Date(workload.lastFullOn));
+                console.log(workload.lastReplication);
             }else{
-                workload.lastReplication = convertDate(workload.Parameters[11].Value);
+                workload.lastReplication = getTimeStamp(new Date(workload.lastIncrementalOn));
+                console.log(workload.lastReplication);
             }
-            if (workload.Parameters[25].Value === "Aborting"){
-                workload.CurrentState = "Aborting";
+            if (workload.protectionState === "Aborting"){
+                workload.currentState = "Aborting";
             }
 
         });
@@ -191,14 +197,33 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, isRunReplicat
             sort: true,
         }, 
         {
-            dataField: 'Online',
+            dataField: 'online',
             text: '온라인',
             sort: true
         }, 
         {
-            dataField: 'Name',
+            dataField: 'name',
             text: '서버',
             sort: true,
+            formatter: (cell, row, index, extraData) => {
+                console.log(row.operatingSystem);
+                if(row.operatingSystem.substring(0, 6) === 'Window'){
+                    return (
+                        <Fragment>
+                            <img alt={row.operatingSystem} src={WindowImage} /> {cell}
+                        </Fragment>
+                        );
+                }else{
+                    return (
+                        <Fragment>
+                            <img width="16px" alt={row.operatingSystem} src={LinuxImage} /> {cell}
+                        </Fragment>
+                    );      
+                }
+                // operatingSystem.substring(0, 6) === 'Window' ? <img  alt={operatingSystem} src={WindowImage} /> : <img  alt={operatingSystem} width="16px" src={LinuxImage} />
+                // return row.operatingSystem.substring(0, 6) === 'Window' ? <img  alt={operatingSystem} src={WindowImage} /> : <img  alt={operatingSystem} width="16px" src={LinuxImage} />
+                
+            }
         }, 
         {
             dataField: '',
@@ -217,7 +242,7 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, isRunReplicat
             searchable: false,
         }, 
         {
-            dataField: 'CurrentState',
+            dataField: 'currentState',
             text: '상태',
             sort: true,
             searchable: true,
@@ -233,18 +258,24 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, isRunReplicat
             text: '복제예정',
             sort: true,
             searchable: false,
+            formatter: (cell, row, index, extraData) => (
+                getTimeStamp(new Date(cell))
+            )
         },
         {
             dataField: 'lastTestedFailoverOn',
             text: '마지막테스트',
             sort: true,
             searchable: false,
+            formatter: (cell, row, index, extraData) => (
+                getTimeStamp(new Date(cell))
+            )
         },
     ];
 
     const selectRow = {
         mode: 'checkbox',
-        clickToSelect: true,
+        clickToSelect: false,
         onSelect: onChangeCheckBox,
         hideSelectAll: true
       };
@@ -317,7 +348,7 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, isRunReplicat
                   }) => (
                     <div>
                     <ToolkitProvider
-                        keyField="Uri"
+                        keyField="workloadId"
                         columns={ columns }
                         data={ products }
                         search

@@ -45,7 +45,7 @@ class WorkloadContainer extends React.Component {
             })
             const workloadList = await service.getWorkloadList(this.props.userInfo.X_AUTH_TOKEN);
             this.setState({
-                workloadList: workloadList.data.data.Workloads,
+                workloadList: workloadList.data.data.content,
                 isOk: true
             })
             console.log('요청이 완료 된 다음에 실행됨')
@@ -87,21 +87,21 @@ class WorkloadContainer extends React.Component {
         rows.forEach(rowValue =>{
             if(rowValue.checked === true){
                 checkboxCheckedCount++;
-                rowValue.AvailableTransitions.forEach(rowAvailableAction => {
+                rowValue.availableActionList.forEach(rowAvailableAction => {
                     console.log(rowAvailableAction);
-                    if(rowAvailableAction.Name ===  "RunReplication"){
+                    if(rowAvailableAction.name ===  "RunReplication"){
                         runReplicationCount++;
                     }
-                    if(rowAvailableAction.Name === "RunIncremental"){
+                    if(rowAvailableAction.name === "RunIncremental"){
                         runIncrementalCount++;
                     }
-                    if(rowAvailableAction.Name === "RunIncrementalAndTestFailover"){
+                    if(rowAvailableAction.name === "RunIncrementalAndTestFailover"){
                         runIncrementalAndTestFailoverCount++;
                     }
-                    if(rowAvailableAction.Name === "TestFailover"){
+                    if(rowAvailableAction.name === "TestFailover"){
                         testFailoverCount++;
                     }
-                    if(rowAvailableAction.Name === "Abort"){
+                    if(rowAvailableAction.name === "Abort"){
                         abortCount++;
                     }
                 })
@@ -177,10 +177,10 @@ class WorkloadContainer extends React.Component {
                 onClick: () => {
                     console.log(checkedList);
                     checkedList.forEach( checkedValue => {
-                        checkedValue.AvailableTransitions.forEach(availableAction => {
-                            if(availableAction.Name === targetValue){
-                                const actionUrl = availableAction.Uri;
-                                const serverHost = checkedValue.workloadServerHost;
+                        checkedValue.availableActionList.forEach(availableAction => {
+                            if(availableAction.name === targetValue){
+                                const actionUrl = availableAction.uri;
+                                const serverHost = checkedValue.serverHost;
                                 this.postWorkloadAction(serverHost, actionUrl);
                                 
                             }

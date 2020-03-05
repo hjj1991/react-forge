@@ -31,8 +31,9 @@ class DashBoardContainer extends React.Component {
                 isOk: false
             })
             const workloadList = await service.getWorkloadList(this.props.userInfo.X_AUTH_TOKEN);
+            console.log(workloadList.data.data.content);
             this.setState({
-                workloadList: workloadList.data.data.Workloads,
+                workloadList: workloadList.data.data.content,
                 pending: false,
                 isOk: true
             })
