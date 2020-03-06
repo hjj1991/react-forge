@@ -192,10 +192,10 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, isRunReplicat
     const products = workloadList;
     const columns = [
         {
-            dataField: '',
-            text: '작업',
+            dataField: 'companyIdx.companyName',
+            text: '소속',
             sort: true,
-        }, 
+        },
         {
             dataField: 'online',
             text: '온라인',
@@ -246,6 +246,21 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, isRunReplicat
             text: '상태',
             sort: true,
             searchable: true,
+            formatter: (cell, row, index, extraData) => {
+                    if(cell === "Idle"){
+                        return <span style={{"color": "#28a745"}}>{cell}</span>
+                    }else if(cell === "RunningIncremental"){
+                        return <span style={{"color": "Orange"}}>Running Incremental</span>
+                    }else if(cell === "Replicating"){
+                        return <span style={{"color": "Orange"}}>{cell}</span>
+                    }else if(cell === "RunningIncrementalAndTestFailover"){
+                        return <span style={{"color": "Orange"}}>Running Incremental And TestFailover</span>
+                    }else if(cell === "RunningTestFailover"){
+                        return <span style={{"color": "Orange"}}>Running Test Failover</span>
+                    }else{
+                        return <span style={{"color": "red"}}>{cell}</span>
+                    }
+            }
         },
         {
             dataField: 'lastReplication',
@@ -364,7 +379,7 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, isRunReplicat
                             </div>
                             <hr />
                             <SizePerPageDropdownStandalone { ...paginationProps } />
-                            <BootstrapTable classes="company-table"
+                            <BootstrapTable classes="workload-table"
                                 { ...toolkitprops.baseProps }
                                 { ...paginationTableProps }
                                 ref={node}

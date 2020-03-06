@@ -112,6 +112,15 @@
     .user-table th:nth-child(5) {display: none;}
 
 
+    .workload-table td:nth-child(3),
+    .workload-table td:nth-child(n+5):nth-child(-n+7),
+    .workload-table td:nth-child(n+9),
+    .workload-table th:nth-child(3),
+    .workload-table th:nth-child(n+5):nth-child(-n+7),
+    .workload-table th:nth-child(n+9) {display: none;}
+
+
+
 
 
 }

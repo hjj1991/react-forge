@@ -33,6 +33,18 @@ const MyInfo = ({userInfo, isLoading, onClickLogout}) => {
                         </ListGroup.Item>
                         <ListGroup.Item>
                             <Row>
+                                <div className="col-3 info-title">소속</div>
+                                <div className="col-6 info-contents">{userInfo.companyName}</div>
+                            </Row>
+                        </ListGroup.Item>
+                        <ListGroup.Item>
+                            <Row>
+                                <div className="col-3 info-title">권한</div>
+                                <div className="col-6 info-contents">{userInfo.userRole}</div>
+                            </Row>
+                        </ListGroup.Item>
+                        <ListGroup.Item>
+                            <Row>
                                 <div className="col-3 info-title">이메일주소</div>
                                 <div className="col-6 info-contents">{userInfo.userEmail}</div>
                             </Row>
