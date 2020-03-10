@@ -17,7 +17,18 @@ class UserBoardContainer extends React.Component {
             addRows:[],
             pending: false,
             isOk: false,
-            editMode: false
+            editMode: false,
+            newUserFormView: false,
+            idCheckMessage: "5~20자의 영문 소문자, 숫자만 사용 가능합니다.",
+            idCheck: false,
+            idFontColor: "red",
+            pwCheckMessage: "비밀번호는 영문 숫자 조합 7 ~ 14자리 이상입니다.",
+            pwCheck: false,
+            pwFontColor: "red",
+            pw2Check: false,
+            nameCheck: false,
+            nameCheckMessage: "공백제외 한글, 영문, 숫자 2 ~ 10자로 입력해주세요.",
+            nameFontColor: "red",
         };
     }
 
@@ -39,36 +50,17 @@ class UserBoardContainer extends React.Component {
         this.updateApiServer(row);
 
     }
-    //추가된 Row 삭제
-    handleRemoveRowButtonClick = (indx) => {
-        const addRows = [...this.state.addRows];
-        addRows.splice(indx, 1);
-        this.setState({addRows})
-    }
+
     //회사 추가버튼 클릭시 Row추가
-    handleAddRowClick = () => {
-        const item = {
-            companyId: "",
-            companyName: ""
-        };
+    handleNewUserFormClick = () => {
+        if(this.state.newUserFormView === false){
+            this.getCompanyList();
+        }
         this.setState({
-            addRows: [...this.state.addRows, item]
+            newUserFormView: !this.state.newUserFormView
         });
     }
 
-    //추가된 Row의 값 추가
-    handleChageValue = (e, indx) => {
-        const {name, value} = e.target
-        const addRows = [...this.state.addRows];
-        addRows[indx] ={
-            ...this.state.addRows[indx],
-            [name]: value
-        };
-        
-        this.setState({
-            addRows: addRows
-        })
-    }
 
     //추가된 Row 등록버튼 클릭시
     handleSubmitValue = (e) => {
@@ -139,6 +131,157 @@ class UserBoardContainer extends React.Component {
             ]
         });
     }
+    //회원가입 양식 체크부분
+    handleCheckValue = (e, modifyFlag) => {
+
+        this.setState({
+            pending: false
+        })
+        let re = /^[a-z0-9]{5,20}$/     // 아이디와 패스워드가 적합한지 검사할 정규식
+        let targetId = e.target.id;
+        
+        if((targetId === "userPw" && modifyFlag !== true) || (targetId === "userPw" && modifyFlag === true && targetId !== "")){      //패스워드 유효성 검증
+            var reg1 = /^[a-z0-9~!@#$%^&*()_+|<>?:{}]{7,14}$/;    // a-z 0-9 중에 7자리 부터 14자리만 허용 한다는 뜻이구요
+            var reg2 = /[a-z]/g;    
+            var reg3 = /[0-9]/g; 
+            let pw = e.target.value;
+
+            if(reg1.test(pw) && reg2.test(pw) && reg3.test(pw)){
+                this.setState({
+                    pwCheckMessage: "사용가능한 비밀번호입니다.",      
+                    pwFontColor: "green",
+                    pwCheck: true
+                })
+            }else{
+                this.setState({
+                    pwCheckMessage: "비밀번호는 영문 숫자 조합 7 ~ 14자리 이상입니다.",   
+                    pwFontColor: "red",
+                    pwCheck: false         
+                })  
+            }
+        }
+        if((targetId === "userPw2" && modifyFlag !== true) || (targetId === "userPw2" && modifyFlag === true && targetId !== "")){
+            if(document.getElementById("userPw").value === document.getElementById("userPw2").value){
+                this.setState({
+                    pw2CheckMessage: "비밀번호가 일치합니다.",
+                    pw2FontColor: "green",
+                    pw2Check: true
+                })
+            }else{
+                this.setState({
+                    pw2CheckMessage: "비밀번호가 일치하지 않습니다.",
+                    pw2FontColor: "red",
+                    pw2Check: false
+                })
+            }
+        }
+        if(targetId === "userId"){      //아이디 유효성 검증
+            let id = e.target.value;
+            if(re.test(id)){
+                this.getCheckUserId(id);
+            }else{
+                this.setState({
+                    idCheckMessage: "5~20자의 영문 소문자, 숫자만 사용 가능합니다.",
+                    idFontColor: "red",
+                    idCheck: false
+                })
+            }
+        }
+        if(targetId === "name"){
+            let pattern = /([^가-힣\x20^a-z^A-Z^0-9])/i;
+            let blank_pattern = /[\s]/g;
+            let name = e.target.value;
+
+            if((!pattern.test(name)) && name.length >= 2 && name.length <= 10 && (!blank_pattern.test(name))){
+                this.setState({
+                    nameCheck: true,
+                    nameFontColor: "green",
+                    nameCheckMessage: "사용가능합니다.",
+                })
+            }else{
+                this.setState({
+                    nameCheck: false,
+                    nameFontColor: "red",
+                    nameCheckMessage: "공백제외 한글, 영문, 숫자 2 ~ 10자로 입력해주세요.",
+                })
+            }
+        }
+    }
+
+    //회원가입 프로세스
+    handleOnSignSubmit = (e) => {
+        e.preventDefault(); 
+        
+        this.setState({
+            signUpData:{
+                        userId: e.target.userId.value,
+                        userPw: e.target.userPw.value,
+                        name: e.target.name.value,
+                        userTel: e.target.userTel.value,
+                        userEmail: e.target.userEmail.value,
+                        userPhone: e.target.userPhone.value,
+                        companyIdx: e.target.companyIdx.value,
+                        userRole: e.target.userRole.value
+                }
+        }, () =>  {
+            let checkData = this.state;
+
+            if(checkData.idCheck && checkData.pwCheck && checkData.pw2Check && checkData.nameCheck && (checkData.userEmail !=="") && (checkData.userRole !== "") && (checkData.companyIdx !== "")){
+                this.postSignUp(this.state.signUpData)
+            }
+        }
+        );
+        
+    }
+    
+    //회원수정 프로세스
+    handleOnModifySubmit = (e) => {
+        e.preventDefault(); 
+        this.setState({
+            signUpData:{
+                        userId: e.target.userId.value,
+                        userPw: e.target.userPw.value,
+                        name: e.target.name.value,
+                        userTel: e.target.userTel.value,
+                        userEmail: e.target.userEmail.value,
+                        userPhone: e.target.userPhone.value,
+                        companyIdx: e.target.companyIdx.value,
+                        userRole: e.target.userRole.value
+                }
+        }, () =>  {
+            let checkData = this.state;
+
+            if(checkData.idCheck && checkData.pwCheck && checkData.pw2Check && checkData.nameCheck && (checkData.userEmail !=="") && (checkData.userRole !== "") && (checkData.companyIdx !== "")){
+                this.postSignUp(this.state.signUpData)
+            }
+        }
+        );
+        
+    }
+
+
+    postSignUp = async (data) => {
+        try {
+            const post = await service.postSignUp(data);
+
+            if(post.data.success === true){
+                this.props.alert.show('정상 가입되었습니다.', {type: 'success'});
+                this.setState({
+                    newUserFormView: false,
+                    idCheck: false,
+                    pwCheck: false,
+                    pw2Check: false,
+                    nameCheck: false
+                })
+                this.getUserList();
+            }else{
+                this.props.alert.show('실패하였습니다.', {type: 'error'})
+            }
+         } catch(e) {
+            console.log('에러가 발생!');
+            this.props.alert.show('실패하였습니다.', {type: 'error'})
+         }
+    }
 
 
     //API서버 수정 프로세스
@@ -186,9 +329,38 @@ class UserBoardContainer extends React.Component {
         });
     }
 
+    //아이디 중복체크
+    getCheckUserId = async (userId) => {
+
+        this.setState({
+            pending: false,
+            isCheckId: undefined,
+           
+        });
+        try {
+            const post = await service.getCheckId(userId)
+            console.log(post);
+
+            if(post.data.data === true){
+                this.setState({
+                    idCheckMessage : "이미 사용중이거나 탈퇴한 아이디입니다.",
+                    idFontColor: "red",
+                    idCheck: false
+                })
+            }else{
+                this.setState({
+                    idCheckMessage : "사용가능한 아이디입니다.",
+                    idFontColor: "green",
+                    idCheck: true
+                })
+            }
+        } catch(e) {
+            console.log('에러가 발생!');
+        }
+    }
+
     //API사용자목록 호출 프로세스
     getUserList = async () => {  
-        const data = this.props.userInfo;
         try {
             this.setState({
                 pending: true,
@@ -209,18 +381,53 @@ class UserBoardContainer extends React.Component {
         }
     }
 
+    //간단회사목록 호출 프로세스
+    getCompanyList = async () => {  
+        try {
+            this.setState({
+                pending: true,
+                isOk: false
+            })
+            const companyList = await service.getSimpleCompanyList(this.props.userInfo.X_AUTH_TOKEN);
+            if(companyList.data.success){
+                this.setState({
+                    companyList: companyList.data.data,
+                    pending: false,
+                    isOk: true
+                })
+            }
+
+            console.log('요청이 완료 된 다음에 실행됨')
+        } catch(e) {
+            console.log('에러가 발생!');
+        }
+    }
+
 
     render(){
         if( this.state.isOk ){
             return(
                 <UserBoard 
                 userList={this.state.userList} 
+                companyList={this.state.companyList}
+                checkUserValue={this.handleCheckValue}
+                idCheckMessage={this.state.idCheckMessage}  
+                idFontColor={this.state.idFontColor}  
+                pwCheckMessage={this.state.pwCheckMessage}  
+                pwFontColor={this.state.pwFontColor}
+                pw2CheckMessage={this.state.pw2CheckMessage}  
+                pw2FontColor={this.state.pw2FontColor}
+                nameCheckMessage={this.state.nameCheckMessage}
+                nameFontColor={this.state.nameFontColor}
+                nickNameCheckMessage={this.state.nickNameCheckMessage}
+                nickNameFontColor={this.state.nickNameFontColor}
                 onClickAciton={this.handleActionClick}
-                onClickAddRow={this.handleAddRowClick}
-                addRows={this.state.addRows}
-                onChangeAddRow={this.handleChageValue}
+                onClickNewUserForm={this.handleNewUserFormClick}
+                newUserFormView={this.state.newUserFormView}
                 onClickRemove={this.handleRemoveRowButtonClick}
-                onClickRowSubmit={this.handleSubmitValue}  />
+                onClickRowSubmit={this.handleSubmitValue}
+                onClickSignUp={this.handleOnSignUpSubmit}
+                onClickModify={this.handleOnModifySubmit}  />
                 
             )
         }else{

@@ -14,7 +14,7 @@ const PrivateRoute = ({ component: Component, userInfo, ...rest}) => (
             console.log(userInfo);
             if (typeof userInfo.name == "undefined"){
                 return <Redirect to ="/signin" />
-            } else {
+            }else{
                 return (
                     <React.Fragment>
                         <Menu {...props} />

@@ -26,17 +26,11 @@ const Menu = ({match}) => {
             <Navbar.Collapse id="responsive-navbar-nav">
                 <Nav className="mr-auto">
                 <Nav.Link active={isDashboard} href="/dashboard">Dashboard</Nav.Link>
-                {/* <Link className="nav-link" to="/Dashboard" >Dashboard</Link> */}
                 <Nav.Link active={isWorkloads} href="/workloads">Workloads</Nav.Link>
-                {/* <Link className="nav-link" to="/Workloads" onClick={() => window.location.reload()} >Workloads</Link> */}
-                {/* <NavDropdown title="Dropdown" id="collasible-nav-dropdown">
-                    <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-                    <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
-                    <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-                    <NavDropdown.Divider />
-                    <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
-                </NavDropdown> */}
-                <Nav.Link active={isAdmin} href="/admin">Admin</Nav.Link>
+                {userInfo.userRole === "전체 관리자" ?
+                    <Nav.Link active={isAdmin} href="/admin">Admin</Nav.Link>
+                    : null
+                }                
                 </Nav>
                 <Nav>
                     <Navbar.Text id="user-bar">환영합니다.{userInfo.name}님</Navbar.Text>
@@ -44,15 +38,6 @@ const Menu = ({match}) => {
                 </Nav>
             </Navbar.Collapse>
             </Navbar>
-            {/* <div>
-                <ul>
-                    <li><NavLink exact to="/" activeStyle={activeStyle}>Dashboard</NavLink></li>
-                    <li><NavLink exact to="/about" activeStyle={activeStyle}>Workloads</NavLink></li>
-                    <li><NavLink to="/about/foo" activeStyle={activeStyle}>Targets</NavLink></li>
-                    <li><NavLink to="/posts" activeStyle={activeStyle}>Tasks</NavLink></li>
-                </ul>
-                <hr/>
-            </div> */}
         </section>
     );
 };

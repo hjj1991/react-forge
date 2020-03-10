@@ -69,8 +69,10 @@ class App extends Component {
         }
 
       }
+      
 
     render(){
+        console.log(this.props.userInfo.userRole === "전체 관리자");
             return (
                 this.state.loading?(
                     <div>
@@ -80,7 +82,10 @@ class App extends Component {
                         <PrivateRoute exact path="/dashboard" component={DashBoard} />
                         <PrivateRoute exact path="/workloads" component={Workloads}/>
                         <PrivateRoute exact path="/workloadreplication" component={WorkloadReplication}/>
-                        <PrivateRoute exact path="/admin" component={Admin} />
+                        {this.props.userInfo.userRole === "전체 관리자"
+                            ? (<PrivateRoute exact path="/admin" component={Admin} />)
+                            :  null
+                        }
                         <Route exact path="/myinfo" component={MyInfo} />
                         {/* <Switch>
                             <Route path="/about/:name" component={About}/>

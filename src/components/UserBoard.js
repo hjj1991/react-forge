@@ -21,7 +21,85 @@ const GetActionFormat = (onClickAciton, cell, row) => {
         )
 }
 
-const UserBoard = ({userList, onClickAciton, onClickAddRow, addRows, onChangeAddRow, onClickRemove, onClickRowSubmit}) => {
+
+let newUserForm = (newUserFormView, companyList, onClickNewUserForm, checkUserValue,  idCheckMessage, idFontColor, pwCheckMessage, pwFontColor, pw2CheckMessage, pw2FontColor, nameCheckMessage, nameFontColor, onClickSignUp) => {
+    console.log(newUserFormView);
+    if(newUserFormView){
+        return(
+                <Fragment>
+                    <Form onSubmit={onClickSignUp}>
+                        <Form.Group controlId="userId" onBlur={checkUserValue}  >
+                            <Form.Label>아이디</Form.Label>
+                            <Form.Control type="text" placeholder="아이디를 입력하세요" required />
+                            <div style={{"color": idFontColor}}>
+                                {idCheckMessage}
+                            </div>
+                        </Form.Group>
+                        <Form.Group controlId="userPw" onChange={checkUserValue} >
+                            <Form.Label>비밀번호</Form.Label>
+                            <Form.Control type="password" placeholder="비밀번호를 입력하세요." required />
+                            <div style={{"color": pwFontColor}}>
+                                {pwCheckMessage}
+                            </div>
+                        </Form.Group>
+                        <Form.Group controlId="userPw2" onChange={checkUserValue} >
+                            <Form.Label>비밀번호확인</Form.Label>
+                            <Form.Control type="password" placeholder="비밀번호를 입력하세요." required />
+                            <div style={{"color": pw2FontColor}}>
+                                {pw2CheckMessage}
+                            </div>
+                        </Form.Group>
+                        <Form.Group controlId="name" onChange={checkUserValue} >
+                            <Form.Label>이름</Form.Label>
+                            <Form.Control type="text" placeholder="이름을 입력하세요" required />
+                            <div style={{"color": nameFontColor}}>
+                                {nameCheckMessage}
+                            </div>
+                        </Form.Group>
+                        <Form.Group controlId="userTel" onChange={checkUserValue} >
+                            <Form.Label>연락처</Form.Label>
+                            <Form.Control type="text" placeholder="연락처를 입력하세요" />
+                        </Form.Group>
+                        <Form.Group controlId="userPhone" >
+                            <Form.Label>핸드폰번호</Form.Label>
+                            <Form.Control type="text" placeholder="휴대폰번호를 입력하세요" />
+                        </Form.Group>
+                        <Form.Group controlId="userEmail">
+                            <Form.Label>이메일 주소</Form.Label>
+                            <Form.Control type="email" placeholder="name@example.com" required />
+                        </Form.Group>
+                        <Form.Group controlId="companyIdx" onChange={checkUserValue}>
+                            <Form.Label>소속</Form.Label>
+                            <Form.Control as="select" required>
+                                    <option value="">---회사목록---</option>
+                                {companyList.map((value) =>(
+                                    <option value={value.companyIdx}>{value.companyName}</option>
+                                ))}
+                            </Form.Control>
+                        </Form.Group>
+                        <Form.Group controlId="userRole" onChange={checkUserValue}>
+                            <Form.Label>권한</Form.Label>
+                            <Form.Control as="select" required>
+                                <option value="">---권한목록---</option>
+                                <option value="일반 사용자">일반 사용자</option>
+                                <option value="전체 관리자">전체 관리자</option>
+                            </Form.Control>
+                        </Form.Group>
+                        <Button variant="outline-secondary" type="submit" size="lg" block>
+                            회원가입
+                        </Button>
+                    </Form>
+                    <hr/>
+                    <Button variant="outline-info" onClick={onClickNewUserForm}>닫기</Button>
+                </Fragment>
+            )
+    }else{
+        return <Button variant="outline-info" onClick={onClickNewUserForm}>신규등록</Button>
+    }
+}
+const UserBoard = ({userList, companyList, newUserFormView, checkUserValue, onClickAciton, onClickNewUserForm,  idCheckMessage, idFontColor, pwCheckMessage, pwFontColor, pw2CheckMessage, pw2FontColor, nameCheckMessage, nameFontColor, onClickSignUp, onClickModify}) => {
+
+
     
 
     const products = userList.data.content;
@@ -115,31 +193,84 @@ const UserBoard = ({userList, onClickAciton, onClickAddRow, addRows, onChangeAdd
         showExpandColumn: false,
         renderer: row => (
             <Container>
-                <Row>
-                    <Col>
-                        소속: {row.companyIdx.companyName}
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        이메일: {row.userEmail}
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        전화번호: {row.userTel}
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        휴대폰번호: {row.userTel}
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        생성일자: {row.createdDate.substring(0, 10)}
-                    </Col>
-                </Row>
+                <Form onSubmit={onClickModify}>
+                    <Row>
+                        <div className="col-5 col-md-3 col-lg-2 info-title">아이디</div>
+                        <div className="col-7 col-md-9 col-lg-10 info-contents">{row.userId}</div>  
+                    </Row>
+                    <Row>
+                        <div className="col-5 col-md-3 col-lg-2 info-title">비밀번호</div>
+                        <div className="col-7 col-md-9 col-lg-10 info-contents">
+                            <input type="password" id="userPw" className="form-control" onChange={(e) => {checkUserValue(e, true);}} />
+                            <div style={{"color": pwFontColor}}>
+                                {pwCheckMessage}
+                            </div>
+                        </div>  
+                    </Row>   
+                    <Row>
+                        <div className="col-5 col-md-3 col-lg-2 info-title">비밀번호확인</div>
+                        <div className="col-7 col-md-9 col-lg-10 info-contents">
+                            <input type="password" id="userPw2" className="form-control" onChange={(e) => {checkUserValue(e, true);}} />
+                            <div style={{"color": pw2FontColor}}>
+                                {pw2CheckMessage}
+                            </div>
+                        </div>  
+                    </Row>               
+                    <Row>
+                        <div className="col-5 col-md-3 col-lg-2 info-title">이름</div>
+                        <div className="col-7 col-md-9 col-lg-10 info-contents">
+                            <input type="text" id="name" className="form-control" defaultValue={row.name} onChange={checkUserValue} required />
+                            <div style={{"color": nameFontColor}}>
+                                {nameCheckMessage}
+                            </div>
+                        </div>  
+                        
+                    </Row>        
+                    <Row>
+                        <div className="col-5 col-md-3 col-lg-2 info-title">연락처</div>
+                        <div className="col-7 col-md-9 col-lg-10 info-contents">
+                            <input type="text" id="userTel" className="form-control" defaultValue={row.userTel} onChange={checkUserValue} />
+                        </div>  
+                    </Row>
+                    <Row>
+                        <div className="col-5 col-md-3 col-lg-2 info-title">핸드폰번호</div>
+                        <div className="col-7 col-md-9 col-lg-10 info-contents">
+                            <input type="text" id="userPhone" className="form-control" defaultValue={row.userPhone} onChange={checkUserValue} />
+                        </div>  
+                    </Row>
+                    <Row>
+                        <div className="col-5 col-md-3 col-lg-2 info-title">이메일 주소</div>
+                        <div className="col-7 col-md-9 col-lg-10 info-contents">
+                            <input type="email" id="userEmail" className="form-control" defaultValue={row.userEmail} onChange={checkUserValue} required />
+                        </div>
+                    </Row>
+                    <Row>
+                        <div className="col-5 col-md-3 col-lg-2 info-title">소속</div>
+                        <div className="col-7 col-md-9 col-lg-10 info-contents">
+                            <select id="compayIdx" className="form-control" defaultValue={row.companyIdx.companyIdx} onChange={checkUserValue} required>
+                                <option value="">---회사목록---</option>
+                                {userList.companyList.map((value) => 
+                                <option value={value.companyIdx}>{value.companyName}</option>
+                                )}
+                            </select>
+                        </div>
+                    </Row>
+                    <Row>
+                        <div className="col-5 col-md-3 col-lg-2 info-title">권한</div>
+                        <div className="col-7 col-md-9 col-lg-10 info-contents">
+                            <select id="userRole" className="form-control" defaultValue={row.userRoles[0]} onChange={checkUserValue} required>
+                                <option value="">---권한목록---</option>
+                                <option value="일반 사용자">일반 사용자</option>
+                                <option value="전체 관리자">전체 관리자</option>
+                            </select>
+                        </div>           
+                    </Row>
+                    <Row>
+                        <div className="col-5 col-md-3 col-lg-2 info-title">생성일자</div>
+                        <div className="col-7 col-md-9 col-lg-10 info-contents">{row.createdDate.substring(0, 10)}</div>
+                    </Row>
+                    <Button variant="outline-secondary" type="submit" size="lg" block>수정</Button>
+                </Form>
             </Container>
         )
       };
@@ -213,8 +344,8 @@ const UserBoard = ({userList, onClickAciton, onClickAddRow, addRows, onChangeAdd
                         toolkitprops => (
                           <div>
                               <hr />
-                              
-                                  <Button variant="outline-info" onClick={onClickAddRow}>신규등록</Button>
+                                    {newUserForm(newUserFormView, companyList, onClickNewUserForm, checkUserValue,  idCheckMessage, idFontColor, pwCheckMessage, pwFontColor, pw2CheckMessage, pw2FontColor, nameCheckMessage, nameFontColor, onClickSignUp)}
+                                    
                               <hr />
                               <div>
                             <MySearch { ...toolkitprops.searchProps } />

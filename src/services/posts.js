@@ -100,6 +100,13 @@ export function getWorkloadList(token){
 }
 
 /*
+사용자 아이디 중복체크 API
+*/
+export function getCheckId(id) {
+    return axios.get(siteUrl + `/v1/user/check/` + id);
+}
+
+/*
 사용자 로그인 호출 API
 */
 export function postSignIn(data){
@@ -107,6 +114,24 @@ export function postSignIn(data){
         userId: data.userId,
         userPw: data.userPw
     });
+}
+
+/*
+사용자 회원가입 호출 API
+*/
+export function postSignUp(data, token){
+
+    return axios(
+        {
+            url:siteUrl + '/v1/signup',
+                method: 'put',
+                data: data,
+                headers: {
+                    "X_AUTH_TOKEN": token
+                },
+            
+        }
+    )
 }
 
 /*
@@ -164,6 +189,21 @@ export function getCompanyList(token){
             url:siteUrl + '/v1/company',
             method: 'get',
             headers:{
+                "X_AUTH_TOKEN": token
+            }
+        }
+    )
+}
+
+/*
+    회사간단목록 호출 API
+*/
+export function getSimpleCompanyList(token){
+    return axios(
+        {
+            url:siteUrl + '/v1/company/simple/list',
+            method: 'get',
+            headers: {
                 "X_AUTH_TOKEN": token
             }
         }
