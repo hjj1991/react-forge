@@ -67,12 +67,6 @@ const MyInfo = ({userInfo, isLoading, onClickLogout}) => {
                                 <div className="col-6 info-contents">{userInfo.createdDate}</div>
                             </Row>
                         </ListGroup.Item>
-                        {/* <ListGroup.Item>
-                            <Row>
-                                <div className="col-3 info-title">최근로그인</div>
-                                <div className="col-6 info-contents">{userInfo.loginDate.replace("T", " ")}</div>
-                            </Row>
-                        </ListGroup.Item> */}
                         <ListGroup.Item></ListGroup.Item>
                     </ListGroup>
                 </Col>

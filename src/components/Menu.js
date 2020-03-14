@@ -6,7 +6,6 @@ import { NavLink } from 'react-router-dom';
 import logo from '../logo.png' //실제 로고파일 경로
 
 const Menu = ({match}) => {
-    console.log(match);
     let isDashboard, isWorkloads, isAdmin = false;
 
     if(match.url === "/dashboard"){

@@ -22,7 +22,7 @@ const GetActionFormat = (onClickAciton, cell, row) => {
 }
 
 
-let newUserForm = (newUserFormView, companyList, onClickNewUserForm, checkUserValue,  idCheckMessage, idFontColor, pwCheckMessage, pwFontColor, pw2CheckMessage, pw2FontColor, nameCheckMessage, nameFontColor, onClickSignUp) => {
+let newUserForm = (newUserFormView, companyList, onClickNewUserForm, checkUserValue, signUpCheckValues, onClickSignUp) => {
     console.log(newUserFormView);
     if(newUserFormView){
         return(
@@ -31,29 +31,29 @@ let newUserForm = (newUserFormView, companyList, onClickNewUserForm, checkUserVa
                         <Form.Group controlId="userId" onBlur={checkUserValue}  >
                             <Form.Label>아이디</Form.Label>
                             <Form.Control type="text" placeholder="아이디를 입력하세요" required />
-                            <div style={{"color": idFontColor}}>
-                                {idCheckMessage}
+                            <div style={{"color": signUpCheckValues.idFontColor}}>
+                                {signUpCheckValues.idCheckMessage}
                             </div>
                         </Form.Group>
                         <Form.Group controlId="userPw" onChange={checkUserValue} >
                             <Form.Label>비밀번호</Form.Label>
                             <Form.Control type="password" placeholder="비밀번호를 입력하세요." required />
-                            <div style={{"color": pwFontColor}}>
-                                {pwCheckMessage}
+                            <div style={{"color": signUpCheckValues.pwFontColor}}>
+                                {signUpCheckValues.pwCheckMessage}
                             </div>
                         </Form.Group>
                         <Form.Group controlId="userPw2" onChange={checkUserValue} >
                             <Form.Label>비밀번호확인</Form.Label>
                             <Form.Control type="password" placeholder="비밀번호를 입력하세요." required />
-                            <div style={{"color": pw2FontColor}}>
-                                {pw2CheckMessage}
+                            <div style={{"color": signUpCheckValues.pw2FontColor}}>
+                                {signUpCheckValues.pw2CheckMessage}
                             </div>
                         </Form.Group>
                         <Form.Group controlId="name" onChange={checkUserValue} >
                             <Form.Label>이름</Form.Label>
                             <Form.Control type="text" placeholder="이름을 입력하세요" required />
-                            <div style={{"color": nameFontColor}}>
-                                {nameCheckMessage}
+                            <div style={{"color": signUpCheckValues.nameFontColor}}>
+                                {signUpCheckValues.nameCheckMessage}
                             </div>
                         </Form.Group>
                         <Form.Group controlId="userTel" onChange={checkUserValue} >
@@ -97,7 +97,7 @@ let newUserForm = (newUserFormView, companyList, onClickNewUserForm, checkUserVa
         return <Button variant="outline-info" onClick={onClickNewUserForm}>신규등록</Button>
     }
 }
-const UserBoard = ({userList, companyList, newUserFormView, checkUserValue, onClickAciton, onClickNewUserForm,  idCheckMessage, idFontColor, pwCheckMessage, pwFontColor, pw2CheckMessage, pw2FontColor, nameCheckMessage, nameFontColor, onClickSignUp, onClickModify}) => {
+const UserBoard = ({userList, companyList, newUserFormView, checkUserValue, onClickAciton, onClickNewUserForm, signUpCheckValues, modifyCheckValues, onClickSignUp, onClickModify}) => {
 
 
     
@@ -156,17 +156,6 @@ const UserBoard = ({userList, companyList, newUserFormView, checkUserValue, onCl
                     return <img width="24px" alt="정상" src={cancelImg}/>
                 }
                 }
-        },
-        {
-            text: 'action',
-            dataField: '',
-            formatter: (cell, row) => (
-                GetActionFormat(onClickAciton, cell, row)
-            ),            
-            editable: (cell, row, rowIndex, colIndex) => {
-                
-                return false;
-            },
         }
     ];
 
@@ -193,17 +182,17 @@ const UserBoard = ({userList, companyList, newUserFormView, checkUserValue, onCl
         showExpandColumn: false,
         renderer: row => (
             <Container>
-                <Form onSubmit={onClickModify}>
+                <Form onSubmit={(e) => {onClickModify(e, row.userId)}}>
                     <Row>
                         <div className="col-5 col-md-3 col-lg-2 info-title">아이디</div>
-                        <div className="col-7 col-md-9 col-lg-10 info-contents">{row.userId}</div>  
+                        <div className="col-7 col-md-9 col-lg-10 info-contents" id="abcd">{row.userId}</div>  
                     </Row>
                     <Row>
                         <div className="col-5 col-md-3 col-lg-2 info-title">비밀번호</div>
                         <div className="col-7 col-md-9 col-lg-10 info-contents">
                             <input type="password" id="userPw" className="form-control" onChange={(e) => {checkUserValue(e, true);}} />
-                            <div style={{"color": pwFontColor}}>
-                                {pwCheckMessage}
+                            <div style={{"color": modifyCheckValues.pwFontColor}}>
+                                {modifyCheckValues.pwCheckMessage}
                             </div>
                         </div>  
                     </Row>   
@@ -211,17 +200,17 @@ const UserBoard = ({userList, companyList, newUserFormView, checkUserValue, onCl
                         <div className="col-5 col-md-3 col-lg-2 info-title">비밀번호확인</div>
                         <div className="col-7 col-md-9 col-lg-10 info-contents">
                             <input type="password" id="userPw2" className="form-control" onChange={(e) => {checkUserValue(e, true);}} />
-                            <div style={{"color": pw2FontColor}}>
-                                {pw2CheckMessage}
+                            <div style={{"color": modifyCheckValues.pw2FontColor}}>
+                                {modifyCheckValues.pw2CheckMessage}
                             </div>
                         </div>  
                     </Row>               
                     <Row>
                         <div className="col-5 col-md-3 col-lg-2 info-title">이름</div>
                         <div className="col-7 col-md-9 col-lg-10 info-contents">
-                            <input type="text" id="name" className="form-control" defaultValue={row.name} onChange={checkUserValue} required />
-                            <div style={{"color": nameFontColor}}>
-                                {nameCheckMessage}
+                            <input type="text" id="name" className="form-control" defaultValue={row.name} onChange={(e) => {checkUserValue(e, true)}} required />
+                            <div style={{"color": modifyCheckValues.nameFontColor}}>
+                                {modifyCheckValues.nameCheckMessage}
                             </div>
                         </div>  
                         
@@ -229,25 +218,25 @@ const UserBoard = ({userList, companyList, newUserFormView, checkUserValue, onCl
                     <Row>
                         <div className="col-5 col-md-3 col-lg-2 info-title">연락처</div>
                         <div className="col-7 col-md-9 col-lg-10 info-contents">
-                            <input type="text" id="userTel" className="form-control" defaultValue={row.userTel} onChange={checkUserValue} />
+                            <input type="text" id="userTel" className="form-control" defaultValue={row.userTel} />
                         </div>  
                     </Row>
                     <Row>
                         <div className="col-5 col-md-3 col-lg-2 info-title">핸드폰번호</div>
                         <div className="col-7 col-md-9 col-lg-10 info-contents">
-                            <input type="text" id="userPhone" className="form-control" defaultValue={row.userPhone} onChange={checkUserValue} />
+                            <input type="text" id="userPhone" className="form-control" defaultValue={row.userPhone} />
                         </div>  
                     </Row>
                     <Row>
                         <div className="col-5 col-md-3 col-lg-2 info-title">이메일 주소</div>
                         <div className="col-7 col-md-9 col-lg-10 info-contents">
-                            <input type="email" id="userEmail" className="form-control" defaultValue={row.userEmail} onChange={checkUserValue} required />
+                            <input type="email" id="userEmail" className="form-control" defaultValue={row.userEmail}  required />
                         </div>
                     </Row>
                     <Row>
                         <div className="col-5 col-md-3 col-lg-2 info-title">소속</div>
                         <div className="col-7 col-md-9 col-lg-10 info-contents">
-                            <select id="compayIdx" className="form-control" defaultValue={row.companyIdx.companyIdx} onChange={checkUserValue} required>
+                            <select id="companyIdx" className="form-control" defaultValue={row.companyIdx.companyIdx} required>
                                 <option value="">---회사목록---</option>
                                 {userList.companyList.map((value) => 
                                 <option value={value.companyIdx}>{value.companyName}</option>
@@ -258,11 +247,36 @@ const UserBoard = ({userList, companyList, newUserFormView, checkUserValue, onCl
                     <Row>
                         <div className="col-5 col-md-3 col-lg-2 info-title">권한</div>
                         <div className="col-7 col-md-9 col-lg-10 info-contents">
-                            <select id="userRole" className="form-control" defaultValue={row.userRoles[0]} onChange={checkUserValue} required>
+                            <select id="userRole" className="form-control" defaultValue={row.userRoles[0]} required>
                                 <option value="">---권한목록---</option>
                                 <option value="일반 사용자">일반 사용자</option>
                                 <option value="전체 관리자">전체 관리자</option>
                             </select>
+                        </div>           
+                    </Row>
+                    <Row>
+                        <div className="col-5 col-md-3 col-lg-2 info-title">삭제여부</div>
+                        <div className="col-7 col-md-9 col-lg-10 info-contents">
+                            {row.deletedYn === "Y"?
+                                <Form.Check 
+                                onChange={(e) => {checkUserValue(e, true)}}
+                                defaultChecked
+                                style={{"color": "red"}}
+                                type="switch"
+                                id="deletedYn"
+                                name="deletedYn"
+                                label="삭제하려면 체크하세요"
+                            />:
+                            <Form.Check 
+                                onChange={(e) => {checkUserValue(e, true)}}
+                                style={{"color": "red"}}
+                                type="switch"
+                                id="deletedYn"
+                                name="deletedYn"
+                                label="삭제하려면 체크하세요"
+                            />
+                            }
+                            
                         </div>           
                     </Row>
                     <Row>
@@ -277,7 +291,7 @@ const UserBoard = ({userList, companyList, newUserFormView, checkUserValue, onCl
 
     const paginationOptions = {
         custom: true,
-        paginationSize: 5,
+        paginationSize: 10,
         pageStartIndex: 1,
         withFirstAndLast: false,
         // alwaysShowAllBtns: true, // Always show next and previous button
@@ -294,9 +308,8 @@ const UserBoard = ({userList, companyList, newUserFormView, checkUserValue, onCl
         lastPageTitle: 'Last page',
         showTotal: true,
         paginationTotalRenderer: customTotal,
-        sizePerPageList: [{
-          text: '5', value: 5
-        }, {
+        sizePerPageList: [
+        {
           text: '10', value: 10
         }, {
           text: 'All', value: products.length
@@ -333,7 +346,6 @@ const UserBoard = ({userList, companyList, newUserFormView, checkUserValue, onCl
                       paginationProps,
                       paginationTableProps
                   }) => (
-                    <div>
                     <ToolkitProvider
                       keyField="userIdx"
                       columns={ columns }
@@ -344,7 +356,7 @@ const UserBoard = ({userList, companyList, newUserFormView, checkUserValue, onCl
                         toolkitprops => (
                           <div>
                               <hr />
-                                    {newUserForm(newUserFormView, companyList, onClickNewUserForm, checkUserValue,  idCheckMessage, idFontColor, pwCheckMessage, pwFontColor, pw2CheckMessage, pw2FontColor, nameCheckMessage, nameFontColor, onClickSignUp)}
+                                    {newUserForm(newUserFormView, companyList, onClickNewUserForm, checkUserValue, signUpCheckValues, onClickSignUp)}
                                     
                               <hr />
                               <div>
@@ -369,7 +381,6 @@ const UserBoard = ({userList, companyList, newUserFormView, checkUserValue, onCl
                       }
                     </ToolkitProvider>
                     
-                  </div>
                   )
               }
           </PaginationProvider>

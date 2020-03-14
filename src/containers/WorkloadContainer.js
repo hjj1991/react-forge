@@ -2,6 +2,7 @@ import React from 'react';
 import Workload from '../components/Workload';
 import * as service from 'services/posts'
 import { connect } from 'react-redux';
+import { withAlert } from 'react-alert'
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import mypic from '../images/ajax-loader.gif';
 
@@ -17,7 +18,11 @@ class WorkloadContainer extends React.Component {
             isRunIncremental: false,
             isRunIncrementalAndTestFailover: false,
             isTestFailover: false,
-            isAbort: false
+            isAbort: false,
+            actionResult:{
+                actionSuccessCount:0,
+                actionFailCount:0
+            }
         };
     }
 
@@ -57,15 +62,24 @@ class WorkloadContainer extends React.Component {
     postWorkloadAction  = async (serverHost, actionUrl) => {  
         console.log(actionUrl);
         try {
-            this.setState({
-                pending: true,
-                isOk: false
-            })
-            await service.postWorkloadAction(this.props.userInfo.X_AUTH_TOKEN, serverHost, actionUrl);
-            await this.getWorkloadList();
-            this.setState({
-                isOk: true
-            })
+
+            const postResult = await service.postWorkloadAction(this.props.userInfo.X_AUTH_TOKEN, serverHost, actionUrl);
+            if(postResult.data.success){
+                this.setState({
+                    actionResult:{
+                        ...this.state.actionResult,
+                        actionSuccessCount: this.state.actionResult.actionSuccessCount + 1
+                    }
+                })
+            }else{
+                this.setState({
+                    actionResult:{
+                        ...this.state.actionResult,
+                        actionFailCount: this.state.actionResult.actionFailCount + 1
+                    }
+                })       
+            }
+
             console.log('요청이 완료 된 다음에 실행됨')
         } catch(e) {
             console.log('에러가 발생!');
@@ -88,7 +102,6 @@ class WorkloadContainer extends React.Component {
             if(rowValue.checked === true){
                 checkboxCheckedCount++;
                 rowValue.availableActionList.forEach(rowAvailableAction => {
-                    console.log(rowAvailableAction);
                     if(rowAvailableAction.name ===  "RunReplication"){
                         runReplicationCount++;
                     }
@@ -142,8 +155,6 @@ class WorkloadContainer extends React.Component {
             isAbort = false;
         }
 
-        console.log(runReplicationCount);
-        console.log(checkboxCheckedCount);
 
         this.setState({ 
             isRunReplication: isRunReplication,
@@ -156,7 +167,7 @@ class WorkloadContainer extends React.Component {
 
     }
 
-    handleButtonClick = (e) => {  //버튼 선택에따른 이벤트
+    handleButtonClick = async (e) => {  //버튼 선택에따른 이벤트
 
         const rows = this.nodeRef.current.table.props.data;
         const checkedList = []
@@ -174,17 +185,36 @@ class WorkloadContainer extends React.Component {
             buttons: [
               {
                 label: '예',
-                onClick: () => {
+                onClick: async () => {
                     console.log(checkedList);
-                    checkedList.forEach( checkedValue => {
-                        checkedValue.availableActionList.forEach(availableAction => {
+                    this.setState({
+                        pending: true,
+                        isOk: false
+                    });
+
+                    const lastPromise = checkedList.map( async (checkedValue) => {
+                        const promises = checkedValue.availableActionList.map( async (availableAction) =>  {
                             if(availableAction.name === targetValue){
                                 const actionUrl = availableAction.uri;
                                 const serverHost = checkedValue.serverHost;
-                                this.postWorkloadAction(serverHost, actionUrl);
-                                
+                                await this.postWorkloadAction(serverHost, actionUrl);
                             }
                         })
+                        await Promise.all(promises);
+                        
+                        
+                    })
+
+                    await Promise.all(lastPromise);
+                    this.props.alert.show('성공:' + this.state.actionResult.actionSuccessCount + '실패:' + this.state.actionResult.actionFailCount, {type: 'info'});
+                    await this.getWorkloadList();
+                    this.setState({
+                        actionResult: {
+                            actionSuccessCount: 0,
+                            actionFailCount: 0
+                        },
+                        pending: false,
+                        isOk: true
                     })
                 }
               },
@@ -241,6 +271,4 @@ let mapStateToProps = (state) => {
     };
 }
 
-export default connect(
-    mapStateToProps,     
-)(WorkloadContainer);;
+export default connect(mapStateToProps)(withAlert()(WorkloadContainer));

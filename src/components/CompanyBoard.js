@@ -77,7 +77,7 @@ const CompanyBoard = ({companyList, onClickAciton, onClickAddRow, addRows, onCha
                     </tbody>
                 </Table>
                 <div>
-                    <Button variant="outline-info" onClick={onClickRowSubmit}>일괄등록</Button>
+                    <Button variant="outline-secondary" onClick={onClickRowSubmit} block>일괄등록</Button>
                 </div>
             </Fragment>
         )
@@ -178,7 +178,7 @@ const CompanyBoard = ({companyList, onClickAciton, onClickAddRow, addRows, onCha
 
     const paginationOptions = {
         custom: true,
-        paginationSize: 5,
+        paginationSize: 10,
         pageStartIndex: 1,
         withFirstAndLast: false,
         // alwaysShowAllBtns: true, // Always show next and previous button
@@ -195,9 +195,8 @@ const CompanyBoard = ({companyList, onClickAciton, onClickAddRow, addRows, onCha
         lastPageTitle: 'Last page',
         showTotal: true,
         paginationTotalRenderer: customTotal,
-        sizePerPageList: [{
-          text: '5', value: 5
-        }, {
+        sizePerPageList: [
+        {
           text: '10', value: 10
         }, {
           text: 'All', value: products.length

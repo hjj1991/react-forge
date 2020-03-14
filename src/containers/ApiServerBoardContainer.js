@@ -48,7 +48,6 @@ class ApiServerBoardContainer extends React.Component {
     //회사 추가버튼 클릭시 Row추가
     handleAddRowClick = () => {
         const item = {
-            companyId: "",
             companyName: ""
         };
         this.setState({

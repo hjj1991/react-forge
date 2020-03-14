@@ -50,6 +50,7 @@ const ApiServerBoard = ({apiServerList, onClickAciton, onClickAddRow, addRows, o
                                 value={addRows[idx].companyName == null? "" : addRows[idx].companyName}
                                 onChange={(e) => {(onChangeAddRow(e, idx))}}
                                 name="companyName">
+                                    <option>---회사목록---</option>
                                     {apiServerList.companyList.map((item2, indx) => (
                                     <option value={item2}>{item2}</option>
                                 ))}
@@ -91,7 +92,7 @@ const ApiServerBoard = ({apiServerList, onClickAciton, onClickAddRow, addRows, o
                     </tbody>
                 </Table>
                 <div>
-                    <Button variant="outline-info" onClick={onClickRowSubmit}>일괄등록</Button>
+                    <Button variant="outline-secondary" onClick={onClickRowSubmit} block>일괄등록</Button>
                 </div>
             </Fragment>
         )
@@ -250,7 +251,7 @@ const ApiServerBoard = ({apiServerList, onClickAciton, onClickAddRow, addRows, o
 
     const paginationOptions = {
         custom: true,
-        paginationSize: 5,
+        paginationSize: 10,
         pageStartIndex: 1,
         withFirstAndLast: false,
         // alwaysShowAllBtns: true, // Always show next and previous button
@@ -267,9 +268,8 @@ const ApiServerBoard = ({apiServerList, onClickAciton, onClickAddRow, addRows, o
         lastPageTitle: 'Last page',
         showTotal: true,
         paginationTotalRenderer: customTotal,
-        sizePerPageList: [{
-          text: '5', value: 5
-        }, {
+        sizePerPageList: [
+        {
           text: '10', value: 10
         }, {
           text: 'All', value: products.length

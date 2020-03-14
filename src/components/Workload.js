@@ -147,20 +147,16 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, isRunReplicat
     //     }
 
         workloadList.forEach(workload => {
-        console.log(workload);
             workload.lastTestedFailoverOn = workload.lastTestedFailoverOn; 
             workload.nextIncrementalOn = workload.lastIncrementalOn;
 
-            console.log(workload.lastFullOn);
-            console.log(new Date(workload.lastFullOn));
-
 
             if (workload.lastFullOn >= workload.lastIncrementalOn){
-                workload.lastReplication = getTimeStamp(new Date(workload.lastFullOn));
-                console.log(workload.lastReplication);
+                // workload.lastReplication = getTimeStamp(new Date(workload.lastFullOn));
+                workload.lastReplication = workload.lastFullOn;
             }else{
-                workload.lastReplication = getTimeStamp(new Date(workload.lastIncrementalOn));
-                console.log(workload.lastReplication);
+                // workload.lastReplication = getTimeStamp(new Date(workload.lastIncrementalOn));
+                workload.lastReplication = workload.lastIncrementalOn;
             }
             if (workload.protectionState === "Aborting"){
                 workload.currentState = "Aborting";
@@ -206,7 +202,6 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, isRunReplicat
             text: '서버',
             sort: true,
             formatter: (cell, row, index, extraData) => {
-                console.log(row.operatingSystem);
                 if(row.operatingSystem.substring(0, 6) === 'Window'){
                     return (
                         <Fragment>
@@ -274,7 +269,8 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, isRunReplicat
             sort: true,
             searchable: false,
             formatter: (cell, row, index, extraData) => (
-                getTimeStamp(new Date(cell))
+                // getTimeStamp(new Date(cell))
+                cell
             )
         },
         {
@@ -283,7 +279,8 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, isRunReplicat
             sort: true,
             searchable: false,
             formatter: (cell, row, index, extraData) => (
-                getTimeStamp(new Date(cell))
+                // getTimeStamp(new Date(cell))
+                cell
             )
         },
     ];

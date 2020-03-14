@@ -11,7 +11,6 @@ const PrivateRoute = ({ component: Component, userInfo, ...rest}) => (
     <Route
         {...rest}
         render={props => {
-            console.log(userInfo);
             if (typeof userInfo.name == "undefined"){
                 return <Redirect to ="/signin" />
             }else{

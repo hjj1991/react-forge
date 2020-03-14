@@ -18,6 +18,15 @@
     padding-bottom: 20px;
 } */
 
+#controlled-tab-example-tab-user,#controlled-tab-example-tab-apiServer,#controlled-tab-example-tab-company {
+    color: #17a2b8;
+}
+
+#controlled-tab-example-tab-user.active,#controlled-tab-example-tab-apiServer.active,#controlled-tab-example-tab-company.active {
+    color: black;
+}
+
+
 .boarder-bottom-toolbox-right {
     text-align: right;
 }

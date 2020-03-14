@@ -72,7 +72,6 @@ class App extends Component {
       
 
     render(){
-        console.log(this.props.userInfo.userRole === "전체 관리자");
             return (
                 this.state.loading?(
                     <div>
