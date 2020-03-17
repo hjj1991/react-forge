@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { withAlert } from 'react-alert'
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import mypic from '../images/ajax-loader.gif';
+import LoadingOverlay from 'react-loading-overlay';
 
 
 class WorkloadContainer extends React.Component {
@@ -13,6 +14,7 @@ class WorkloadContainer extends React.Component {
         this.nodeRef = React.createRef();
         this.state = {
             pending: false,
+            isActionLoading: false,
             isOk: false,
             isRunReplication: false,
             isRunIncremental: false,
@@ -42,7 +44,6 @@ class WorkloadContainer extends React.Component {
 
 
     getWorkloadList = async () => {  
-        // console.log(this.props.userInfo.X_AUTH_TOKEN);
         try {
             this.setState({
                 pending: true,
@@ -53,17 +54,14 @@ class WorkloadContainer extends React.Component {
                 workloadList: workloadList.data.data.content,
                 isOk: true
             })
-            console.log('요청이 완료 된 다음에 실행됨')
         } catch(e) {
-            console.log('에러가 발생!');
         }
     }
 
-    postWorkloadAction  = async (serverHost, actionUrl) => {  
-        console.log(actionUrl);
+    postWorkloadAction  = async (serverHost, actionUrl, workloadId) => {  
         try {
 
-            const postResult = await service.postWorkloadAction(this.props.userInfo.X_AUTH_TOKEN, serverHost, actionUrl);
+            const postResult = await service.postWorkloadAction(this.props.userInfo.X_AUTH_TOKEN, serverHost, actionUrl, workloadId);
             if(postResult.data.success){
                 this.setState({
                     actionResult:{
@@ -79,10 +77,7 @@ class WorkloadContainer extends React.Component {
                     }
                 })       
             }
-
-            console.log('요청이 완료 된 다음에 실행됨')
         } catch(e) {
-            console.log('에러가 발생!');
         }
     }
 
@@ -186,10 +181,9 @@ class WorkloadContainer extends React.Component {
               {
                 label: '예',
                 onClick: async () => {
-                    console.log(checkedList);
                     this.setState({
                         pending: true,
-                        isOk: false
+                        isActionLoading: true
                     });
 
                     const lastPromise = checkedList.map( async (checkedValue) => {
@@ -197,7 +191,8 @@ class WorkloadContainer extends React.Component {
                             if(availableAction.name === targetValue){
                                 const actionUrl = availableAction.uri;
                                 const serverHost = checkedValue.serverHost;
-                                await this.postWorkloadAction(serverHost, actionUrl);
+                                const workloadId = checkedValue.workloadId;
+                                await this.postWorkloadAction(serverHost, actionUrl, workloadId);
                             }
                         })
                         await Promise.all(promises);
@@ -214,7 +209,7 @@ class WorkloadContainer extends React.Component {
                             actionFailCount: 0
                         },
                         pending: false,
-                        isOk: true
+                        isActionLoading: false
                     })
                 }
               },
@@ -237,10 +232,23 @@ class WorkloadContainer extends React.Component {
     };
 
     render(){
-        // console.log(post[0].detail);
-        // console.log(this.handleCheckboxClick);
         if( this.state.isOk ){
             return (
+                <LoadingOverlay
+                    active={this.state.isActionLoading}
+                    spinner
+                    styles={{
+                        overlay: (base) => ({
+                          ...base,
+                          "position": "fixed",
+                          "width": "100%",
+                          "height": "100%",
+                          "left": "0",
+                          "z-index": "10"
+                        })
+                      }}
+                    text='잠시만 기다려주세요...'
+                    >
                     <Workload 
                         workloadList={this.state.workloadList} 
                         checkboxes={this.state.checkboxes}
@@ -252,12 +260,26 @@ class WorkloadContainer extends React.Component {
                         isTestFailover={this.state.isTestFailover}
                         isAbort={this.state.isAbort}
                         node={this.nodeRef} />
+                </LoadingOverlay>
             )
         }else{
             return (
-                    <div className="loding-div">
-                        <img  alt="로딩중" src={mypic}/>
-                    </div>
+                <LoadingOverlay
+                    active={true}
+                    spinner
+                    text='잠시만 기다려주세요...'
+                    styles={{
+                        overlay: (base) => ({
+                          ...base,
+                          "position": "fixed",
+                          "width": "100%",
+                          "height": "100%",
+                          "left": "0",
+                          "z-index": "10"
+                        })
+                      }}
+                    >
+                </LoadingOverlay>
             );
         }
     }

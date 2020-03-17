@@ -56,11 +56,6 @@ class App extends Component {
     
 
     componentDidUpdate(prevProps, prevState) {                  //props 변화에 따라 기존 컴포넌트의 업데이트 진행 함수
-        // console.log("하이하이0");
-        // console.log(this.props);
-        // console.log(this.state);
-        // console.log(prevProps.userInfo.length);
-        // console.log(prevState);
         if(this.props !== prevProps){
                 // this.props = prevProps;
                 this.setState({

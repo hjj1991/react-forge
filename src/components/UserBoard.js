@@ -23,7 +23,6 @@ const GetActionFormat = (onClickAciton, cell, row) => {
 
 
 let newUserForm = (newUserFormView, companyList, onClickNewUserForm, checkUserValue, signUpCheckValues, onClickSignUp) => {
-    console.log(newUserFormView);
     if(newUserFormView){
         return(
                 <Fragment>
@@ -103,7 +102,6 @@ const UserBoard = ({userList, companyList, newUserFormView, checkUserValue, onCl
     
 
     const products = userList.data.content;
-    console.log(products);
     const columns = [
         {
             dataField: 'companyIdx.companyName',

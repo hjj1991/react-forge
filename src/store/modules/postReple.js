@@ -41,8 +41,6 @@ export const getPost = (postId, replType) => dispatch => {
     var postResult = [] //결과값 저장 배열
     // 먼저, 요청이 시작했다는것을 알립니다
     dispatch({type: GET_REPLEPOST_PENDING});
-    console.log("하잉!");
-    console.log(replType);
 
     postId.forEach(element => {
         
@@ -53,7 +51,6 @@ export const getPost = (postId, replType) => dispatch => {
         getPostAPI(postUrl).then(
             (response) => {
                 // 요청이 성공했을경우, 서버 응답내용을 payload 로 설정하여 GET_POST_SUCCESS 액션을 디스패치합니다.
-                console.log(response);
                 postResult.push(response.data);
                 count = count + 1;
 
@@ -63,9 +60,6 @@ export const getPost = (postId, replType) => dispatch => {
                         payload: postResult
                     })
                 }
-                // console.log(count);
-                // console.log(resp.Workloads.length);
-
             }
         ).catch(error => {
             // 에러가 발생했을 경우, 에로 내용을 payload 로 설정하여 GET_POST_FAILURE 액션을 디스패치합니다.

@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import mypic from '../images/ajax-loader.gif';
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import UserBoard from '../components/UserBoard';
+import LoadingOverlay from 'react-loading-overlay';
 
 
 
@@ -123,7 +124,6 @@ class UserBoardContainer extends React.Component {
                             })
                             this.getApiServerList();        
                         }
-                        console.log('요청이 완료 된 다음에 실행됨')
                     } catch(e) {
                         this.props.alert.show('실패하였습니다.', {type: 'error'})
                         this.setState({
@@ -337,7 +337,6 @@ class UserBoardContainer extends React.Component {
 
         let checkData = this.state.signUpCheckValues;
 
-        console.log(signUpData);
         if(checkData.idCheck && checkData.pwCheck && checkData.pw2Check && checkData.nameCheck){
             this.postSignUp(signUpData)
         }
@@ -350,8 +349,6 @@ class UserBoardContainer extends React.Component {
         if(e.target.deletedYn.checked === true){
             deletedYn = "Y"
         }
-
-        console.log(e.target.deletedYn.value);
         const modifyUserData = {
                         userId: userId,
                         userPw: e.target.userPw.value,
@@ -363,8 +360,6 @@ class UserBoardContainer extends React.Component {
                         userRole: e.target.userRole.value,
                         deletedYn: deletedYn
                 };
-        console.log(modifyUserData);
-      
         let checkData = this.state.modifyCheckValues;
 
         if((typeof modifyUserData.userPw === "undefined") || modifyUserData.userPw === "" ){
@@ -406,7 +401,6 @@ class UserBoardContainer extends React.Component {
                     this.props.alert.show('실패하였습니다.', {type: 'error'})
                 }
              } catch(e) {
-                console.log('에러가 발생!');
                 this.props.alert.show('실패하였습니다.', {type: 'error'})
          }
     }
@@ -439,7 +433,6 @@ class UserBoardContainer extends React.Component {
                 this.props.alert.show('실패하였습니다.', {type: 'error'})
             }
          } catch(e) {
-            console.log('에러가 발생!');
             this.props.alert.show('실패하였습니다.', {type: 'error'})
          }
     }
@@ -470,7 +463,6 @@ class UserBoardContainer extends React.Component {
                             this.props.alert.show('정상 수정되었습니다.', {type: 'success'});
                             this.getApiServerList();
                         }
-                        console.log('요청이 완료 된 다음에 실행됨')
                     } catch(e) {
                         this.props.alert.show('실패하였습니다.', {type: 'error'})
                         this.setState({
@@ -500,8 +492,6 @@ class UserBoardContainer extends React.Component {
         });
         try {
             const post = await service.getCheckId(userId)
-            console.log(post);
-
             if(post.data.data === true){
                 this.setState({
                     signUpCheckValues: {
@@ -522,7 +512,6 @@ class UserBoardContainer extends React.Component {
                 })
             }
         } catch(e) {
-            console.log('에러가 발생!');
         }
     }
 
@@ -541,10 +530,7 @@ class UserBoardContainer extends React.Component {
                     isOk: true
                 })
             }
-
-            console.log('요청이 완료 된 다음에 실행됨')
         } catch(e) {
-            console.log('에러가 발생!');
         }
     }
 
@@ -563,10 +549,7 @@ class UserBoardContainer extends React.Component {
                     isOk: true
                 })
             }
-
-            console.log('요청이 완료 된 다음에 실행됨')
         } catch(e) {
-            console.log('에러가 발생!');
         }
     }
 
@@ -591,9 +574,22 @@ class UserBoardContainer extends React.Component {
             )
         }else{
             return(
-                <div className="loding-div">
-                    <img  alt="로딩중" src={mypic}/>
-                </div>
+                <LoadingOverlay
+                    active={true}
+                    spinner
+                    text='잠시만 기다려주세요...'
+                    styles={{
+                        overlay: (base) => ({
+                          ...base,
+                          "position": "fixed",
+                          "width": "100%",
+                          "height": "100%",
+                          "left": "0",
+                          "z-index": "10"
+                        })
+                      }}
+                    >
+                </LoadingOverlay>
             )
         }
     }

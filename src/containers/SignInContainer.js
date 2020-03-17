@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import * as service from 'services/posts'
 import { connect } from 'react-redux';
 import * as loginOkActions from '../store/modules/userLogin';
-import mypic from 'images/ajax-loader.gif';
+import LoadingOverlay from 'react-loading-overlay';
 import storage from 'lib/storage';
 
 // import { bindActionCreators } from 'redux';
@@ -42,19 +42,11 @@ class SignInContainer extends React.Component {
 
     getPost = async (signInData) => {
         const { LoginOkActions } = this.props;
-
-        // try {
-        //     await AbcActions.postLogin(signUpData);
-        //     console.log('요청이 완료 된 다음에 실행됨')
-        // } catch(e) {
-        //     console.log('에러가 발생!');
-        // }
         try {
             this.setState({
                 loading: true
             })
             const data = await service.postSignIn(signInData);
-            console.log(data);
             if(data.data.success){
                 LoginOkActions.setLoggedInfo(data.data.data);
                 storage.set('userLogin', data.data.data);
@@ -69,18 +61,15 @@ class SignInContainer extends React.Component {
             
             
         } catch(e) {
-            console.log('에러가 발생!');
         }
     }
 
     hanldeLoginClick = (e) => {
         e.preventDefault(); 
-        console.log(e.target);
         const signInData ={
             userId: e.target.userId.value,
             userPw: e.target.userPw.value,
         }
-        console.log(signInData);
         this.getPost(signInData);
         
     }
@@ -91,17 +80,30 @@ class SignInContainer extends React.Component {
         return(
             loading?
             (
-                <div className="loding-div">
-                    <img  alt="로딩중" src={mypic}/>
-                 </div>
+                <LoadingOverlay
+                    active={true}
+                    spinner
+                    text='잠시만 기다려주세요...'
+                    styles={{
+                        overlay: (base) => ({
+                          ...base,
+                          "position": "fixed",
+                          "width": "100%",
+                          "height": "100%",
+                          "left": "0",
+                          "z-index": "10"
+                        })
+                      }}
+                    >
+                </LoadingOverlay>
             ):
             (
             <SignIn
-            onClickSubmit={this.hanldeLoginClick}
-            data={data}
-            msg={msg}
-            success={success}
-            loading={loading}
+                onClickSubmit={this.hanldeLoginClick}
+                data={data}
+                msg={msg}
+                success={success}
+                loading={loading}
             />
             )
         )

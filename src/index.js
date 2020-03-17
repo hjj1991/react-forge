@@ -42,7 +42,8 @@ const composeEnhancers =
 
 const logger = createLogger();
 
-const store = createStore(rootReducer,  composeEnhancers(applyMiddleware(logger, ReduxThunk, penderMiddleware())));
+// const store = createStore(rootReducer,  composeEnhancers(applyMiddleware(logger, ReduxThunk, penderMiddleware())));
+const store = createStore(rootReducer);
 
 
 // **** (2) Provider 렌더링해서 기존의 App 감싸주기

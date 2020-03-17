@@ -20,17 +20,11 @@ class ReplicateContainer extends React.Component {
 
         try {
             await PostRepleActions.getPost(postId, replType);
-            console.log('요청이 완료 된 다음에 실행됨')
         } catch(e) {
-            console.log('에러가 발생!');
         }
     }
 
     handleButtonClick = (e) => {  //버튼 선택에따른 이벤트
-        // console.log("하위하위");
-        // console.log(this.props.checkedListValue);
-        // console.log(e.target.value);
-        // window.location.assign('/workloadReplication');
         this.getPost(this.props.checkedListValue.checkedListValue, e.target.value); //workload 리스트 콜
 
 
@@ -41,18 +35,12 @@ class ReplicateContainer extends React.Component {
     };
         
     render(){
-        console.log(this.props);
         const { error, pending, isLoadingReple} = this.props;
         var isModalOpen = false;
         
-        console.log("팬딩여부:" + pending);
-        console.log("로딩여부:" + isLoadingReple);
-        console.log("에러여부:" + error);
-        // console.log(post[0].detail);
 
         if(isLoadingReple === true){
             isModalOpen = true;
-            //window.location.assign('/Workloads');
         }
         if(pending === true){
             return (

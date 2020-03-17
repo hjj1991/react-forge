@@ -63,9 +63,6 @@ export default handleActions({
             isRunTestFailover = true;
         }
 
-
-        console.log(checkedList);
-
         return {
             checkedListValue: checkedList,
             isRunReplication: isRepleTrue,

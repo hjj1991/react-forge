@@ -24,8 +24,6 @@ import storage from 'lib/storage';
 // );
 
 axios.interceptors.response.use( response => {
-    // console.log(response);
-    // console.log(storage.get('userLogin'));
     return response;
 }, async error => {
     if(typeof error.response !== 'undefined'){
@@ -48,8 +46,8 @@ axios.interceptors.response.use( response => {
     
 });
 
-var siteUrl = "http://migrate.eonit.co.kr:8080";
-// var siteUrl = "http://localhost:8080";
+// var siteUrl = "http://migrate.eonit.co.kr:8080";
+var siteUrl = "http://localhost:8080";
 
 
 
@@ -57,7 +55,6 @@ var siteUrl = "http://migrate.eonit.co.kr:8080";
     사용자 정보 호출 API
 */
 export function getUserDetail(token){
-    console.log(token);
     return axios(
         {
             url:siteUrl + '/v1/user',
@@ -73,7 +70,6 @@ export function getUserDetail(token){
     사용자 리스트 호출 API
 */
 export function getUserList(token){
-    console.log(token);
     return axios(
         {
             url:siteUrl + '/v1/user/list',
@@ -172,14 +168,15 @@ export function postSignOut(token){
 /*
 워크로드 액션 호출 API
 */
-export function postWorkloadAction(token, serverHost, actionUrl){
+export function postWorkloadAction(token, serverHost, actionUrl, workloadId){
     return axios(
         {
             url:siteUrl + '/v1/workload/action',
                 method: 'post',
                 data: {
                     serverHost: serverHost,
-                    actionUrl: actionUrl
+                    actionUrl: actionUrl,
+                    workloadId: workloadId
                 },
                 headers: {
                     "X_AUTH_TOKEN": token
@@ -193,7 +190,6 @@ export function postWorkloadAction(token, serverHost, actionUrl){
 사용자 토큰 갱신 호출 API
 */
 export function postTokenReissue(data){
-    console.log("엥");
     return axios.post(siteUrl + '/v1/tokenreissue',{
         refreshToken: data
     });

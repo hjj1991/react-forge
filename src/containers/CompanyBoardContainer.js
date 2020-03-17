@@ -6,6 +6,7 @@ import * as service from 'services/posts'
 import { connect } from 'react-redux';
 import mypic from '../images/ajax-loader.gif';
 import { confirmAlert } from 'react-confirm-alert'; // Import
+import LoadingOverlay from 'react-loading-overlay';
 
 
 
@@ -24,8 +25,6 @@ class CompanyBoardContainer extends React.Component {
     
     componentDidMount() {
         this.getCompanyList();
-        console.log(this.props);
-        // this.props.companyList = this.state.companyList;
         
     }
     componentWillUnmount(){
@@ -37,7 +36,6 @@ class CompanyBoardContainer extends React.Component {
 
     //수정버튼 클릭시 이벤트
     handleActionClick = (e, row) => {
-        // console.log(row);
         this.updateCompany(row);
 
     }
@@ -122,7 +120,6 @@ class CompanyBoardContainer extends React.Component {
                             })
                             this.getCompanyList();        
                         }
-                        console.log('요청이 완료 된 다음에 실행됨')
                     } catch(e) {
                         this.props.alert.show('실패하였습니다.', {type: 'error'})
                         this.setState({
@@ -168,7 +165,6 @@ class CompanyBoardContainer extends React.Component {
                             this.props.alert.show('정상 수정되었습니다.', {type: 'success'});
                             this.getCompanyList();
                         }
-                        console.log('요청이 완료 된 다음에 실행됨')
                     } catch(e) {
                         this.props.alert.show('실패하였습니다.', {type: 'error'})
                         this.setState({
@@ -203,10 +199,7 @@ class CompanyBoardContainer extends React.Component {
                     isOk: true
                 })
             }
-
-            console.log('요청이 완료 된 다음에 실행됨')
         } catch(e) {
-            console.log('에러가 발생!');
         }
     }
 
@@ -226,9 +219,22 @@ class CompanyBoardContainer extends React.Component {
             )
         }else{
             return(
-                <div className="loding-div">
-                    <img  alt="로딩중" src={mypic}/>
-                </div>
+                <LoadingOverlay
+                    active={true}
+                    spinner
+                    text='잠시만 기다려주세요...'
+                    styles={{
+                        overlay: (base) => ({
+                          ...base,
+                          "position": "fixed",
+                          "width": "100%",
+                          "height": "100%",
+                          "left": "0",
+                          "z-index": "10"
+                        })
+                      }}
+                    >
+                </LoadingOverlay>
             )
         }
     }

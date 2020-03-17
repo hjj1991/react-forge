@@ -3,6 +3,7 @@ import DashBoard from '../components/DashBoard';
 import * as service from 'services/posts'
 import { connect } from 'react-redux';
 import mypic from '../images/ajax-loader.gif';
+import LoadingOverlay from 'react-loading-overlay';
 
 
 class DashBoardContainer extends React.Component {
@@ -24,44 +25,44 @@ class DashBoardContainer extends React.Component {
     }
 
     getPost = async () => {  
-      console.log(this.props.userInfo);
         // try {
             this.setState({
                 pending: true,
                 isOk: false
             })
             const workloadList = await service.getWorkloadList(this.props.userInfo.X_AUTH_TOKEN);
-            console.log(workloadList.data.data.content);
             this.setState({
                 workloadList: workloadList.data.data.content,
                 pending: false,
                 isOk: true
             })
-        //     console.log('요청이 완료 된 다음에 실행됨')
-        // } catch(e) {
-        //     console.log('에러가 발생!');
-        // }
     }
 
 
       render(){
-        // function compare(a, b) {
-        //   return parseInt(a.detail.ImportantStat) < parseInt(b.detail.ImportantStat) ? -1 : parseInt(a.detail.ImportantStat) > parseInt(b.detail.ImportantStat) ? 1 : 0;
-        // }
-        
-    
           if( this.state.isOk && (this.state.pending === false)){
-            console.log(this.state.workloadList);
-            // post.sort(compare);
             return (
               <DashBoard 
               workloadList = {this.state.workloadList}   />
           )
           }else{
             return (
-                <div className="loding-div">
-                    <img  alt="로딩중" src={mypic}/>
-                </div>
+                <LoadingOverlay
+                    active={true}
+                    spinner
+                    text='잠시만 기다려주세요...'
+                    styles={{
+                        overlay: (base) => ({
+                          ...base,
+                          "position": "fixed",
+                          "width": "100%",
+                          "height": "100%",
+                          "left": "0",
+                          "z-index": "10"
+                        })
+                      }}
+                    >
+                </LoadingOverlay>
             );
           }
       }

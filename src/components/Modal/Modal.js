@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import './Modal.css';
 
 const Modal = ({ isOpen, contents, page }) => {
-    //console.log(isOk);
     var locationPage;
     if(typeof page == "undefined"){
         locationPage = "/";

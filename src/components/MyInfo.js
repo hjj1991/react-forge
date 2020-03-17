@@ -1,7 +1,7 @@
 import React from 'react';
 import {Container, Row, Col, Form, Button, ListGroup} from 'react-bootstrap'
 import { Redirect } from 'react-router-dom';
-import loding from 'images/ajax-loader.gif';
+import LoadingOverlay from 'react-loading-overlay';
 
 
 
@@ -76,7 +76,22 @@ const MyInfo = ({userInfo, isLoading, onClickLogout}) => {
             </Row>
         </Container>
         ):(
-            <img style={{"width": "100%"}} src={loding} />
+            <LoadingOverlay
+            active={true}
+            spinner
+            text='잠시만 기다려주세요...'
+            styles={{
+                overlay: (base) => ({
+                  ...base,
+                  "position": "fixed",
+                  "width": "100%",
+                  "height": "100%",
+                  "left": "0",
+                  "z-index": "10"
+                })
+              }}
+            >
+        </LoadingOverlay>
         )
 )
 };

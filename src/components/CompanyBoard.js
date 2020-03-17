@@ -101,7 +101,6 @@ const CompanyBoard = ({companyList, onClickAciton, onClickAddRow, addRows, onCha
             validator: (newValue, row, column) => {
                 
                 var checkVal = /^[a-zA-Z0-9_]{2,20}$/
-                console.log(!checkVal.test(newValue));
                 if (!checkVal.test(newValue)) {
                   return {
                     valid: false,

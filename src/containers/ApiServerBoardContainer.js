@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import mypic from '../images/ajax-loader.gif';
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import ApiServerBoard from '../components/ApiServerBoard';
-
+import LoadingOverlay from 'react-loading-overlay';
 
 
 class ApiServerBoardContainer extends React.Component {
@@ -119,7 +119,6 @@ class ApiServerBoardContainer extends React.Component {
                             })
                             this.getApiServerList();        
                         }
-                        console.log('요청이 완료 된 다음에 실행됨')
                     } catch(e) {
                         this.props.alert.show('실패하였습니다.', {type: 'error'})
                         this.setState({
@@ -165,7 +164,6 @@ class ApiServerBoardContainer extends React.Component {
                             this.props.alert.show('정상 수정되었습니다.', {type: 'success'});
                             this.getApiServerList();
                         }
-                        console.log('요청이 완료 된 다음에 실행됨')
                     } catch(e) {
                         this.props.alert.show('실패하였습니다.', {type: 'error'})
                         this.setState({
@@ -195,9 +193,7 @@ class ApiServerBoardContainer extends React.Component {
             })
             const apiServerList = await service.getApiServerList(this.props.userInfo.X_AUTH_TOKEN, data);
             if(apiServerList.data.success){
-                // console.log(apiServerList.data.data);
                 apiServerList.data.data.data.content.forEach(element => {
-                    // console.log(element.companyIdx);
                     if(element.companyIdx !== null){
                         element.companyName = element.companyIdx.companyName;
                         delete element.companyIdx;
@@ -213,10 +209,7 @@ class ApiServerBoardContainer extends React.Component {
                     isOk: true
                 })
             }
-
-            console.log('요청이 완료 된 다음에 실행됨')
         } catch(e) {
-            console.log('에러가 발생!');
         }
     }
 
@@ -236,9 +229,22 @@ class ApiServerBoardContainer extends React.Component {
             )
         }else{
             return(
-                <div className="loding-div">
-                    <img  alt="로딩중" src={mypic}/>
-                </div>
+                <LoadingOverlay
+                    active={true}
+                    spinner
+                    text='잠시만 기다려주세요...'
+                    styles={{
+                        overlay: (base) => ({
+                          ...base,
+                          "position": "fixed",
+                          "width": "100%",
+                          "height": "100%",
+                          "left": "0",
+                          "z-index": "10"
+                        })
+                      }}
+                    >
+                </LoadingOverlay>
             )
         }
     }

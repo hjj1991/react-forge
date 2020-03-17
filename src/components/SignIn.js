@@ -8,7 +8,6 @@ import 'css/signIn.css'
 
 const SighIn = ({ onClickSubmit, msg, success }) => {
 
-    console.log(success);
 
     if (success){ //로딩이 완료되었고, 로그인이 성공적으로 됐다면
         // window.location.href = '/';
@@ -24,12 +23,11 @@ const SighIn = ({ onClickSubmit, msg, success }) => {
             <div className="logo"></div>
             <Form onSubmit={onClickSubmit}>
             <div className="login-block">
-            
                 <h1>Login</h1>
                 <input type="text"  placeholder="ID" id="userId" />
                 <input type="password"  placeholder="Password" id="userPw" />
+                <div style={{"color": "red"}}>{msg}</div>
                 <button>로그인</button>
-                
             </div>
             </Form>
         </Container>

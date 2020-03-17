@@ -31,19 +31,7 @@ class MyInfoContainer extends React.Component {
             })
             var today = new Date();
             const { UserInfoActions } = this.props;
-            // if(this.props.userInfo.exAuthToken < today.getTime()){ //액세스토큰 만료시간을 비교하여 만료되었으면 refresh토큰을 이용하여 갱신함
-            //     const result2 = await service.postTokenReissue(this.props.userInfo.X_REFRESH_TOKEN);
-            //     if(result2.data.code === "1"){
-            //         UserInfoActions.refreshAccessToken(result2.data.X_AUTH_TOKEN, result2.data.exAuthToken);
-            //     }else{  //리프레쉬토큰도 만료되면 새로 로그인해야함
-            //         storage.remove('userLogin');
-            //         this.setState({
-            //             isModalOpen: true
-            //         })
-            //     }
-            // }
             const data = await service.getUserDetail(this.props.userInfo.X_AUTH_TOKEN);
-            console.log(data);
             if(data.data.success){
                 this.setState({
                     userInfo: data.data.data,
@@ -94,7 +82,6 @@ class MyInfoContainer extends React.Component {
                 })
             }
         } catch(e) {
-            console.log("에러가 발생!2");
         }
     }
 

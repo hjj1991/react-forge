@@ -42,7 +42,6 @@ export const getPost = (postId) => dispatch => {
             
             var resp = response.data;
             var count = 0;
-            // console.log(resp);
             resp.Workloads.forEach(workload => {
                 getPostAPI(workload.Uri).then(
                     (response) => {
@@ -67,10 +66,7 @@ export const getPost = (postId) => dispatch => {
                         }
 
                         workload.detail = response.data;
-                        // console.log("하하하하");
-                        // console.log(workload);
                         count = count + 1;
-                        // console.log(count);
                         if (count === resp.Workloads.length){
                             dispatch({
                                 type: GET_POST_SUCCESS,
@@ -91,8 +87,6 @@ export const getPost = (postId) => dispatch => {
             //     payload: resp
             // })
             })
-            // console.log(count);
-            // console.log(resp.Workloads.length);
 
         }
     ).catch(error => {

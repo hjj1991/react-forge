@@ -1,8 +1,5 @@
 import React, { useRef, Fragment } from 'react'
-import Table from 'react-bootstrap/Table'
-import Button from 'react-bootstrap/Button'
-import Row from 'react-bootstrap/Row'
-import Col from 'react-bootstrap/Col'
+import {Container, Row, Col, Form, Button, ListGroup} from 'react-bootstrap'
 import BootstrapTable from 'react-bootstrap-table-next';
 import cellEditFactory, { Type } from 'react-bootstrap-table2-editor';
 import paginationFactory, { PaginationProvider, PaginationListStandalone, SizePerPageDropdownStandalone, PaginationTotalStandalone   } from 'react-bootstrap-table2-paginator';
@@ -44,46 +41,6 @@ function leadingZeros(n, digits) {
   
 
 
-// const WorkloadItem = ({ itemNum, currentState, workloadServerHost, companyName, availableTransitions, name, operatingSystem , scheduleActive, tag, online, lastReplication, nextIncrementalOn, lastTestedFailoverOn, onChangeCheckBox, onClickButton }) => {
-//     var fontColor = "white"
-
-//     if(currentState === "Idle"){
-//         fontColor = "#05ff05";
-//     }else if(currentState === "RunningIncremental"){
-//         currentState = "Running Incremental"
-//         fontColor = "Orange";
-//     }else if(currentState === "Replicating"){
-//         fontColor = "Orange";
-//     }else if(currentState === "RunningIncrementalAndTestFailover"){
-//         currentState = "Running Incremental And TestFailover";
-//         fontColor = "Orange";
-//     }else if(currentState === "RunningTestFailover"){
-//         currentState = "Running Test Failover";
-//         fontColor = "Orange"; 
-//     }else{
-//         fontColor = "red";
-//     }
-
-//     availableTransitions.serverHost = workloadServerHost;
-//     // console.log(availableTransitions);
-//     // console.log(itemNum);
-//     return (
-//         <tr>
-//             <td><input type="checkbox" name="workloadBox" onChange={(e) => onChangeCheckBox(e, availableTransitions)} value={availableTransitions} /></td>
-//             <td></td>
-//             <td>{online}</td>
-//             <td title={operatingSystem}>{operatingSystem.substring(0, 6) === 'Window' ? <img  alt={operatingSystem} src={WindowImage} /> : <img  alt={operatingSystem} width="16px" src={LinuxImage} />} {name}</td>
-//             <td></td>
-//             <td>{tag}</td>
-//             <td>{scheduleActive}</td>
-//             <td style={{"color": fontColor}}>{currentState}</td>
-//             <td>{lastReplication}</td>
-//             <td>{nextIncrementalOn}</td>
-//             <td>{lastTestedFailoverOn}</td>
-//     </tr>
-//     );
-//   };
-
 
 const Workload = ({ workloadList, onClickButton, onChangeCheckBox, isRunReplication, isRunIncremental, isRunIncrementalAndTestFailover, isTestFailover, isAbort, node }) => {
 
@@ -91,60 +48,29 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, isRunReplicat
     const inputEl = useRef(null);
     function convertDate(oldDate){
         var convertedDate;
-        console.log(oldDate);
-        // if (workload.detail.Parameters[15].Value )
-        // console.log(workload.detail.Parameters[12].Value.substring(11,13))
         if (oldDate.substring(11, 13) === "오후"){
             if(oldDate[15] === ":"){
-                // console.log(Number(oldDate.substring(14, 15)) + 12)
-                // console.log(oldDate.substring(0, 11) + String(Number(oldDate.substring(14, 15)) + 12) + oldDate.substring(15))
                 convertedDate = new Date(oldDate.substring(0, 11) + String(Number(oldDate.substring(14, 15)) + 12) + oldDate.substring(15))
                 convertedDate.setHours(convertedDate.getHours()+9);
                 convertedDate = getTimeStamp(convertedDate);
             }else{
-                console.log(oldDate.substring(14, 16))
                 convertedDate = new Date(oldDate.substring(0, 11) + String(Number(oldDate.substring(14, 16)) + 12) + oldDate.substring(15))
                 convertedDate.setHours(convertedDate.getHours()+9);
                 convertedDate = getTimeStamp(convertedDate);
             }
-            // console.log(oldDate.substring(14, 21))
         }else {
             if(oldDate[15] === ":"){
-                // console.log(Number(oldDate.substring(14, 15)) + 12)
-                // console.log(oldDate.substring(0, 11) + String(Number(oldDate.substring(14, 15)) + 12) + oldDate.substring(15))
                 convertedDate = new Date(oldDate.substring(0, 11) + oldDate.substring(14, 15) + oldDate.substring(15))
                 convertedDate.setHours(convertedDate.getHours()+9);
                 convertedDate = getTimeStamp(convertedDate);
             }else{
-                // console.log(oldDate.substring(14, 16))
                 convertedDate = new Date(oldDate.substring(0, 11) + oldDate.substring(14, 16) + oldDate.substring(15))
                 convertedDate.setHours(convertedDate.getHours()+9);
                 convertedDate = getTimeStamp(convertedDate);
             }
-            // console.log(oldDate.substring(14, 21))   
         }
         return convertedDate.substring(0, 16);
     }
-
-    // const workloadItems = workloadList.map((workload, index) => {
-    //     // console.log(workload.AvailableTransitions);
-    //     var lastReplication;
-
-    //     var currentState;
-    //     var lastTestedFailoverOn = convertDate(workload.Parameters[12].Value); 
-    //     var nextIncrementalOn = convertDate(workload.Parameters[16].Value);
-
-
-    //     if (workload.Parameters[10].Value >= workload.Parameters[11].Value){
-    //         lastReplication = convertDate(workload.Parameters[10].Value);
-    //     }else{
-    //         lastReplication = convertDate(workload.Parameters[11].Value);
-    //     }
-    //     if (workload.Parameters[25].Value === "Aborting"){
-    //         currentState = "Aborting";
-    //     } else {
-    //         currentState = workload.CurrentState;
-    //     }
 
         workloadList.forEach(workload => {
             workload.lastTestedFailoverOn = workload.lastTestedFailoverOn; 
@@ -152,10 +78,8 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, isRunReplicat
 
 
             if (workload.lastFullOn >= workload.lastIncrementalOn){
-                // workload.lastReplication = getTimeStamp(new Date(workload.lastFullOn));
                 workload.lastReplication = workload.lastFullOn;
             }else{
-                // workload.lastReplication = getTimeStamp(new Date(workload.lastIncrementalOn));
                 workload.lastReplication = workload.lastIncrementalOn;
             }
             if (workload.protectionState === "Aborting"){
@@ -163,28 +87,6 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, isRunReplicat
             }
 
         });
-    //     return (
-        
-    //     <WorkloadItem
-    //         key={index}
-    //         itemNum={index}
-    //         availableTransitions={workload.AvailableTransitions}
-    //         workloadServerHost={workload.workloadServerHost}
-    //         companyName={workload.companyName}
-    //         currentState={currentState}
-    //         name={workload.Name}
-    //         operatingSystem={workload.OperatingSystem}
-    //         scheduleActive={workload.ScheduleActive}
-    //         Tag={workload.Tag}
-    //         online={workload.Online}
-    //         nextIncrementalOn={nextIncrementalOn}
-    //         lastReplication={lastReplication}
-    //         lastTestedFailoverOn={lastTestedFailoverOn}
-    //         onChangeCheckBox={onChangeCheckBox}
-    //         onClickButton={onClickButton}
-    //     />
-    // )}
-    // );
     const products = workloadList;
     const columns = [
         {
@@ -214,10 +116,7 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, isRunReplicat
                             <img width="16px" alt={row.operatingSystem} src={LinuxImage} /> {cell}
                         </Fragment>
                     );      
-                }
-                // operatingSystem.substring(0, 6) === 'Window' ? <img  alt={operatingSystem} src={WindowImage} /> : <img  alt={operatingSystem} width="16px" src={LinuxImage} />
-                // return row.operatingSystem.substring(0, 6) === 'Window' ? <img  alt={operatingSystem} src={WindowImage} /> : <img  alt={operatingSystem} width="16px" src={LinuxImage} />
-                
+                }      
             }
         }, 
         {
@@ -242,6 +141,9 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, isRunReplicat
             sort: true,
             searchable: true,
             formatter: (cell, row, index, extraData) => {
+                    if(row.workflowStep === "Aborting"){
+                        return <span style={{"color": "red"}}>취소중</span>
+                    }
                     if(cell === "Idle"){
                         return <span style={{"color": "#28a745"}}>{cell}</span>
                     }else if(cell === "RunningIncremental"){
@@ -269,7 +171,6 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, isRunReplicat
             sort: true,
             searchable: false,
             formatter: (cell, row, index, extraData) => (
-                // getTimeStamp(new Date(cell))
                 cell
             )
         },
@@ -279,7 +180,6 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, isRunReplicat
             sort: true,
             searchable: false,
             formatter: (cell, row, index, extraData) => (
-                // getTimeStamp(new Date(cell))
                 cell
             )
         },
@@ -289,7 +189,29 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, isRunReplicat
         mode: 'checkbox',
         clickToSelect: false,
         onSelect: onChangeCheckBox,
-        hideSelectAll: true
+        hideSelectAll: true,
+        clickToExpand: true
+      };
+
+      const expandRow = {
+        onlyOneExpanding: true,
+        showExpandColumn: false,
+        renderer: row => (
+            <Container>
+                <Form>
+                    <Row>
+                        <div className="col-5 col-md-3 col-lg-2 info-title">아이디</div>
+                        <div className="col-7 col-md-9 col-lg-10 info-contents" id="abcd"></div>  
+                    </Row>
+                    <Row>
+                        <div className="col-5 col-md-3 col-lg-2 info-title">비밀번호</div>
+                        <div className="col-7 col-md-9 col-lg-10 info-contents">
+                        </div>  
+                    </Row>   
+                    <Button variant="outline-secondary" type="submit" size="lg" block>수정</Button>
+                </Form>
+            </Container>
+        )
       };
 
     const customTotal = (from, to, size) => (
@@ -381,7 +303,8 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, isRunReplicat
                                 { ...paginationTableProps }
                                 ref={node}
                                 bordered={false}
-                                selectRow={ selectRow }
+                                selectRow={selectRow}
+                                expandRow={expandRow}
                             />
                             <PaginationTotalStandalone { ...paginationProps }/>
                             
