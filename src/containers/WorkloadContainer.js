@@ -21,6 +21,8 @@ class WorkloadContainer extends React.Component {
             isRunIncrementalAndTestFailover: false,
             isTestFailover: false,
             isAbort: false,
+            replicateDate: new Date(),
+            incrementalDate: new Date(),
             actionResult:{
                 actionSuccessCount:0,
                 actionFailCount:0
@@ -161,6 +163,13 @@ class WorkloadContainer extends React.Component {
 
 
     }
+    handleChangeDatePicker = (date, e) => {
+        console.log(date);
+
+        this.setState({
+            replicateDate: date
+        });
+    }
 
     handleButtonClick = async (e) => {  //버튼 선택에따른 이벤트
 
@@ -254,11 +263,14 @@ class WorkloadContainer extends React.Component {
                         checkboxes={this.state.checkboxes}
                         onChangeCheckBox={this.handleCheckBoxClick}
                         onClickButton={this.handleButtonClick}
+                        onChangeDatePicker={this.handleChangeDatePicker}
                         isRunReplication={this.state.isRunReplication}
                         isRunIncremental={this.state.isRunIncremental}
                         isRunIncrementalAndTestFailover={this.state.isRunIncrementalAndTestFailover}
                         isTestFailover={this.state.isTestFailover}
                         isAbort={this.state.isAbort}
+                        replicateDate={this.state.replicateDate}
+                        incrementalDate={this.state.incrementalDate}
                         node={this.nodeRef} />
                 </LoadingOverlay>
             )

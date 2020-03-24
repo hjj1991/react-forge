@@ -7,7 +7,9 @@ import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
 import './workload.css'
 import WindowImage from 'images/windowsWorkload.png';
 import LinuxImage from 'images/linuxWorkload.png';
-
+import DatePicker from "react-datepicker";
+ 
+import "react-datepicker/dist/react-datepicker.css";
 
 
 
@@ -42,7 +44,7 @@ function leadingZeros(n, digits) {
 
 
 
-const Workload = ({ workloadList, onClickButton, onChangeCheckBox, isRunReplication, isRunIncremental, isRunIncrementalAndTestFailover, isTestFailover, isAbort, node }) => {
+const Workload = ({ workloadList, onClickButton, onChangeCheckBox, onChangeDatePicker, replicateDate, incrementalDate, isRunReplication, isRunIncremental, isRunIncrementalAndTestFailover, isTestFailover, isAbort, node }) => {
 
 
     const inputEl = useRef(null);
@@ -200,14 +202,34 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, isRunReplicat
             <Container>
                 <Form>
                     <Row>
-                        <div className="col-5 col-md-3 col-lg-2 info-title">아이디</div>
-                        <div className="col-7 col-md-9 col-lg-10 info-contents" id="abcd"></div>  
+                        <div className="col-5 col-md-3 col-lg-2 info-title">다음 전체복제시간</div>
+                        <div className="col-7 col-md-9 col-lg-10 info-contents">{row.scheduleList[0].nextFullReplicationDate.replace("T", " ").substring(0, 19)}</div>  
+                        <div className="col-5 col-md-3 col-lg-2 info-title">주기</div>
+                        <div className="col-7 col-md-9 col-lg-10 info-contents">{row.scheduleList[0].fullReplicationInterval}분</div>  
+                        <div className="col-5 col-md-3 col-lg-2 info-title">마지막 전체복제시간</div>
+                        <div className="col-7 col-md-9 col-lg-10 info-contents">{row.scheduleList[0].fullReplicationStartDate.replace("T", " ").substring(0, 19)}</div>  
                     </Row>
                     <Row>
-                        <div className="col-5 col-md-3 col-lg-2 info-title">비밀번호</div>
-                        <div className="col-7 col-md-9 col-lg-10 info-contents">
-                        </div>  
-                    </Row>   
+                        <div className="col-5 col-md-3 col-lg-2 info-title">다음 증분복제시간</div>
+                        <div className="col-7 col-md-9 col-lg-10 info-contents">{row.scheduleList[0].nextIncrementalReplicationDate.replace("T", " ").substring(0, 19)}</div>  
+                        <div className="col-5 col-md-3 col-lg-2 info-title">주기</div>
+                        <div className="col-7 col-md-9 col-lg-10 info-contents">{row.scheduleList[0].incrementalReplicationInterval}분</div>  
+                        <div className="col-5 col-md-3 col-lg-2 info-title">마지막 증분복제시간</div>
+                        <div className="col-7 col-md-9 col-lg-10 info-contents">{row.scheduleList[0].incrementalReplicationStartDate.replace("T", " ").substring(0, 19)}</div>  
+                    </Row>  
+                    <Row>
+                        <div className="info-title">스케줄 설정</div>
+                        <DatePicker
+                            id="repleDate"
+                            selected={replicateDate}
+                            onChange={(date, e) => onChangeDatePicker(date, e)}
+                        />
+                        <DatePicker
+                            id="increDate"
+                            selected={incrementalDate}
+                            onChange={onChangeDatePicker}                            
+                        />
+                    </Row> 
                     <Button variant="outline-secondary" type="submit" size="lg" block>수정</Button>
                 </Form>
             </Container>
