@@ -267,6 +267,7 @@ const ApiServerBoard = ({apiServerList, onClickAciton, onClickAddRow, addRows, o
         firstPageTitle: 'Next page',
         lastPageTitle: 'Last page',
         showTotal: true,
+        totalSize: products.length,
         paginationTotalRenderer: customTotal,
         sizePerPageList: [
         {

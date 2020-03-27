@@ -39,6 +39,9 @@ axios.interceptors.response.use( response => {
 
             }else{
                 storage.remove('userLogin');
+                alert('세션이 만료되었습니다. 다시 로그인하세요.');
+                // window.location.href = 'http://10.131.109.51:3000';
+                window.location.href = 'http://dr.eonit.co.kr';
                 return Promise.reject(error);
             }
         }
@@ -47,8 +50,9 @@ axios.interceptors.response.use( response => {
     
 });
 
-// var siteUrl = "http://migrate.eonit.co.kr:8080";
-var siteUrl = "http://localhost:8080";
+var siteUrl = "http://migrate.eonit.co.kr:8080";
+// var siteUrl = "http://localhost:8080";
+// var siteUrl = "http://10.131.109.51:8080";
 
 
 
@@ -89,6 +93,22 @@ export function getWorkloadList(token){
         {
             url:siteUrl + '/v1/workload',
             method: 'get',
+            headers: {
+                "X_AUTH_TOKEN": token
+            }
+        }
+    )
+}
+
+/*
+스케줄 생성 및 수정 API
+*/
+export function postWorkloadSchedule(data, token){
+    return axios(
+        {
+            url:siteUrl + '/v1/workload/schedule',
+            method: 'post',
+            data: data,
             headers: {
                 "X_AUTH_TOKEN": token
             }

@@ -18,6 +18,36 @@
     padding-bottom: 20px;
 } */
 
+.page-item.active .page-link {
+    z-index: 0;
+}
+
+.workload-subtitle {
+    font-weight: bold;
+    font-size: 20px;
+    text-align: center;
+    background-color: whitesmoke;
+}
+
+.schedule-input {
+    height: 20px;
+    line-height: 10px;
+    width: 30px;
+    border-width: 0px 0px 1px 0px;
+    text-align: center;
+}
+
+.schedule-input:focus {
+    border-color: red;
+    border-width: 0px 0px 1px 0px;
+    outline: none;
+}
+
+.info-title {
+    font-weight: bold;
+}
+
+
 #controlled-tab-example-tab-user,#controlled-tab-example-tab-apiServer,#controlled-tab-example-tab-company {
     color: #17a2b8;
 }
@@ -122,10 +152,10 @@
 
 
     .workload-table td:nth-child(3),
-    .workload-table td:nth-child(n+5):nth-child(-n+7),
+    .workload-table td:nth-child(n+5):nth-child(-n+8),
     .workload-table td:nth-child(n+9),
     .workload-table th:nth-child(3),
-    .workload-table th:nth-child(n+5):nth-child(-n+7),
+    .workload-table th:nth-child(n+5):nth-child(-n+8),
     .workload-table th:nth-child(n+9) {display: none;}
 
 

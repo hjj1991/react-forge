@@ -193,6 +193,7 @@ const CompanyBoard = ({companyList, onClickAciton, onClickAddRow, addRows, onCha
         firstPageTitle: 'Next page',
         lastPageTitle: 'Last page',
         showTotal: true,
+        totalSize: products.length,
         paginationTotalRenderer: customTotal,
         sizePerPageList: [
         {

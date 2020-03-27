@@ -304,6 +304,7 @@ const UserBoard = ({userList, companyList, newUserFormView, checkUserValue, onCl
         prePageTitle: 'Pre page',
         firstPageTitle: 'Next page',
         lastPageTitle: 'Last page',
+        totalSize:  products.length,
         showTotal: true,
         paginationTotalRenderer: customTotal,
         sizePerPageList: [

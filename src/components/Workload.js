@@ -5,11 +5,16 @@ import cellEditFactory, { Type } from 'react-bootstrap-table2-editor';
 import paginationFactory, { PaginationProvider, PaginationListStandalone, SizePerPageDropdownStandalone, PaginationTotalStandalone   } from 'react-bootstrap-table2-paginator';
 import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
 import './workload.css'
+import ScheduleIcon from 'images/schedule_icon.png';
+import ConfIcon from 'images/conf_icon.png'
+import InfoIcon from 'images/info_icon.png';
 import WindowImage from 'images/windowsWorkload.png';
 import LinuxImage from 'images/linuxWorkload.png';
+import { registerLocale, setDefaultLocale } from "react-datepicker";
 import DatePicker from "react-datepicker";
- 
+import ko from 'date-fns/locale/ko';
 import "react-datepicker/dist/react-datepicker.css";
+registerLocale('ko', ko)
 
 
 
@@ -44,7 +49,7 @@ function leadingZeros(n, digits) {
 
 
 
-const Workload = ({ workloadList, onClickButton, onChangeCheckBox, onChangeDatePicker, replicateDate, incrementalDate, isRunReplication, isRunIncremental, isRunIncrementalAndTestFailover, isTestFailover, isAbort, node }) => {
+const Workload = ({ workloadList, onClickButton, onChangeCheckBox, onChangeDatePicker, onChangeScheduleDate, onSubmitScheduleDate, scheduleDateList, isRunReplication, isRunIncremental, isRunIncrementalAndTestFailover, isTestFailover, isCancelFailover, isAbort, node }) => {
 
 
     const inputEl = useRef(null);
@@ -122,22 +127,6 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, onChangeDateP
             }
         }, 
         {
-            dataField: '',
-            text: '타켓',
-            sort: true,
-        }, 
-        {
-            dataField: '',
-            text: '태그',
-            sort: true,
-        }, 
-        {
-            dataField: '',
-            text: '스케줄',
-            sort: true,
-            searchable: false,
-        }, 
-        {
             dataField: 'currentState',
             text: '상태',
             sort: true,
@@ -168,22 +157,34 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, onChangeDateP
             searchable: false,
         },
         {
-            dataField: 'nextIncrementalOn',
-            text: '복제예정',
+            dataField: 'scheduleList[0].nextFullReplicationDate',
+            text: '전체복제예정',
             sort: true,
             searchable: false,
-            formatter: (cell, row, index, extraData) => (
-                cell
-            )
+            formatter: (cell, row, index, extraData) => {
+                if(cell === "" || cell === null){
+                    return ""
+                }
+                return (
+                    cell.replace("T", " ").substring(0, 19)
+                )
+                
+            }
         },
         {
-            dataField: 'lastTestedFailoverOn',
-            text: '마지막테스트',
+            dataField: 'scheduleList[0].nextIncrementalReplicationDate',
+            text: '증분복제예정',
             sort: true,
             searchable: false,
-            formatter: (cell, row, index, extraData) => (
-                cell
-            )
+            formatter: (cell, row, index, extraData) => {
+                if(cell === "" || cell === null){
+                    return ""
+                }
+                return (
+                    cell.replace("T", " ").substring(0, 19)
+                )
+                
+            }
         },
     ];
 
@@ -198,42 +199,198 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, onChangeDateP
       const expandRow = {
         onlyOneExpanding: true,
         showExpandColumn: false,
-        renderer: row => (
+        renderer: row => {
+            const repliInterval = row.scheduleList[0].fullReplicationInterval;
+            const increInterval = row.scheduleList[0].incrementalReplicationInterval;
+
+            // console.log(row.scheduleList[0].nextFullReplicationDate.replace("T", " ").substring(0, 16));
+
+            let replicateDate, incrementalDate, nextFullDays, nextFullHours, nextFullMinute, nextIncreDays, nextIncreHours, nextIncreMinute, replicationDeletedYn, incrementalDeletedYn;
+            scheduleDateList.map((element) => {
+                if(element.workloadId === row.workloadId){
+                    replicateDate = element.nextFullReplicationDate;
+                    incrementalDate = element.nextIncrementalReplicationDate;
+                    // replicateDate = new Date();
+                    // incrementalDate = new Date();
+                    nextFullDays = element.nextFullDays;
+                    nextFullHours = element.nextFullHours;
+                    nextFullMinute = element.nextFullMinute;
+                    nextIncreDays = element.nextIncreDays;
+                    nextIncreHours = element.nextIncreHours;
+                    nextIncreMinute = element.nextIncreMinute;
+                    replicationDeletedYn = element.replicationDeletedYn;
+                    incrementalDeletedYn = element.incrementalDeletedYn;
+                }
+
+            })
+
+            return(
             <Container>
-                <Form>
                     <Row>
-                        <div className="col-5 col-md-3 col-lg-2 info-title">다음 전체복제시간</div>
-                        <div className="col-7 col-md-9 col-lg-10 info-contents">{row.scheduleList[0].nextFullReplicationDate.replace("T", " ").substring(0, 19)}</div>  
-                        <div className="col-5 col-md-3 col-lg-2 info-title">주기</div>
-                        <div className="col-7 col-md-9 col-lg-10 info-contents">{row.scheduleList[0].fullReplicationInterval}분</div>  
-                        <div className="col-5 col-md-3 col-lg-2 info-title">마지막 전체복제시간</div>
-                        <div className="col-7 col-md-9 col-lg-10 info-contents">{row.scheduleList[0].fullReplicationStartDate.replace("T", " ").substring(0, 19)}</div>  
-                    </Row>
-                    <Row>
-                        <div className="col-5 col-md-3 col-lg-2 info-title">다음 증분복제시간</div>
-                        <div className="col-7 col-md-9 col-lg-10 info-contents">{row.scheduleList[0].nextIncrementalReplicationDate.replace("T", " ").substring(0, 19)}</div>  
-                        <div className="col-5 col-md-3 col-lg-2 info-title">주기</div>
-                        <div className="col-7 col-md-9 col-lg-10 info-contents">{row.scheduleList[0].incrementalReplicationInterval}분</div>  
-                        <div className="col-5 col-md-3 col-lg-2 info-title">마지막 증분복제시간</div>
-                        <div className="col-7 col-md-9 col-lg-10 info-contents">{row.scheduleList[0].incrementalReplicationStartDate.replace("T", " ").substring(0, 19)}</div>  
+                        <div className="col-12 workload-subtitle"><img width="30px" src={InfoIcon} /> 워크로드 정보</div>
+                        <Col sm={12} lg={6}>
+                            <Row>
+                                <div className="col-6 col-md-6 col-lg-5 info-title">현재 상태</div>
+                                <div className="col-6 col-md-6 col-lg-7 info-contents">{row.currentState}</div>  
+                                <div className="col-6 col-md-6 col-lg-5 info-title">이름</div>
+                                <div className="col-6 col-md-6 col-lg-7 info-contents">{row.name}</div>  
+                                <div className="col-6 col-md-6 col-lg-5 info-title">OS</div>
+                                <div className="col-6 col-md-6 col-lg-7 info-contents">{row.operatingSystem}</div> 
+                                <div className="col-6 col-md-6 col-lg-5 info-title">OS버전</div>
+                                <div className="col-6 col-md-6 col-lg-7 info-contents">{row.operatingSystemVersion}</div>  
+                                <div className="col-6 col-md-6 col-lg-5 info-title">마지막 증분복제</div>
+                                <div className="col-6 col-md-6 col-lg-7 info-contents">{row.lastIncrementalOn}</div>   
+                                
+                            </Row>
+                        </Col>
+                        <Col sm={12} lg={6}>
+                            <Row>
+                                <div className="col-6 col-md-6 col-lg-5 info-title">계정</div>
+                                <div className="col-6 col-md-6 col-lg-7 info-contents">{row.userName}</div>  
+                                <div className="col-6 col-md-6 col-lg-5 info-title">IP주소</div>
+                                <div className="col-6 col-md-6 col-lg-7 info-contents">{row.discoveryAddress}</div>  
+                                <div className="col-6 col-md-6 col-lg-5 info-title">소속</div>
+                                <div className="col-6 col-md-6 col-lg-7 info-contents">{row.companyIdx.companyName}</div>    
+                                <div className="col-6 col-md-6 col-lg-5 info-title">마지막 전체복제</div>
+                                <div className="col-6 col-md-6 col-lg-7 info-contents">{row.lastFullOn}</div>   
+                                <div className="col-6 col-md-6 col-lg-5 info-title">마지막 TestFailOver</div>
+                                <div className="col-6 col-md-6 col-lg-7 info-contents">{row.lastTestedFailoverOn}</div> 
+                            </Row>
+                        </Col>
+                        <div className="col-12 workload-subtitle"><img width="30px" src={ScheduleIcon} /> 스케줄 복제정보</div>
+                        <Col sm={12} lg={6}>
+                            <Row>
+                                <div className="col-12 workload-subtitle">전체 복제정보</div>
+                                <div className="col-6 col-md-6 col-lg-5 info-title">다음 복제시간</div>
+                                <div className="col-6 col-md-6 col-lg-7 info-contents">{row.scheduleList[0].nextFullReplicationDate == null ? "" : row.scheduleList[0].nextFullReplicationDate.replace("T", " ").substring(0, 19)}</div>  
+                                <div className="col-6 col-md-6 col-lg-5 info-title">마지막 복제시작시간</div>
+                                <div className="col-6 col-md-6 col-lg-7 info-contents">{row.scheduleList[0].fullReplicationStartDate == null ? "" : row.scheduleList[0].fullReplicationStartDate.replace("T", " ").substring(0, 19)}</div>  
+                                <div className="col-6 col-md-6 col-lg-5 info-title">마지막 복제종료시간</div>
+                                <div className="col-6 col-md-6 col-lg-7 info-contents">{row.scheduleList[0].fullReplicationFinishedDate == null ? "" : row.scheduleList[0].fullReplicationFinishedDate.replace("T", " ").substring(0, 19)}</div> 
+                                <div className="col-6 col-md-6 col-lg-5 info-title">주기</div>
+                                <div className="col-6 col-md-6 col-lg-7 info-contents">{parseInt(repliInterval/1440)}일 {parseInt(repliInterval%1440/60)}시간 {repliInterval%1440%60}분</div>  
+                                
+                            </Row>
+                        </Col>
+                        <Col sm={12} lg={6}>
+                            <Row>
+                                <div className="col-12 workload-subtitle">증분 복제정보</div>
+                                <div className="col-6 col-md-6 col-lg-5 info-title">다음 복제시간</div>
+                                <div className="col-6 col-md-6 col-lg-7 info-contents">{row.scheduleList[0].nextIncrementalReplicationDate == null ? "" : row.scheduleList[0].nextIncrementalReplicationDate.replace("T", " ").substring(0, 19)}</div>  
+                                <div className="col-6 col-md-6 col-lg-5 info-title">마지막 복제시작시간</div>
+                                <div className="col-6 col-md-6 col-lg-7 info-contents">{row.scheduleList[0].incrementalReplicationStartDate == null ? "" : row.scheduleList[0].incrementalReplicationStartDate.replace("T", " ").substring(0, 19)}</div>  
+                                <div className="col-6 col-md-6 col-lg-5 info-title">마지막 복제완료시간</div>
+                                <div className="col-6 col-md-6 col-lg-7 info-contents">{row.scheduleList[0].incrementalReplicationFinishedDate == null ? "" : row.scheduleList[0].incrementalReplicationFinishedDate.replace("T", " ").substring(0, 19)}</div>  
+                                <div className="col-6 col-md-6 col-lg-5 info-title">주기</div>
+                                <div className="col-6 col-md-6 col-lg-7 info-contents">{parseInt(increInterval/1440)}일 {parseInt(increInterval%1440/60)}시간 {parseInt(increInterval%1440%60)}분</div>  
+                            </Row>
+                        </Col>
                     </Row>  
+                    <Form onSubmit={(e) => {onSubmitScheduleDate(e, row.workloadId)}}>
                     <Row>
-                        <div className="info-title">스케줄 설정</div>
-                        <DatePicker
-                            id="repleDate"
-                            selected={replicateDate}
-                            onChange={(date, e) => onChangeDatePicker(date, e)}
-                        />
-                        <DatePicker
-                            id="increDate"
-                            selected={incrementalDate}
-                            onChange={onChangeDatePicker}                            
-                        />
-                    </Row> 
-                    <Button variant="outline-secondary" type="submit" size="lg" block>수정</Button>
-                </Form>
+                    <div className="col-12 workload-subtitle"><img width="30px" src={ConfIcon} /> 스케줄 설정</div>
+                        <Col sm={12} lg={6}>
+                            <Row>
+                                <div className="col-12 workload-subtitle">전체 복제</div>
+                                <div className="col-6 col-md-6 col-lg-5 info-title">시작시간</div>
+                                <div className="col-6 col-md-6 col-lg-7 info-contents">
+                                    <DatePicker
+                                        className="form-control form-control-sm"
+                                        locale="ko"
+                                        dateFormat="yyyy-MM-dd HH:mm"
+                                        selected={replicateDate}
+                                        name="replicateDate"
+                                        onChange={date => onChangeDatePicker(date, "repliDate", scheduleDateList, row.workloadId)}
+                                        showTimeSelect
+                                        showMonthDropdown
+                                        showYearDropdown
+                                    />
+                                </div> 
+                                <div className="col-6 col-md-6 col-lg-5 info-title">주기설정</div>
+                                <div className="col-6 col-md-6 col-lg-7 info-contents">
+                                    <input className="schedule-input" name="nextFullDays" type="text" maxLength="3" onChange={(e) => onChangeScheduleDate(e, scheduleDateList, row.workloadId)} value={nextFullDays} />일
+                                    <input className="schedule-input" name="nextFullHours" type="text" maxLength="2" onChange={(e) => onChangeScheduleDate(e, scheduleDateList, row.workloadId)} value={nextFullHours} />시간
+                                    <input className="schedule-input" name="nextFullMinute" type="text" maxLength="2" onChange={(e) => onChangeScheduleDate(e, scheduleDateList, row.workloadId)} value={nextFullMinute} />분                       
+                                </div>
+                                <div className="col-6 col-md-6 col-lg-5 info-title">사용여부</div>
+                                <div className="col-6 col-md-6 col-lg-7 info-contents">
+                                    {row.scheduleList[0].fullReplicationDeletedYn === "N"?
+                                    <Form.Check 
+                                    // onChange={(e) => {checkUserValue(e, true)}}
+                                    defaultChecked
+                                    style={{"color": "red"}}
+                                    type="switch"
+                                    id="fullReplicationDeletedYn"
+                                    name="fullReplicationDeletedYn"
+                                    label="사용하려면 체크"
+                                />:
+                                    <Form.Check 
+                                        // onChange={(e) => {checkUserValue(e, true)}}
+                                        style={{"color": "red"}}
+                                        type="switch"
+                                        id="fullReplicationDeletedYn"
+                                        name="fullReplicationDeletedYn"
+                                        label="사용하려면 체크"
+                                    />
+                                    }
+                                </div>
+                            </Row>
+                        </Col>
+                        <Col sm={12} lg={6}>                    
+                            <Row>
+                                <div className="col-12 workload-subtitle">증분 복제</div>
+                                <div className="col-6 col-md-6 col-lg-5 info-title">시작시간</div>
+                                <div className="col-6 col-md-6 col-lg-7 info-contents">
+                                    <DatePicker
+                                        className="form-control form-control-sm"
+                                        locale="ko"
+                                        dateFormat="yyyy-MM-dd HH:mm"
+                                        selected={incrementalDate}
+                                        name="incrementalDate"
+                                        onChange={date => onChangeDatePicker(date, "increDate", scheduleDateList, row.workloadId)}        
+                                        showTimeSelect
+                                        showMonthDropdown
+                                        showYearDropdown                   
+                                    />
+                                </div>  
+                                <div className="col-6 col-md-6 col-lg-5 info-title">주기설정</div>
+                                <div className="col-6 col-md-6 col-lg-7 info-contents">
+                                    <input className="schedule-input" name="nextIncreDays" type="text" maxLength="3" onChange={(e) => onChangeScheduleDate(e, scheduleDateList, row.workloadId)} value={nextIncreDays} />일
+                                    <input className="schedule-input" name="nextIncreHours" type="text" maxLength="2" onChange={(e) => onChangeScheduleDate(e, scheduleDateList, row.workloadId)} value={nextIncreHours} />시간
+                                    <input className="schedule-input" name="nextIncreMinute" type="text" maxLength="2" onChange={(e) => onChangeScheduleDate(e, scheduleDateList, row.workloadId)} value={nextIncreMinute} />분
+                                </div>
+                                <div className="col-6 col-md-6 col-lg-5 info-title">사용여부</div>
+                                <div className="col-6 col-md-6 col-lg-7 info-contents">
+                                    {row.scheduleList[0].incrementalReplicationDeletedYn === "N"?
+                                    <Form.Check 
+                                    // onChange={(e) => {checkUserValue(e, true)}}
+                                    defaultChecked
+                                    style={{"color": "red"}}
+                                    type="switch"
+                                    id="incrementalReplicationDeletedYn"
+                                    name="incrementalReplicationDeletedYn"
+                                    label="사용하려면 체크"
+                                />:
+                                    <Form.Check 
+                                        // onChange={(e) => {checkUserValue(e, true)}}
+                                        style={{"color": "red"}}
+                                        type="switch"
+                                        id="incrementalReplicationDeletedYn"
+                                        name="incrementalReplicationDeletedYn"
+                                        label="사용하려면 체크"
+                                    />
+                                    }
+                                </div>
+                            </Row>
+                        </Col>
+                        
+                    </Row>
+                    <Button variant="outline-secondary" type="submit" size="lg" block>스케줄 등록</Button>
+                    </Form>
             </Container>
         )
+    }
+
       };
 
     const customTotal = (from, to, size) => (
@@ -260,10 +417,10 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, onChangeDateP
         firstPageTitle: 'Next page',
         lastPageTitle: 'Last page',
         showTotal: true,
+        totalSize:  products.length,
         paginationTotalRenderer: customTotal,
-        sizePerPageList: [{
-          text: '5', value: 5
-        }, {
+        sizePerPageList: [
+        {
           text: '10', value: 10
         }, {
           text: 'All', value: products.length
@@ -291,7 +448,7 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, onChangeDateP
     return (
         <div className="main-contents" >
             <p className="main-contents-title"><b>서버</b></p>
-            <div>
+            <Fragment>
                 <PaginationProvider
                     pagination={
                     paginationFactory(paginationOptions)
@@ -302,9 +459,9 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, onChangeDateP
                       paginationProps,
                       paginationTableProps
                   }) => (
-                    <div>
+                    <Fragment>
                     <ToolkitProvider
-                        keyField="workloadId"
+                        keyField='workloadId'
                         columns={ columns }
                         data={ products }
                         search
@@ -321,14 +478,16 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, onChangeDateP
                             <hr />
                             <SizePerPageDropdownStandalone { ...paginationProps } />
                             <BootstrapTable classes="workload-table"
+                                bordered={false}
                                 { ...toolkitprops.baseProps }
                                 { ...paginationTableProps }
                                 ref={node}
-                                bordered={false}
                                 selectRow={selectRow}
                                 expandRow={expandRow}
                             />
-                            <PaginationTotalStandalone { ...paginationProps }/>
+                            <PaginationTotalStandalone 
+                                
+                            { ...paginationProps }/>
                             
                             <PaginationListStandalone { ...paginationProps } />
                             </Fragment>
@@ -336,11 +495,11 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, onChangeDateP
                       }
                     </ToolkitProvider>
                     
-                  </div>
+                    </Fragment>
                   )
               }
           </PaginationProvider>
-            </div>
+          </Fragment>
             <div className="workloadSelection">
                 <Row style={{"marginBottom": "20px"}}>
                     <Col xs={12} md={3} style={{"textAlign": "center"}}>
@@ -364,7 +523,7 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, onChangeDateP
                         <Button name="runFailover" variant="secondary" size="lg"   block disabled>Run Failover</Button>
                     </Col>
                     <Col xs={12} md={3} style={{"textAlign": "center"}}>
-                        <Button name="removeWorkload" variant="secondary" size="lg"   block disabled>Remove Workload</Button>
+                        <Button name="removeWorkload" variant="secondary" size="lg" block disabled={!isCancelFailover} onClick={onClickButton} value="CancelFailover">CancelFailover</Button>
                     </Col>
                     <Col xs={12} md={3} style={{"textAlign": "center"}}>
                         <Button name="resumeSchedule" variant="secondary" size="lg"   block disabled>Resume Schedule</Button>
