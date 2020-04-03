@@ -18,11 +18,11 @@ class WorkloadContainer extends React.Component {
             isOk: false,
             isRunReplication: false,
             isRunIncremental: false,
-            scheduleDateList: [],
             isRunIncrementalAndTestFailover: false,
             isTestFailover: false,
             isAbort: false,
             isCancelFailover: false,
+            scheduleDateList: [],
             actionResult:{
                 actionSuccessCount:0,
                 actionFailCount:0
@@ -163,6 +163,94 @@ class WorkloadContainer extends React.Component {
         
     }
 
+    //체크박스 전체선택 클릭시 이벤트
+    handleCheckBoxAllClick = (isSelect, rows, e) => {
+
+        let runReplicationCount = 0, runIncrementalCount = 0, runIncrementalAndTestFailoverCount = 0, testFailoverCount = 0, abortCount = 0, cancelFailoverCount = 0;
+        let isRunIncremental = false, isRunReplication = false, isRunIncrementalAndTestFailover = false, isTestFailover = false, isAbort = false, isCancelFailover = false;
+        let checkboxCheckedCount = 0;
+
+        if(isSelect === false){
+            rows.forEach(rowValue => {
+                rowValue.checked = false;
+            });
+        }else {
+            rows.forEach(rowValue =>{
+                rowValue.checked = true;
+                checkboxCheckedCount++;
+                rowValue.availableActionList.forEach(rowAvailableAction => {
+                    if(rowAvailableAction.name ===  "RunReplication"){
+                        runReplicationCount++;
+                    }
+                    if(rowAvailableAction.name === "RunIncremental"){
+                        runIncrementalCount++;
+                    }
+                    if(rowAvailableAction.name === "RunIncrementalAndTestFailover"){
+                        runIncrementalAndTestFailoverCount++;
+                    }
+                    if(rowAvailableAction.name === "TestFailover"){
+                        testFailoverCount++;
+                    }
+                    if(rowAvailableAction.name === "Abort"){
+                        abortCount++;
+                    }
+                    if(rowAvailableAction.name === "CancelFailover"){
+                        cancelFailoverCount++;
+                    }
+                })
+            });
+    
+            if(runReplicationCount === checkboxCheckedCount){
+                isRunReplication = true;
+            }else{
+                isRunReplication = false;
+            }
+            if(runIncrementalCount === checkboxCheckedCount){
+                isRunIncremental = true;
+            }else{
+                isRunIncremental = false;
+            }
+            if(runIncrementalAndTestFailoverCount === checkboxCheckedCount){
+                isRunIncrementalAndTestFailover = true;
+            }else{
+                isRunIncrementalAndTestFailover = false;
+            }
+            if(testFailoverCount === checkboxCheckedCount){
+                isTestFailover = true;
+            }else{
+                isTestFailover = false;
+            }
+            if(abortCount === checkboxCheckedCount){
+                isAbort = true;
+            }else{
+                isAbort = false;
+            }
+            if(cancelFailoverCount === checkboxCheckedCount){
+                isCancelFailover = true;
+            }else{
+                isCancelFailover = false;
+            }
+    
+            if(checkboxCheckedCount === 0){
+                isRunReplication = false;
+                isRunIncremental = false;
+                isRunIncrementalAndTestFailover = false;
+                isTestFailover = false;
+                isAbort = false;
+                isCancelFailover = false;
+            }
+        }
+
+        this.setState({ 
+            isRunReplication: isRunReplication,
+            isRunIncremental: isRunIncremental,
+            isRunIncrementalAndTestFailover: isRunIncrementalAndTestFailover,
+            isTestFailover: isTestFailover,
+            isAbort: isAbort,
+            isCancelFailover: isCancelFailover
+        })
+    }
+
 
     //체크 박스 클릭시 이벤트
     handleCheckBoxClick = (row, isSelect, rowIndex, e) => {
@@ -176,6 +264,7 @@ class WorkloadContainer extends React.Component {
             row.checked = true;
         }
         const rows = this.nodeRef.current.table.props.data;
+
 
         rows.forEach(rowValue =>{
             if(rowValue.checked === true){
@@ -295,12 +384,8 @@ class WorkloadContainer extends React.Component {
     //스케줄 변경 Submit 버튼 클릭시 이벤트
     handleSubmitScheduleDate = (e, workloadId) => {
         e.preventDefault();
-        console.log(workloadId);
         let data = {};
         let formData = e.target;
-
-        console.log(formData.fullReplicationDeletedYn.checked);
-
         //전체 복제 사용 체크시 검증
         if(formData.fullReplicationDeletedYn.checked === true){
             if(formData.nextFullDays.value === "0" && formData.nextFullHours.value === "0" && formData.nextFullMinute.value === "0"){
@@ -331,7 +416,6 @@ class WorkloadContainer extends React.Component {
 
         data.workloadId = workloadId;
 
-        console.log(data);
 
         confirmAlert({
             // title: '작업하시겠습니까?',
@@ -346,7 +430,6 @@ class WorkloadContainer extends React.Component {
                     });
 
                     await this.postWorkloadSchedule(data);
-                    await this.getWorkloadList();
                     this.setState({
                         pending: false,
                         isActionLoading: false
@@ -449,7 +532,8 @@ class WorkloadContainer extends React.Component {
             isRunIncremental: false,
             isRunIncrementalAndTestFailover: false,
             isTestFailover: false,
-            isCancelFailover: false
+            isCancelFailover: false,
+            isAbort: false
         })
 
 
@@ -477,6 +561,7 @@ class WorkloadContainer extends React.Component {
                         workloadList={this.state.workloadList} 
                         checkboxes={this.state.checkboxes}
                         onChangeCheckBox={this.handleCheckBoxClick}
+                        onChangeCheckBoxAll={this.handleCheckBoxAllClick}
                         onClickButton={this.handleButtonClick}
                         onChangeDatePicker={this.handleChangeDatePicker}
                         onChangeScheduleDate={this.handleChangeScheduleDate}

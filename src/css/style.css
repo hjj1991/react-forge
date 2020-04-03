@@ -19,7 +19,15 @@
 } */
 
 .page-item.active .page-link {
-    z-index: 0;
+    z-index: 0!important;
+}
+
+[aria-label*='Choose Sunday']{
+    color: red;
+}
+
+[aria-label*='Choose Saturday']{
+    color: blue;
 }
 
 .workload-subtitle {

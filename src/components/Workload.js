@@ -49,7 +49,7 @@ function leadingZeros(n, digits) {
 
 
 
-const Workload = ({ workloadList, onClickButton, onChangeCheckBox, onChangeDatePicker, onChangeScheduleDate, onSubmitScheduleDate, scheduleDateList, isRunReplication, isRunIncremental, isRunIncrementalAndTestFailover, isTestFailover, isCancelFailover, isAbort, node }) => {
+const Workload = ({ workloadList, onClickButton, onChangeCheckBox, onChangeCheckBoxAll, onChangeDatePicker, onChangeScheduleDate, onSubmitScheduleDate, scheduleDateList, isRunReplication, isRunIncremental, isRunIncrementalAndTestFailover, isTestFailover, isCancelFailover, isAbort, node }) => {
 
 
     const inputEl = useRef(null);
@@ -192,7 +192,13 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, onChangeDateP
         mode: 'checkbox',
         clickToSelect: false,
         onSelect: onChangeCheckBox,
-        hideSelectAll: true,
+        // onSelect: (row, isSelect, rowIndex, e) => {
+        //     console.log(row);
+        //     console.log(isSelect);
+        //     console.log(rowIndex);
+        //     console.log(e);
+        // },
+        onSelectAll: onChangeCheckBoxAll,
         clickToExpand: true
       };
 
@@ -301,6 +307,7 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, onChangeDateP
                                         selected={replicateDate}
                                         name="replicateDate"
                                         onChange={date => onChangeDatePicker(date, "repliDate", scheduleDateList, row.workloadId)}
+                                        minDate={new Date()}
                                         showTimeSelect
                                         showMonthDropdown
                                         showYearDropdown
@@ -348,6 +355,7 @@ const Workload = ({ workloadList, onClickButton, onChangeCheckBox, onChangeDateP
                                         selected={incrementalDate}
                                         name="incrementalDate"
                                         onChange={date => onChangeDatePicker(date, "increDate", scheduleDateList, row.workloadId)}        
+                                        minDate={new Date()}
                                         showTimeSelect
                                         showMonthDropdown
                                         showYearDropdown                   
